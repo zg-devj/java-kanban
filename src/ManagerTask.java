@@ -1,36 +1,60 @@
-import model.Base;
-import model.Status;
 import model.Task;
 import util.Identifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class ManagerTask {
     // Идентификаторы для Task
     private Identifier tasksId;
 
-    HashMap<Long, Task> tasks;
+    public HashMap<Integer, Task> tasks;
 
     public ManagerTask() {
         this.tasksId = new Identifier();
         this.tasks = new HashMap<>();
     }
 
-    public void start() {
-        Task task1 = new Task(tasksId.next(), "Переезд");
-        task1.setDescriptions(new ArrayList<>(Arrays.asList("Собрать вещи", "Отнести в машину")));
-        Task task2 = new Task(tasksId.next(), "Покупки");
+    // Получение всех записей Task-ов
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
 
-        task1.setStatus(Status.IN_PROGRESS);
+    // Удаление все Tasks
+    public void deleteAllTasks() {
+        tasks.clear();
+    }
 
-        tasks.put(task1.getId(),task1);
-        tasks.put(task2.getId(),task2);
+    // Получение Task по идентификатору.
+    public Task getTaskById(int id) {
+        return tasks.get(id);
+    }
 
-        for (Task value : tasks.values()) {
-            System.out.println(value);
+    // Cоздание Task
+    public void addTask(Task task) {
+        if (task.getId() == 0) {
+            task.setId(tasksId.next());
         }
+        tasks.putIfAbsent(task.getId(), task);
+    }
 
+    // Обновление Task
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    // Удаление Task
+    public void deleteTask(int id) {
+        if (tasks.containsKey(id)) {
+            tasks.remove(id);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ManagerTask{" +
+                "tasks=" + tasks +
+                '}';
     }
 }
