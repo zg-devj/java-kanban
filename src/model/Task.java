@@ -1,11 +1,9 @@
 package model;
 
-import java.util.Arrays;
-
 // Задача
 public class Task extends Base {
-    public Task(int id, String title) {
-        super(id, title);
+    public Task(String title) {
+        super(title);
         setStatus(Status.NEW);
     }
 
