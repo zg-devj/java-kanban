@@ -7,9 +7,9 @@ public abstract class Base {
     public int id;
     // Заголовок
     public String title;
-
+    // Описание
     protected ArrayList<String> descriptions;
-
+    // Статус задачи
     public Status status;
 
     public Base(int id, String title) {
@@ -18,20 +18,27 @@ public abstract class Base {
         this.descriptions = null;
     }
 
-    public long getId() {
+    public Base(String title) {
+        this.title = title;
+        this.descriptions = null;
+    }
+
+    public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setDescriptions(ArrayList<String> descriptions) {
-        if (this.descriptions == null) {
-            this.descriptions = new ArrayList<>();
-        }
         this.descriptions = descriptions;
     }
 
     public void setStatus(Status status){
         this.status = status;
     }
+
     public Status getStatus(){
         return status;
     }
