@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public abstract class Base {
     // Идентификатор
-    public long id;
+    public int id;
     // Заголовок
     public String title;
 
@@ -12,10 +12,14 @@ public abstract class Base {
 
     public Status status;
 
-    public Base(long id, String title) {
+    public Base(int id, String title) {
         this.id = id;
         this.title = title;
         this.descriptions = null;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setDescriptions(ArrayList<String> descriptions) {

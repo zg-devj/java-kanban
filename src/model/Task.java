@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 // Задача
 public class Task extends Base {
-    public Task(long id, String title) {
+    public Task(int id, String title) {
         super(id, title);
         setStatus(Status.NEW);
     }

@@ -2,7 +2,7 @@ package model;
 
 // Подзадача
 public class Subtask extends Base {
-    public Subtask(long id, String title) {
+    public Subtask(int id, String title) {
         super(id, title);
     }
 

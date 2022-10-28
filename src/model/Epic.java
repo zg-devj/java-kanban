@@ -2,7 +2,7 @@ package model;
 
 // Эпик
 public class Epic extends Base {
-    public Epic(long id, String title) {
+    public Epic(int id, String title) {
         super(id, title);
     }
 
