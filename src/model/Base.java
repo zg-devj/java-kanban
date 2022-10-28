@@ -31,15 +31,19 @@ public abstract class Base {
         this.id = id;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setDescriptions(ArrayList<String> descriptions) {
         this.descriptions = descriptions;
     }
 
-    public void setStatus(Status status){
+    protected void setStatus(Status status){
         this.status = status;
     }
 
-    public Status getStatus(){
+    protected Status getStatus(){
         return status;
     }
 }
