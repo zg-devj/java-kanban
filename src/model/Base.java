@@ -29,5 +29,10 @@ public abstract class Base {
         this.descriptions = descriptions;
     }
 
-    public abstract void setStatus(Status status);
+    public void setStatus(Status status){
+        this.status = status;
+    }
+    public Status getStatus(){
+        return status;
+    }
 }

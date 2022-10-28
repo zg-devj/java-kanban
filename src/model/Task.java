@@ -10,11 +10,6 @@ public class Task extends Base {
     }
 
     @Override
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
     public String toString() {
         return "Task{" +
                 "id=" + id +
