@@ -15,6 +15,16 @@ public class Task extends Base {
         setStatus(Status.NEW);
     }
 
+    // Вернуть Id родителя
+    public int getParentId() {
+        return parentId;
+    }
+
+    // Установить Id родителя
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

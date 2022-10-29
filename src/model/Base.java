@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public abstract class Base {
     // Идентификатор
-    public int id;
+    protected int id;
     // Заголовок
     public String title;
     // Описание
