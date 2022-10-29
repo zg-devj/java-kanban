@@ -7,12 +7,10 @@ import java.util.HashSet;
 // Подзадача
 public class Subtask extends Base {
     private static final Identifier IDENTIFIER = new Identifier();
-    private int parentId;
     private HashSet<Integer> taskIds;
 
     public Subtask(String title) {
         super(title);
-        this.parentId = 0;
         setId(IDENTIFIER.next());
         setStatus(Status.NEW);
         taskIds = new HashSet<>();
@@ -32,21 +30,11 @@ public class Subtask extends Base {
         }
     }
 
-    // Вернуть Id родителя
-    public int getParentId() {
-        return parentId;
-    }
-
-    // Установить Id родителя
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
     @Override
     public String toString() {
         return "\nSubtask{" +
                 "id=" + id +
-                ", parentId=" + parentId +
+                ", parentId=" + getParentId() +
                 ", title='" + title + '\'' +
                 ", taskIds=" + taskIds +
                 ", status=" + status +

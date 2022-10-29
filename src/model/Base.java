@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public abstract class Base {
     // Идентификатор
     protected int id;
+    // Id родителя
+    private int parentId;
     // Заголовок
     public String title;
     // Описание
@@ -15,6 +17,7 @@ public abstract class Base {
     public Base(String title) {
         this.title = title;
         this.descriptions = null;
+        this.parentId=0;
     }
 
     // Устанавливаем описание
@@ -28,6 +31,14 @@ public abstract class Base {
 
     protected void setId(int id) {
         this.id = id;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     public void setStatus(Status status) {

@@ -6,30 +6,17 @@ import util.Identifier;
 public class Task extends Base {
     private static final Identifier IDENTIFIER = new Identifier();
 
-    private int parentId;
-
     public Task(String title) {
         super(title);
-        this.parentId = 0;
         setId(IDENTIFIER.next());
         setStatus(Status.NEW);
-    }
-
-    // Вернуть Id родителя
-    public int getParentId() {
-        return parentId;
-    }
-
-    // Установить Id родителя
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
     }
 
     @Override
     public String toString() {
         return "\nTask{" +
                 "id=" + id +
-                ", parentId=" + parentId +
+                ", parentId=" + getParentId() +
                 ", title='" + title + '\'' +
                 ", descriptions=" + descriptions +
                 ", status=" + status +
