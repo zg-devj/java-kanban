@@ -1,9 +1,17 @@
 package model;
 
+import util.Identifier;
+
 // Задача
 public class Task extends Base {
+    private static final Identifier IDENTIFIER = new Identifier();
+
+    private int parentId;
+
     public Task(String title) {
         super(title);
+        this.parentId = 0;
+        setId(IDENTIFIER.next());
         setStatus(Status.NEW);
     }
 

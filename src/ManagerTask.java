@@ -7,12 +7,10 @@ import java.util.List;
 
 public class ManagerTask {
     // Идентификаторы для Task
-    private Identifier tasksId;
 
     public HashMap<Integer, Task> tasks;
 
     public ManagerTask() {
-        this.tasksId = new Identifier();
         this.tasks = new HashMap<>();
     }
 
@@ -33,9 +31,6 @@ public class ManagerTask {
 
     // Cоздание Task
     public void addTask(Task task) {
-        if (task.getId() == 0) {
-            task.setId(tasksId.next());
-        }
         tasks.putIfAbsent(task.getId(), task);
     }
 

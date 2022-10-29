@@ -12,38 +12,29 @@ public abstract class Base {
     // Статус задачи
     public Status status;
 
-    public Base(int id, String title) {
-        this.id = id;
+    public Base(String title) {
         this.title = title;
         this.descriptions = null;
     }
 
-    public Base(String title) {
-        this.title = title;
-        this.descriptions = null;
+    // Устанавливаем описание
+    public void setDescriptions(ArrayList<String> descriptions) {
+        this.descriptions = descriptions;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    protected void setId(int id) {
         this.id = id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescriptions(ArrayList<String> descriptions) {
-        this.descriptions = descriptions;
-    }
-
-    protected void setStatus(Status status){
+    protected void setStatus(Status status) {
         this.status = status;
     }
 
-    protected Status getStatus(){
+    protected Status getStatus() {
         return status;
     }
 }
