@@ -1,6 +1,6 @@
+import model.Epic;
 import model.Subtask;
 import model.Task;
-import util.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,10 +11,12 @@ public class ManagerTask {
 
     public HashMap<Integer, Task> tasks;
     public HashMap<Integer, Subtask> subtasks;
+    public HashMap<Integer, Epic> epics;
 
     public ManagerTask() {
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
+        this.epics = new HashMap<>();
     }
 
     //region Task методы
@@ -71,7 +73,7 @@ public class ManagerTask {
         }
     }
 
-    // Получение всех записей Task-ов
+    // Получение всех записей Subtask-ов
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
@@ -100,6 +102,11 @@ public class ManagerTask {
             for (Integer taskId : subtasks.get(id).getTaskIds()) {
                 tasks.remove(taskId);
             }
+            int parentId = getSubtaskById(id).getParentId();
+            if (parentId > 0) {
+                // если Subtask находится в Epic, то отвязываем
+                getEpicById(parentId).getSubtaskIds().remove(id);
+            }
             // Удаляем Subtask
             subtasks.remove(id);
         }
@@ -109,6 +116,58 @@ public class ManagerTask {
     public void deleteAllSubtasks() {
         for (Subtask subtask : getAllSubtasks()) {
             deleteSubtask(subtask.getId());
+        }
+    }
+    //endregion
+
+    //region Epic методы
+    // Получение Epic по идентификатору.
+    public Epic getEpicById(int id) {
+        if (epics.containsKey(id)) {
+            return epics.get(id);
+        } else {
+            return null;
+        }
+    }
+
+    // Получение всех записей Epic-ов
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    // Cоздание Epic
+    public void addEpic(Epic epic) {
+        epics.putIfAbsent(epic.getId(), epic);
+    }
+
+    // Добавляем подзадачу к эпику
+    public void addSubtaskToSEpic(Epic epic, Subtask subtask) {
+        if (epics.containsKey(epic.getId()) && subtasks.containsKey(subtask.getId())) {
+            epic.add(subtask);
+        }
+    }
+
+    // Обновление Epic
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    // Удаление Epic
+    public void deleteEpic(int id) {
+        if (epics.containsKey(id)) {
+            // Удаляем Subtask для Epic
+            for (Integer subtaskId : epics.get(id).getSubtaskIds()) {
+                deleteSubtask(subtaskId);
+            }
+            // Удаляем Epic
+            epics.remove(id);
+        }
+    }
+
+    // Удалить все Epic
+    public void deleteAllEpics() {
+        for (Epic epic : getAllEpics()) {
+            deleteEpic(epic.getId());
         }
     }
     //endregion

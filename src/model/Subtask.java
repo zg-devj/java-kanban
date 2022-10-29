@@ -24,11 +24,22 @@ public class Subtask extends Base {
 
     // Добавляем id Задачи
     public void add(Task task) {
-        // Устанавливаем у задачи Id Подзадачи
         if(!taskIds.contains(task.getId())) {
+            // Устанавливаем у Задачи Id родителя
             task.setParentId(getId());
+            // добавляем задачу к подзадачам
             taskIds.add(task.getId());
         }
+    }
+
+    // Вернуть Id родителя
+    public int getParentId() {
+        return parentId;
+    }
+
+    // Установить Id родителя
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     @Override

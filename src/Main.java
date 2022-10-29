@@ -1,3 +1,4 @@
+import model.Epic;
 import model.Subtask;
 import model.Task;
 
@@ -23,9 +24,19 @@ public class Main {
         managerTask.addSubtask(subtask2);
         managerTask.addTaskToSubtask(subtask2, task4);
 
+        Epic epic1 = new Epic("Эпик 1");
+        managerTask.addEpic(epic1);
+        managerTask.addSubtaskToSEpic(epic1,subtask1);
+
+        Epic epic2 = new Epic("Эпик 2");
+        managerTask.addEpic(epic2);
+        managerTask.addSubtaskToSEpic(epic2,subtask2);
+
         System.out.println("\nTASK");
         System.out.println(managerTask.getAllTasks());
         System.out.println("\nSUBTASK");
         System.out.println(managerTask.getAllSubtasks());
+        System.out.println("\nEPIC");
+        System.out.println(managerTask.getAllEpics());
     }
 }
