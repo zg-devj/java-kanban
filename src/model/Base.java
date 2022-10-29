@@ -10,7 +10,7 @@ public abstract class Base {
     // Описание
     protected ArrayList<String> descriptions;
     // Статус задачи
-    public Status status;
+    protected Status status;
 
     public Base(String title) {
         this.title = title;
@@ -30,11 +30,11 @@ public abstract class Base {
         this.id = id;
     }
 
-    protected void setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    protected Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 }

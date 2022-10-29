@@ -1,10 +1,12 @@
 import model.Epic;
+import model.Status;
 import model.Subtask;
 import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ManagerTask {
     // Идентификаторы для Task
@@ -30,6 +32,13 @@ public class ManagerTask {
         return new ArrayList<>(tasks.values());
     }
 
+    public List<Task> getTasksBySubtaskId(int subtaskId) {
+        return tasks.values()
+                .stream()
+                .filter(s -> s.getParentId() == subtaskId)
+                .collect(Collectors.toList());
+    }
+
     // Cоздание Task
     public void addTask(Task task) {
         tasks.putIfAbsent(task.getId(), task);
@@ -38,6 +47,9 @@ public class ManagerTask {
     // Обновление Task
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
+        if (task.getParentId() > 0) {
+            updateSubtaskStatus(task.getParentId());
+        }
     }
 
     // Удаление Task
@@ -49,6 +61,9 @@ public class ManagerTask {
                 getSubtaskById(parentId).getTaskIds().remove(id);
             }
             tasks.remove(id);
+            if (parentId > 0) {
+                updateSubtaskStatus(parentId);
+            }
         }
     }
 
@@ -58,7 +73,7 @@ public class ManagerTask {
         for (Task task : getAllTasks()) {
             deleteTask(task.getId());
         }
-        // Удаляем остальные task
+        // Удаляем остальные task (Не влияют на статус)
         tasks.clear();
     }
     //endregion
@@ -76,6 +91,13 @@ public class ManagerTask {
     // Получение всех записей Subtask-ов
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
+    }
+
+    public List<Subtask> getSubtaskByEpicId(int epicId) {
+        return subtasks.values()
+                .stream()
+                .filter(s -> s.getParentId() == epicId)
+                .collect(Collectors.toList());
     }
 
     // Cоздание Subtask
@@ -109,6 +131,9 @@ public class ManagerTask {
             }
             // Удаляем Subtask
             subtasks.remove(id);
+            if (parentId > 0) {
+                updateEpicStatus(parentId);
+            }
         }
     }
 
@@ -171,6 +196,68 @@ public class ManagerTask {
         }
     }
     //endregion
+
+    private void updateSubtaskStatus(int subtaskId) {
+        boolean isNew = false;
+        boolean isInProgress = false;
+        boolean isDone = false;
+        int epicId = subtasks.get(subtaskId).getParentId();
+        if (subtasks.get(subtaskId).getTaskIds().size() == 0) {
+            isNew = true;
+        }
+        for (Task task : getTasksBySubtaskId(subtaskId)) {
+            switch (task.getStatus()) {
+                case NEW:
+                    isNew = true;
+                    break;
+                case IN_PROGRESS:
+                    subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
+                    isInProgress = true;
+                    break;
+                case DONE:
+                    isDone = true;
+            }
+        }
+        if (isNew && !isInProgress && !isDone) {
+            subtasks.get(epicId).setStatus(Status.NEW);
+        }
+        if (isNew && !isInProgress && isDone) {
+            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
+        }
+        if (!isNew && !isInProgress && isDone) {
+            subtasks.get(subtaskId).setStatus(Status.DONE);
+        }
+        updateEpicStatus(epicId);
+    }
+
+    private void updateEpicStatus(int epicId) {
+        boolean isNew = false;
+        boolean isInProgress = false;
+        boolean isDone = false;
+        for (Subtask subtask : getSubtaskByEpicId(epicId)) {
+            switch (subtask.getStatus()) {
+                case NEW:
+                    isNew = true;
+                    break;
+                case IN_PROGRESS:
+                    epics.get(epicId).setStatus(Status.IN_PROGRESS);
+                    isInProgress = true;
+                    break;
+                case DONE:
+                    isDone = true;
+            }
+        }
+        if (isNew && !isInProgress && !isDone) {
+            epics.get(epicId).setStatus(Status.NEW);
+        }
+        if (isNew && !isInProgress && isDone) {
+            epics.get(epicId).setStatus(Status.IN_PROGRESS);
+        }
+        if (!isNew && !isInProgress && isDone) {
+            epics.get(epicId).setStatus(Status.DONE);
+        }
+    }
+
 
     @Override
     public String toString() {

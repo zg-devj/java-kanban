@@ -44,12 +44,12 @@ public class Subtask extends Base {
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "\nSubtask{" +
                 "id=" + id +
                 ", parentId=" + parentId +
                 ", title='" + title + '\'' +
                 ", taskIds=" + taskIds +
                 ", status=" + status +
-                '}';
+                "}";
     }
 }

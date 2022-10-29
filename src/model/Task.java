@@ -27,8 +27,9 @@ public class Task extends Base {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "\nTask{" +
                 "id=" + id +
+                ", parentId=" + parentId +
                 ", title='" + title + '\'' +
                 ", descriptions=" + descriptions +
                 ", status=" + status +
