@@ -31,12 +31,15 @@ public class MainTest {
         managerTask.addSubtaskToSEpic(epic1, subtask1);
         managerTask.addSubtaskToSEpic(epic1, subtask2);
 
+        Epic epic2 = new Epic("Эпик 2");
+        managerTask.addEpic(epic2);
+
         Task update1 = managerTask.getTaskById(1);
-        update1.setStatus(Status.DONE);
+        update1.setStatus(Status.NEW);
         managerTask.updateTask(update1);
 
         Task update2 = managerTask.getTaskById(2);
-        update2.setStatus(Status.DONE);
+        update2.setStatus(Status.NEW);
         managerTask.updateTask(update2);
 
         Task update3 = managerTask.getTaskById(3);
@@ -44,10 +47,11 @@ public class MainTest {
         managerTask.updateTask(update3);
 
         Task update4 = managerTask.getTaskById(4);
-        update4.setStatus(Status.IN_PROGRESS);
+        update4.setStatus(Status.DONE);
         managerTask.updateTask(update4);
 
         // Здесь указывать команды для тестирования
+        // managerTask.deleteSubtask(2);
 
         System.out.println("\nTASK");
         System.out.println(managerTask.getAllTasks());

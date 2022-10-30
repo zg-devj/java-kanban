@@ -47,6 +47,7 @@ public class ManagerTask {
     // Обновление Task
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
+        // Если Task в Subtask
         if (task.getParentId() > 0) {
             updateSubtaskStatus(task.getParentId());
         }
@@ -60,7 +61,9 @@ public class ManagerTask {
                 // если Task находится в Subtask, то отвязываем
                 getSubtaskById(parentId).getTaskIds().remove(id);
             }
+            // Удаляем Subtask
             tasks.remove(id);
+            // Обновляем статус
             if (parentId > 0) {
                 updateSubtaskStatus(parentId);
             }
@@ -72,6 +75,9 @@ public class ManagerTask {
         // Удаляем task и зависимости в subtask
         for (Task task : getAllTasks()) {
             deleteTask(task.getId());
+            if (task.getParentId() != 0) {
+                updateSubtaskStatus(task.getParentId());
+            }
         }
         // Удаляем остальные task (Не влияют на статус)
         tasks.clear();
@@ -93,7 +99,8 @@ public class ManagerTask {
         return new ArrayList<>(subtasks.values());
     }
 
-    public List<Subtask> getSubtaskByEpicId(int epicId) {
+    // Возвращаем вписок Subtasks по id эпика
+    public List<Subtask> getSubtasksByEpicId(int epicId) {
         return subtasks.values()
                 .stream()
                 .filter(s -> s.getParentId() == epicId)
@@ -141,6 +148,9 @@ public class ManagerTask {
     public void deleteAllSubtasks() {
         for (Subtask subtask : getAllSubtasks()) {
             deleteSubtask(subtask.getId());
+            if (subtask.getParentId() != 0) {
+                updateEpicStatus(subtask.getParentId());
+            }
         }
     }
     //endregion
@@ -181,8 +191,9 @@ public class ManagerTask {
     public void deleteEpic(int id) {
         if (epics.containsKey(id)) {
             // Удаляем Subtask для Epic
-            for (Integer subtaskId : epics.get(id).getSubtaskIds()) {
-                deleteSubtask(subtaskId);
+            Integer[] list = epics.get(id).getSubtaskIds().toArray(new Integer[0]);
+            for (Integer delId : list) {
+                deleteSubtask(delId);
             }
             // Удаляем Epic
             epics.remove(id);
@@ -197,67 +208,70 @@ public class ManagerTask {
     }
     //endregion
 
+    // Обновление статуса Subtask
     private void updateSubtaskStatus(int subtaskId) {
         boolean isNew = false;
         boolean isInProgress = false;
         boolean isDone = false;
         int epicId = subtasks.get(subtaskId).getParentId();
-        if (subtasks.get(subtaskId).getTaskIds().size() == 0) {
-            isNew = true;
+        if (getTasksBySubtaskId(subtaskId).size() == 0) {
+            subtasks.get(subtaskId).setStatus(Status.NEW);
+            updateEpicStatus(epicId);
+            return;
         }
+        // Проверяю все таски данного сабтаска
         for (Task task : getTasksBySubtaskId(subtaskId)) {
             switch (task.getStatus()) {
                 case NEW:
                     isNew = true;
                     break;
                 case IN_PROGRESS:
-                    subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
                     isInProgress = true;
                     break;
                 case DONE:
                     isDone = true;
             }
         }
-        if (isNew && !isInProgress && !isDone) {
-            subtasks.get(epicId).setStatus(Status.NEW);
-        }
-        if (isNew && !isInProgress && isDone) {
-            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
-        }
-        if (!isNew && !isInProgress && isDone) {
+        if (isDone && !isNew && !isInProgress) {
             subtasks.get(subtaskId).setStatus(Status.DONE);
+        } else if (isInProgress || (isNew && isDone)) {
+            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
+        } else {
+            subtasks.get(subtaskId).setStatus(Status.NEW);
         }
         updateEpicStatus(epicId);
     }
 
+    // Обновление статуса Epic
     private void updateEpicStatus(int epicId) {
         boolean isNew = false;
         boolean isInProgress = false;
         boolean isDone = false;
-        for (Subtask subtask : getSubtaskByEpicId(epicId)) {
+        if (getSubtasksByEpicId(epicId).size() == 0) {
+            epics.get(epicId).setStatus(Status.NEW);
+            return;
+        }
+        for (Subtask subtask : getSubtasksByEpicId(epicId)) {
             switch (subtask.getStatus()) {
                 case NEW:
                     isNew = true;
                     break;
                 case IN_PROGRESS:
-                    epics.get(epicId).setStatus(Status.IN_PROGRESS);
                     isInProgress = true;
                     break;
                 case DONE:
                     isDone = true;
+                    break;
             }
         }
-        if (isNew && !isInProgress && !isDone) {
+        if (isDone && !isNew && !isInProgress) {
+            epics.get(epicId).setStatus(Status.DONE);
+        } else if (isInProgress || (isNew && isDone)) {
+            epics.get(epicId).setStatus(Status.IN_PROGRESS);
+        } else {
             epics.get(epicId).setStatus(Status.NEW);
         }
-        if (isNew && !isInProgress && isDone) {
-            epics.get(epicId).setStatus(Status.IN_PROGRESS);
-        }
-        if (!isNew && !isInProgress && isDone) {
-            epics.get(epicId).setStatus(Status.DONE);
-        }
     }
-
 
     @Override
     public String toString() {
