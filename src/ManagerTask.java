@@ -52,11 +52,6 @@ public class ManagerTask {
 
     // Удаление все Tasks
     public void deleteAllTasks() {
-        // Удаляем task
-        for (Task task : getAllTasks()) {
-            deleteTask(task.getId());
-        }
-        // Удаляем остальные task (Не влияют на статус)
         tasks.clear();
     }
     //endregion

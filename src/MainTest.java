@@ -1,6 +1,4 @@
-import model.Epic;
 import model.Status;
-import model.Subtask;
 import model.Task;
 
 public class MainTest {
@@ -8,8 +6,8 @@ public class MainTest {
         ManagerTask managerTask = new ManagerTask();
 
         Task task1 = new Task("Задача 1");
-        Task task2 = new Task("Задача 2");
-        Task task3 = new Task("Задача 3");
+        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        Task task3 = new Task("Задача 3", "Описание задачи 3");
         Task task4 = new Task("Задача 4");
         managerTask.addTask(task1);
         managerTask.addTask(task2);
@@ -22,16 +20,16 @@ public class MainTest {
 //        Subtask subtask2 = new Subtask("Подзадача 2");
 //        managerTask.addSubtask(subtask2);
 
-        Epic epic1 = new Epic("Эпик 1");
-        managerTask.addEpic(epic1);
+//        Epic epic1 = new Epic("Эпик 1");
+//        managerTask.addEpic(epic1);
 //        managerTask.addSubtaskToSEpic(epic1, subtask1);
 //        managerTask.addSubtaskToSEpic(epic1, subtask2);
 
-        Epic epic2 = new Epic("Эпик 2");
-        managerTask.addEpic(epic2);
+//        Epic epic2 = new Epic("Эпик 2");
+//        managerTask.addEpic(epic2);
 
         Task update1 = managerTask.getTaskById(1);
-        update1.setStatus(Status.NEW);
+        update1.setStatus(Status.IN_PROGRESS);
         managerTask.updateTask(update1);
 
         Task update2 = managerTask.getTaskById(2);
@@ -47,7 +45,7 @@ public class MainTest {
         managerTask.updateTask(update4);
 
         // Здесь указывать команды для тестирования
-        // managerTask.deleteSubtask(2);
+
 
         System.out.println("\nTASK");
         System.out.println(managerTask.getAllTasks());

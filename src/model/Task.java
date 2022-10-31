@@ -21,7 +21,7 @@ public class Task extends Base {
         return "\nTask{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", descriptions=" + descriptions +
+                ", descriptions='" + descriptions + '\'' +
                 ", status=" + status +
                 '}';
     }
