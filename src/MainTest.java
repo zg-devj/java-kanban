@@ -18,13 +18,9 @@ public class MainTest {
 
         Subtask subtask1 = new Subtask("Подзадача 1");
         managerTask.addSubtask(subtask1);
-        managerTask.addTaskToSubtask(subtask1, task1);
-        managerTask.addTaskToSubtask(subtask1, task2);
 
         Subtask subtask2 = new Subtask("Подзадача 2");
         managerTask.addSubtask(subtask2);
-        managerTask.addTaskToSubtask(subtask2, task3);
-        managerTask.addTaskToSubtask(subtask2, task4);
 
         Epic epic1 = new Epic("Эпик 1");
         managerTask.addEpic(epic1);

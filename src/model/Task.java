@@ -6,6 +6,12 @@ import util.Identifier;
 public class Task extends Base {
     private static final Identifier IDENTIFIER = new Identifier();
 
+    public Task(String title, String descriptions) {
+        super(title, descriptions);
+        setId(IDENTIFIER.next());
+        setStatus(Status.NEW);
+    }
+
     public Task(String title) {
         super(title);
         setId(IDENTIFIER.next());

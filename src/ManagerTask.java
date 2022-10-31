@@ -47,37 +47,21 @@ public class ManagerTask {
     // Обновление Task
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
-        // Если Task в Subtask
-        if (task.getParentId() > 0) {
-            updateSubtaskStatus(task.getParentId());
-        }
     }
 
     // Удаление Task
     public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
-            int parentId = getTaskById(id).getParentId();
-            if (parentId > 0) {
-                // если Task находится в Subtask, то отвязываем
-                getSubtaskById(parentId).getTaskIds().remove(id);
-            }
-            // Удаляем Subtask
+            // Удаляем Task
             tasks.remove(id);
-            // Обновляем статус
-            if (parentId > 0) {
-                updateSubtaskStatus(parentId);
-            }
         }
     }
 
     // Удаление все Tasks
     public void deleteAllTasks() {
-        // Удаляем task и зависимости в subtask
+        // Удаляем task
         for (Task task : getAllTasks()) {
             deleteTask(task.getId());
-            if (task.getParentId() != 0) {
-                updateSubtaskStatus(task.getParentId());
-            }
         }
         // Удаляем остальные task (Не влияют на статус)
         tasks.clear();
@@ -112,13 +96,6 @@ public class ManagerTask {
         subtasks.putIfAbsent(subtask.getId(), subtask);
     }
 
-    // Добавляем задачу к подзадаче
-    public void addTaskToSubtask(Subtask subtask, Task task) {
-        if (subtasks.containsKey(subtask.getId()) && tasks.containsKey(task.getId())) {
-            subtask.add(task);
-        }
-    }
-
     // Обновление Subtask
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
@@ -127,10 +104,6 @@ public class ManagerTask {
     // Удаление Subtask
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
-            // Удаляем Task для Subtask
-            for (Integer taskId : subtasks.get(id).getTaskIds()) {
-                tasks.remove(taskId);
-            }
             int parentId = getSubtaskById(id).getParentId();
             if (parentId > 0) {
                 // если Subtask находится в Epic, то отвязываем

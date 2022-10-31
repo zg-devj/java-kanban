@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 public abstract class Base {
     // Идентификатор
     protected int id;
@@ -14,10 +12,15 @@ public abstract class Base {
     // Статус задачи
     protected Status status;
 
-    public Base(String title) {
+    public Base(String title, String descriptions) {
         this.title = title;
-        this.descriptions = null;
-        this.parentId=0;
+        this.descriptions = descriptions;
+        this.parentId = 0;
+    }
+
+    public Base(String title) {
+        this(title, null);
+        this.parentId = 0;
     }
 
     public String getDescriptions() {
