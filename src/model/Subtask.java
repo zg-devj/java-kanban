@@ -1,6 +1,5 @@
 package model;
 
-import util.Identifier;
 // Мне кажется или Subtask и Task это один и та-же сущность, если
 // вынести parentId в Base, то
 // parentId = 0 -> Task
@@ -9,12 +8,10 @@ import util.Identifier;
 
 // Подзадача
 public class Subtask extends Base {
-    private static final Identifier IDENTIFIER = new Identifier();
     private int epicId;
 
     public Subtask(String title, int epicId, String descriptions) {
         super(title, descriptions);
-        setId(IDENTIFIER.next());
         setStatus(Status.NEW);
         this.epicId = epicId;
     }
@@ -33,7 +30,7 @@ public class Subtask extends Base {
 
     @Override
     public String toString() {
-        return "\nSubtask{" +
+        return "Subtask{" +
                 "id=" + id +
                 ", epicId=" + epicId +
                 ", title='" + title + '\'' +

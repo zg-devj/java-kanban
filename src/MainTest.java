@@ -57,9 +57,7 @@ public class MainTest {
 //        managerTask.updateSubtask(subtask3);
 
         // Здесь указывать команды для тестирования
-        // managerTask.deleteSubtask(1);
-        // managerTask.deleteAllSubtasks();
-        //managerTask.deleteEpic(2);
+
 
         System.out.println("\nTASK");
         System.out.println(managerTask.getAllTasks());

@@ -23,7 +23,6 @@ public abstract class Base {
         return descriptions;
     }
 
-    // Устанавливаем описание
     public void setDescriptions(String descriptions) {
         this.descriptions = descriptions;
     }
@@ -32,7 +31,7 @@ public abstract class Base {
         return id;
     }
 
-    protected void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

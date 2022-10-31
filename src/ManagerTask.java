@@ -2,10 +2,10 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+import util.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,13 +13,19 @@ public class ManagerTask {
     // Идентификаторы для Task
 
     public HashMap<Integer, Task> tasks;
+    Identifier taskIdentifier;
     public HashMap<Integer, Subtask> subtasks;
+    Identifier subtaskIdentifier;
     public HashMap<Integer, Epic> epics;
+    Identifier epicIdentifier;
 
     public ManagerTask() {
         this.tasks = new HashMap<>();
+        this.taskIdentifier = new Identifier();
         this.subtasks = new HashMap<>();
+        this.subtaskIdentifier = new Identifier();
         this.epics = new HashMap<>();
+        this.epicIdentifier = new Identifier();
     }
 
     //region Task методы
@@ -35,6 +41,7 @@ public class ManagerTask {
 
     // Cоздание Task
     public void addTask(Task task) {
+        task.setId(taskIdentifier.next());
         tasks.putIfAbsent(task.getId(), task);
     }
 
@@ -72,9 +79,6 @@ public class ManagerTask {
 
     // Возвращаем вписок Subtasks по id эпика
     public List<Subtask> getSubtasksByEpicId(int epicId) {
-        // TODO: 31.10.2022 Другой вариант, получить эпик по id взять его сабтаски, и получить
-        //  уже по этим id сабтаски, скорость выполнения возрастет за счет отсутствия
-        //  необходимости просматривать все сабтаски
         return subtasks.values()
                 .stream()
                 .filter(s -> s.getEpicId() == epicId)
@@ -127,16 +131,18 @@ public class ManagerTask {
 
     // Cоздание Epic
     public void addEpic(Epic epic) {
+        epic.setId(epicIdentifier.next());
         epics.putIfAbsent(epic.getId(), epic);
     }
 
     // Создаем Subtask и добавляем его к эпику
     // Ваше замечание ... не должно быть возможности создать сабтаск без эпика
-    // addSubtask был приватным и использовался только в этом методе
+    // addSubtask был приватным и использовался только в этом методе (удалил метод)
     public void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription) {
         if (epics.containsKey(epicId)) {
             // Создаем Subtask
             Subtask subtask = new Subtask(subtaskTitle, epicId, subtaskDescription);
+            subtask.setId(subtaskIdentifier.next());
             if (!subtasks.containsKey(subtask.getId())) {
                 subtasks.put(subtask.getId(), subtask);
                 // Привязываем к epic
@@ -209,14 +215,5 @@ public class ManagerTask {
         } else {
             epics.get(epicId).setStatus(Status.NEW);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ManagerTask{" +
-                "tasks=" + tasks +
-                ", subtasks=" + subtasks +
-                ", epics=" + epics +
-                '}';
     }
 }
