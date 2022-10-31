@@ -79,6 +79,7 @@ public class ManagerTask {
                 .collect(Collectors.toList());
     }
 
+    // TODO: 31.10.2022 ??? 
     // Cоздание Subtask
     public void addSubtask(Subtask subtask) {
         subtasks.putIfAbsent(subtask.getId(), subtask);
@@ -93,15 +94,14 @@ public class ManagerTask {
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
             int parentId = getSubtaskById(id).getEpicId();
-            if (parentId > 0) {
-                // если Subtask находится в Epic, то отвязываем
-                getEpicById(parentId).getSubtaskIds().remove(id);
-            }
+            // Отвязываем Subtask от Epic
+            getEpicById(parentId).getSubtaskIds().remove(id);
             // Удаляем Subtask
             subtasks.remove(id);
-            if (parentId > 0) {
-                updateEpicStatus(parentId);
-            }
+            // TODO: 31.10.2022  ???
+//            if (parentId > 0) {
+//                updateEpicStatus(parentId);
+//            }
         }
     }
 
