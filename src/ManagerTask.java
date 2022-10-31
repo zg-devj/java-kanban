@@ -32,13 +32,6 @@ public class ManagerTask {
         return new ArrayList<>(tasks.values());
     }
 
-    public List<Task> getTasksBySubtaskId(int subtaskId) {
-        return tasks.values()
-                .stream()
-                .filter(s -> s.getParentId() == subtaskId)
-                .collect(Collectors.toList());
-    }
-
     // Cоздание Task
     public void addTask(Task task) {
         tasks.putIfAbsent(task.getId(), task);
@@ -87,7 +80,7 @@ public class ManagerTask {
     public List<Subtask> getSubtasksByEpicId(int epicId) {
         return subtasks.values()
                 .stream()
-                .filter(s -> s.getParentId() == epicId)
+                .filter(s -> s.getEpicId() == epicId)
                 .collect(Collectors.toList());
     }
 
@@ -104,7 +97,7 @@ public class ManagerTask {
     // Удаление Subtask
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
-            int parentId = getSubtaskById(id).getParentId();
+            int parentId = getSubtaskById(id).getEpicId();
             if (parentId > 0) {
                 // если Subtask находится в Epic, то отвязываем
                 getEpicById(parentId).getSubtaskIds().remove(id);
@@ -121,9 +114,9 @@ public class ManagerTask {
     public void deleteAllSubtasks() {
         for (Subtask subtask : getAllSubtasks()) {
             deleteSubtask(subtask.getId());
-            if (subtask.getParentId() != 0) {
-                updateEpicStatus(subtask.getParentId());
-            }
+//            if (subtask.getParentId() != 0) {
+//                updateEpicStatus(subtask.getParentId());
+//            }
         }
     }
     //endregion
@@ -183,36 +176,36 @@ public class ManagerTask {
 
     // Обновление статуса Subtask
     private void updateSubtaskStatus(int subtaskId) {
-        boolean isNew = false;
-        boolean isInProgress = false;
-        boolean isDone = false;
-        int epicId = subtasks.get(subtaskId).getParentId();
-        if (getTasksBySubtaskId(subtaskId).size() == 0) {
-            subtasks.get(subtaskId).setStatus(Status.NEW);
-            updateEpicStatus(epicId);
-            return;
-        }
-        // Проверяю все таски данного сабтаска
-        for (Task task : getTasksBySubtaskId(subtaskId)) {
-            switch (task.getStatus()) {
-                case NEW:
-                    isNew = true;
-                    break;
-                case IN_PROGRESS:
-                    isInProgress = true;
-                    break;
-                case DONE:
-                    isDone = true;
-            }
-        }
-        if (isDone && !isNew && !isInProgress) {
-            subtasks.get(subtaskId).setStatus(Status.DONE);
-        } else if (isInProgress || (isNew && isDone)) {
-            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
-        } else {
-            subtasks.get(subtaskId).setStatus(Status.NEW);
-        }
-        updateEpicStatus(epicId);
+//        boolean isNew = false;
+//        boolean isInProgress = false;
+//        boolean isDone = false;
+//        int epicId = subtasks.get(subtaskId).getEpicId();
+//        if (getTasksBySubtaskId(subtaskId).size() == 0) {
+//            subtasks.get(subtaskId).setStatus(Status.NEW);
+//            updateEpicStatus(epicId);
+//            return;
+//        }
+//        // Проверяю все таски данного сабтаска
+//        for (Task task : getTasksBySubtaskId(subtaskId)) {
+//            switch (task.getStatus()) {
+//                case NEW:
+//                    isNew = true;
+//                    break;
+//                case IN_PROGRESS:
+//                    isInProgress = true;
+//                    break;
+//                case DONE:
+//                    isDone = true;
+//            }
+//        }
+//        if (isDone && !isNew && !isInProgress) {
+//            subtasks.get(subtaskId).setStatus(Status.DONE);
+//        } else if (isInProgress || (isNew && isDone)) {
+//            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
+//        } else {
+//            subtasks.get(subtaskId).setStatus(Status.NEW);
+//        }
+//        updateEpicStatus(epicId);
     }
 
     // Обновление статуса Epic

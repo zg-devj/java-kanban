@@ -16,16 +16,16 @@ public class MainTest {
         managerTask.addTask(task3);
         managerTask.addTask(task4);
 
-        Subtask subtask1 = new Subtask("Подзадача 1");
-        managerTask.addSubtask(subtask1);
-
-        Subtask subtask2 = new Subtask("Подзадача 2");
-        managerTask.addSubtask(subtask2);
+//        Subtask subtask1 = new Subtask("Подзадача 1");
+//        managerTask.addSubtask(subtask1);
+//
+//        Subtask subtask2 = new Subtask("Подзадача 2");
+//        managerTask.addSubtask(subtask2);
 
         Epic epic1 = new Epic("Эпик 1");
         managerTask.addEpic(epic1);
-        managerTask.addSubtaskToSEpic(epic1, subtask1);
-        managerTask.addSubtaskToSEpic(epic1, subtask2);
+//        managerTask.addSubtaskToSEpic(epic1, subtask1);
+//        managerTask.addSubtaskToSEpic(epic1, subtask2);
 
         Epic epic2 = new Epic("Эпик 2");
         managerTask.addEpic(epic2);

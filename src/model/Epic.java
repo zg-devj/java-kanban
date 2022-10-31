@@ -23,7 +23,7 @@ public class Epic extends Base {
     public void add(Subtask subtask) {
         if(!subtaskIds.contains(subtask.getId())) {
             // Устанавливаем у Подзадачи Id родителя
-            subtask.setParentId(getId());
+            subtask.setEpicId(getId());
             // добавляем подзадачу к эпику
             subtaskIds.add(subtask.getId());
         }

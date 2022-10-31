@@ -3,8 +3,6 @@ package model;
 public abstract class Base {
     // Идентификатор
     protected int id;
-    // Id родителя
-    private int parentId;
     // Заголовок
     protected String title;
     // Описание
@@ -15,12 +13,10 @@ public abstract class Base {
     public Base(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
-        this.parentId = 0;
     }
 
     public Base(String title) {
         this(title, null);
-        this.parentId = 0;
     }
 
     public String getDescriptions() {
@@ -38,14 +34,6 @@ public abstract class Base {
 
     protected void setId(int id) {
         this.id = id;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
     }
 
     public void setStatus(Status status) {

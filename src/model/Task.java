@@ -13,16 +13,13 @@ public class Task extends Base {
     }
 
     public Task(String title) {
-        super(title);
-        setId(IDENTIFIER.next());
-        setStatus(Status.NEW);
+        this(title, null);
     }
 
     @Override
     public String toString() {
         return "\nTask{" +
                 "id=" + id +
-                ", parentId=" + getParentId() +
                 ", title='" + title + '\'' +
                 ", descriptions=" + descriptions +
                 ", status=" + status +
