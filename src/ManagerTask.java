@@ -79,29 +79,27 @@ public class ManagerTask {
                 .collect(Collectors.toList());
     }
 
-    // TODO: 31.10.2022 ??? 
     // Cоздание Subtask
-    public void addSubtask(Subtask subtask) {
+    private void addSubtask(Subtask subtask) {
         subtasks.putIfAbsent(subtask.getId(), subtask);
     }
 
     // Обновление Subtask
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
+        updateEpicStatus(subtask.getEpicId());
     }
 
     // Удаление Subtask
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
-            int parentId = getSubtaskById(id).getEpicId();
+            int epicId = getSubtaskById(id).getEpicId();
             // Отвязываем Subtask от Epic
-            getEpicById(parentId).getSubtaskIds().remove(id);
+            getEpicById(epicId).getSubtaskIds().remove(id);
             // Удаляем Subtask
             subtasks.remove(id);
-            // TODO: 31.10.2022  ???
-//            if (parentId > 0) {
-//                updateEpicStatus(parentId);
-//            }
+            // Обновляем статус у Epic
+            updateEpicStatus(epicId);
         }
     }
 
@@ -137,10 +135,18 @@ public class ManagerTask {
     }
 
     // Добавляем подзадачу к эпику
-    public void addSubtaskToSEpic(Epic epic, Subtask subtask) {
-        if (epics.containsKey(epic.getId()) && subtasks.containsKey(subtask.getId())) {
+    public void addSubtaskToEpic(Epic epic, String subtaskTitle, String subtaskDescription) {
+        if (epics.containsKey(epic.getId())) {
+            // Создаем Subtask
+            Subtask subtask = new Subtask(subtaskTitle, epic.getId(), subtaskDescription);
+            addSubtask(subtask);
+            // Привязываем к epic
             epic.add(subtask);
         }
+    }
+
+    public void addSubtaskToEpic(Epic epic, String subtaskTitle) {
+        addSubtaskToEpic(epic, subtaskTitle, null);
     }
 
     // Обновление Epic
@@ -168,40 +174,6 @@ public class ManagerTask {
         }
     }
     //endregion
-
-    // Обновление статуса Subtask
-    private void updateSubtaskStatus(int subtaskId) {
-//        boolean isNew = false;
-//        boolean isInProgress = false;
-//        boolean isDone = false;
-//        int epicId = subtasks.get(subtaskId).getEpicId();
-//        if (getTasksBySubtaskId(subtaskId).size() == 0) {
-//            subtasks.get(subtaskId).setStatus(Status.NEW);
-//            updateEpicStatus(epicId);
-//            return;
-//        }
-//        // Проверяю все таски данного сабтаска
-//        for (Task task : getTasksBySubtaskId(subtaskId)) {
-//            switch (task.getStatus()) {
-//                case NEW:
-//                    isNew = true;
-//                    break;
-//                case IN_PROGRESS:
-//                    isInProgress = true;
-//                    break;
-//                case DONE:
-//                    isDone = true;
-//            }
-//        }
-//        if (isDone && !isNew && !isInProgress) {
-//            subtasks.get(subtaskId).setStatus(Status.DONE);
-//        } else if (isInProgress || (isNew && isDone)) {
-//            subtasks.get(subtaskId).setStatus(Status.IN_PROGRESS);
-//        } else {
-//            subtasks.get(subtaskId).setStatus(Status.NEW);
-//        }
-//        updateEpicStatus(epicId);
-    }
 
     // Обновление статуса Epic
     private void updateEpicStatus(int epicId) {
@@ -239,6 +211,7 @@ public class ManagerTask {
         return "ManagerTask{" +
                 "tasks=" + tasks +
                 ", subtasks=" + subtasks +
+                ", epics=" + epics +
                 '}';
     }
 }

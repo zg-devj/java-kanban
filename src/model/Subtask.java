@@ -1,6 +1,11 @@
 package model;
 
 import util.Identifier;
+// Мне кажется или Subtask и Task это один и та-же сущность, если
+// вынести parentId в Base, то
+// parentId = 0 -> Task
+// parentId = epicId -> Subtask
+// не нарушает ли разделение этих сущностей принципам DRY
 
 // Подзадача
 public class Subtask extends Base {

@@ -31,7 +31,7 @@ public class Epic extends Base {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "\nEpic{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", subtaskIds=" + subtaskIds +

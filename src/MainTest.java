@@ -1,4 +1,6 @@
+import model.Epic;
 import model.Status;
+import model.Subtask;
 import model.Task;
 
 public class MainTest {
@@ -14,19 +16,15 @@ public class MainTest {
         managerTask.addTask(task3);
         managerTask.addTask(task4);
 
-//        Subtask subtask1 = new Subtask("Подзадача 1");
-//        managerTask.addSubtask(subtask1);
-//
-//        Subtask subtask2 = new Subtask("Подзадача 2");
-//        managerTask.addSubtask(subtask2);
 
-//        Epic epic1 = new Epic("Эпик 1");
-//        managerTask.addEpic(epic1);
-//        managerTask.addSubtaskToSEpic(epic1, subtask1);
-//        managerTask.addSubtaskToSEpic(epic1, subtask2);
+        Epic epic1 = new Epic("Эпик 1");
+        managerTask.addEpic(epic1);
+        managerTask.addSubtaskToEpic(epic1, "Подзадача 1");
+        managerTask.addSubtaskToEpic(epic1, "Подзадача 2", "Описание подзадачи");
+        managerTask.addSubtaskToEpic(epic1, "Подзадача 3");
 
-//        Epic epic2 = new Epic("Эпик 2");
-//        managerTask.addEpic(epic2);
+        Epic epic2 = new Epic("Эпик 2");
+        managerTask.addEpic(epic2);
 
         Task update1 = managerTask.getTaskById(1);
         update1.setStatus(Status.IN_PROGRESS);
@@ -44,7 +42,23 @@ public class MainTest {
         update4.setStatus(Status.DONE);
         managerTask.updateTask(update4);
 
+        // -------------------------------------
+
+        Subtask subtask1 = managerTask.getSubtaskById(1);
+        subtask1.setStatus(Status.IN_PROGRESS);
+        managerTask.updateSubtask(subtask1);
+
+        Subtask subtask2 = managerTask.getSubtaskById(2);
+        subtask2.setStatus(Status.DONE);
+        managerTask.updateSubtask(subtask2);
+
+        Subtask subtask3 = managerTask.getSubtaskById(3);
+        subtask3.setStatus(Status.DONE);
+        managerTask.updateSubtask(subtask3);
+
         // Здесь указывать команды для тестирования
+        //managerTask.deleteSubtask(1);
+        //managerTask.deleteAllSubtasks();
 
 
         System.out.println("\nTASK");
