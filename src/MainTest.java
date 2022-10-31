@@ -19,9 +19,9 @@ public class MainTest {
 
         Epic epic1 = new Epic("Эпик 1");
         managerTask.addEpic(epic1);
-        managerTask.addSubtaskToEpic(epic1, "Подзадача 1");
-        managerTask.addSubtaskToEpic(epic1, "Подзадача 2", "Описание подзадачи");
-        managerTask.addSubtaskToEpic(epic1, "Подзадача 3");
+        managerTask.addSubtaskToEpic(1, "Подзадача 1", null);
+        managerTask.addSubtaskToEpic(1, "Подзадача 2", "Описание подзадачи");
+        managerTask.addSubtaskToEpic(1, "Подзадача 3", null);
 
         Epic epic2 = new Epic("Эпик 2");
         managerTask.addEpic(epic2);
@@ -44,22 +44,22 @@ public class MainTest {
 
         // -------------------------------------
 
-        Subtask subtask1 = managerTask.getSubtaskById(1);
-        subtask1.setStatus(Status.IN_PROGRESS);
-        managerTask.updateSubtask(subtask1);
-
-        Subtask subtask2 = managerTask.getSubtaskById(2);
-        subtask2.setStatus(Status.DONE);
-        managerTask.updateSubtask(subtask2);
-
-        Subtask subtask3 = managerTask.getSubtaskById(3);
-        subtask3.setStatus(Status.DONE);
-        managerTask.updateSubtask(subtask3);
+//        Subtask subtask1 = managerTask.getSubtaskById(1);
+//        subtask1.setStatus(Status.IN_PROGRESS);
+//        managerTask.updateSubtask(subtask1);
+//
+//        Subtask subtask2 = managerTask.getSubtaskById(2);
+//        subtask2.setStatus(Status.DONE);
+//        managerTask.updateSubtask(subtask2);
+//
+//        Subtask subtask3 = managerTask.getSubtaskById(3);
+//        subtask3.setStatus(Status.DONE);
+//        managerTask.updateSubtask(subtask3);
 
         // Здесь указывать команды для тестирования
-        //managerTask.deleteSubtask(1);
-        //managerTask.deleteAllSubtasks();
-
+        // managerTask.deleteSubtask(1);
+        // managerTask.deleteAllSubtasks();
+        //managerTask.deleteEpic(2);
 
         System.out.println("\nTASK");
         System.out.println(managerTask.getAllTasks());

@@ -5,6 +5,7 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,9 @@ public class ManagerTask {
 
     // Обновление Task
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        }
     }
 
     // Удаление Task
@@ -59,11 +62,7 @@ public class ManagerTask {
     //region Subtask методы
     // Получение Subtask по идентификатору.
     public Subtask getSubtaskById(int id) {
-        if (subtasks.containsKey(id)) {
-            return subtasks.get(id);
-        } else {
-            return null;
-        }
+        return subtasks.get(id);
     }
 
     // Получение всех записей Subtask-ов
@@ -73,28 +72,29 @@ public class ManagerTask {
 
     // Возвращаем вписок Subtasks по id эпика
     public List<Subtask> getSubtasksByEpicId(int epicId) {
+        // TODO: 31.10.2022 Другой вариант, получить эпик по id взять его сабтаски, и получить
+        //  уже по этим id сабтаски, скорость выполнения возрастет за счет отсутствия
+        //  необходимости просматривать все сабтаски
         return subtasks.values()
                 .stream()
                 .filter(s -> s.getEpicId() == epicId)
                 .collect(Collectors.toList());
     }
 
-    // Cоздание Subtask
-    private void addSubtask(Subtask subtask) {
-        subtasks.putIfAbsent(subtask.getId(), subtask);
-    }
-
     // Обновление Subtask
     public void updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        updateEpicStatus(subtask.getEpicId());
+        if (epics.containsKey(subtask.getEpicId())) {
+            subtasks.put(subtask.getId(), subtask);
+            // Обновляем статус
+            updateEpicStatus(subtask.getEpicId());
+        }
     }
 
     // Удаление Subtask
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
             int epicId = getSubtaskById(id).getEpicId();
-            // Отвязываем Subtask от Epic
+            // Отвязываем Subtask от Epic (удалить id сабтасков из списка в эпике)
             getEpicById(epicId).getSubtaskIds().remove(id);
             // Удаляем Subtask
             subtasks.remove(id);
@@ -106,10 +106,10 @@ public class ManagerTask {
     // Удалить все Subtask
     public void deleteAllSubtasks() {
         for (Subtask subtask : getAllSubtasks()) {
+            // удалить id сабтасков из списка в эпике
             deleteSubtask(subtask.getId());
-//            if (subtask.getParentId() != 0) {
-//                updateEpicStatus(subtask.getParentId());
-//            }
+            // Обновляем статус
+            updateEpicStatus(subtask.getEpicId());
         }
     }
     //endregion
@@ -117,11 +117,7 @@ public class ManagerTask {
     //region Epic методы
     // Получение Epic по идентификатору.
     public Epic getEpicById(int id) {
-        if (epics.containsKey(id)) {
-            return epics.get(id);
-        } else {
-            return null;
-        }
+        return epics.get(id);
     }
 
     // Получение всех записей Epic-ов
@@ -134,32 +130,40 @@ public class ManagerTask {
         epics.putIfAbsent(epic.getId(), epic);
     }
 
-    // Добавляем подзадачу к эпику
-    public void addSubtaskToEpic(Epic epic, String subtaskTitle, String subtaskDescription) {
-        if (epics.containsKey(epic.getId())) {
+    // Создаем Subtask и добавляем его к эпику
+    // Ваше замечание ... не должно быть возможности создать сабтаск без эпика
+    // addSubtask был приватным и использовался только в этом методе
+    public void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription) {
+        if (epics.containsKey(epicId)) {
             // Создаем Subtask
-            Subtask subtask = new Subtask(subtaskTitle, epic.getId(), subtaskDescription);
-            addSubtask(subtask);
-            // Привязываем к epic
-            epic.add(subtask);
+            Subtask subtask = new Subtask(subtaskTitle, epicId, subtaskDescription);
+            if (!subtasks.containsKey(subtask.getId())) {
+                subtasks.put(subtask.getId(), subtask);
+                // Привязываем к epic
+                epics.get(epicId).add(subtask);
+                // Обновляем статус
+                updateEpicStatus(epicId);
+            }
         }
-    }
-
-    public void addSubtaskToEpic(Epic epic, String subtaskTitle) {
-        addSubtaskToEpic(epic, subtaskTitle, null);
     }
 
     // Обновление Epic
     public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
+        if (epics.containsKey(epic.getId())) {
+            epics.put(epic.getId(), epic);
+        }
     }
 
     // Удаление Epic
     public void deleteEpic(int id) {
         if (epics.containsKey(id)) {
             // Удаляем Subtask для Epic
+            // getSubtaskIds() возвращает HeshSet что при удалении
+            // в методе deleteSubtask вызывает ошибку
+            // Статья о проблеме https://www.techiedelight.com/remove-elements-from-set-java/
             Integer[] list = epics.get(id).getSubtaskIds().toArray(new Integer[0]);
             for (Integer delId : list) {
+                // Удаляем сабтаски
                 deleteSubtask(delId);
             }
             // Удаляем Epic
@@ -170,6 +174,7 @@ public class ManagerTask {
     // Удалить все Epic
     public void deleteAllEpics() {
         for (Epic epic : getAllEpics()) {
+            // метод deleteEpic внутри удаляет epic и его сабтаски
             deleteEpic(epic.getId());
         }
     }
