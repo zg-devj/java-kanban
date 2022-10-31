@@ -8,9 +8,9 @@ public abstract class Base {
     // Id родителя
     private int parentId;
     // Заголовок
-    public String title;
+    protected String title;
     // Описание
-    protected ArrayList<String> descriptions;
+    protected String descriptions;
     // Статус задачи
     protected Status status;
 
@@ -20,8 +20,12 @@ public abstract class Base {
         this.parentId=0;
     }
 
+    public String getDescriptions() {
+        return descriptions;
+    }
+
     // Устанавливаем описание
-    public void setDescriptions(ArrayList<String> descriptions) {
+    public void setDescriptions(String descriptions) {
         this.descriptions = descriptions;
     }
 
@@ -47,5 +51,13 @@ public abstract class Base {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
