@@ -47,6 +47,7 @@ public class ManagerTask {
 
     // Обновление Task
     public void updateTask(Task task) {
+        // task.getId() не может вернуть null, возвращает int
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
         }
@@ -138,18 +139,17 @@ public class ManagerTask {
     // Создаем Subtask и добавляем его к эпику
     // Ваше замечание ... не должно быть возможности создать сабтаск без эпика
     // addSubtask был приватным и использовался только в этом методе (удалил метод)
+    // Во время добавления сабтаска к эпику, сабтаск не имеет id эпика
     public void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription) {
         if (epics.containsKey(epicId)) {
             // Создаем Subtask
             Subtask subtask = new Subtask(subtaskTitle, epicId, subtaskDescription);
             subtask.setId(subtaskIdentifier.next());
-            if (!subtasks.containsKey(subtask.getId())) {
-                subtasks.put(subtask.getId(), subtask);
-                // Привязываем к epic
-                epics.get(epicId).add(subtask);
-                // Обновляем статус
-                updateEpicStatus(epicId);
-            }
+            subtasks.put(subtask.getId(), subtask);
+            // Привязываем к epic
+            epics.get(epicId).add(subtask);
+            // Обновляем статус
+            updateEpicStatus(epicId);
         }
     }
 
