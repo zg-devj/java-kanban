@@ -6,10 +6,14 @@ import java.util.HashSet;
 public class Epic extends Base {
     private HashSet<Integer> subtaskIds;
 
-    public Epic(String title) {
-        super(title);
-        setStatus(Status.NEW);
+    public Epic(String title, String description) {
+        super(title, description);
         subtaskIds = new HashSet<>();
+        setStatus(Status.NEW);
+    }
+
+    public Epic(String title) {
+        this(title, null);
     }
 
     public HashSet<Integer> getSubtaskIds() {

@@ -10,14 +10,14 @@ package model;
 public class Subtask extends Base {
     private int epicId;
 
-    public Subtask(String title, int epicId, String descriptions) {
+    public Subtask(int epicId, String title, String descriptions) {
         super(title, descriptions);
-        setStatus(Status.NEW);
         this.epicId = epicId;
+        setStatus(Status.NEW);
     }
 
-    public Subtask(String title, int epicId) {
-        this(title, epicId, null);
+    public Subtask(int epicId, String title) {
+        this(epicId, title, null);
     }
 
     public int getEpicId() {

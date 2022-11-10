@@ -19,14 +19,6 @@ public abstract class Base {
         this(title, null);
     }
 
-    public String getDescriptions() {
-        return descriptions;
-    }
-
-    public void setDescriptions(String descriptions) {
-        this.descriptions = descriptions;
-    }
-
     public int getId() {
         return id;
     }
@@ -35,12 +27,12 @@ public abstract class Base {
         this.id = id;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public Status getStatus() {
         return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String getTitle() {
@@ -49,5 +41,13 @@ public abstract class Base {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescriptions() {
+        return descriptions;
+    }
+
+    public void setDescriptions(String descriptions) {
+        this.descriptions = descriptions;
     }
 }
