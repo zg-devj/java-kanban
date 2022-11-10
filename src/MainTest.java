@@ -26,19 +26,19 @@ public class MainTest {
         Epic epic2 = new Epic("Эпик 2");
         managerTask.addEpic(epic2);
 
-        Task update1 = managerTask.getTaskById(1);
+        Task update1 = managerTask.getTask(1);
         update1.setStatus(Status.IN_PROGRESS);
         managerTask.updateTask(update1);
 
-        Task update2 = managerTask.getTaskById(2);
+        Task update2 = managerTask.getTask(2);
         update2.setStatus(Status.NEW);
         managerTask.updateTask(update2);
 
-        Task update3 = managerTask.getTaskById(3);
+        Task update3 = managerTask.getTask(3);
         update3.setStatus(Status.DONE);
         managerTask.updateTask(update3);
 
-        Task update4 = managerTask.getTaskById(4);
+        Task update4 = managerTask.getTask(4);
         update4.setStatus(Status.DONE);
         managerTask.updateTask(update4);
 

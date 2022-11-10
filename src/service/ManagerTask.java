@@ -32,7 +32,7 @@ public class ManagerTask {
 
     //region Task методы
     // Получение Task по идентификатору.
-    public Task getTaskById(int id) {
+    public Task getTask(int id) {
         return tasks.get(id);
     }
 
@@ -71,7 +71,7 @@ public class ManagerTask {
 
     //region Subtask методы
     // Получение Subtask по идентификатору.
-    public Subtask getSubtaskById(int id) {
+    public Subtask getSubtask(int id) {
         return subtasks.get(id);
     }
 
@@ -100,9 +100,9 @@ public class ManagerTask {
     // Удаление Subtask
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
-            int epicId = getSubtaskById(id).getEpicId();
+            int epicId = getSubtask(id).getEpicId();
             // Отвязываем Subtask от Epic (удалить id сабтасков из списка в эпике)
-            getEpicById(epicId).getSubtaskIds().remove(id);
+            getEpic(epicId).getSubtaskIds().remove(id);
             // Удаляем Subtask
             subtasks.remove(id);
             // Обновляем статус у Epic
@@ -123,7 +123,7 @@ public class ManagerTask {
 
     //region Epic методы
     // Получение Epic по идентификатору.
-    public Epic getEpicById(int id) {
+    public Epic getEpic(int id) {
         return epics.get(id);
     }
 
