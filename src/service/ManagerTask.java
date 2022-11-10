@@ -12,22 +12,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ManagerTask {
-    // Идентификаторы для Task
+    // Идентификаторы для Task, Subtask, Epic
+    private Identifier idGen;
 
     public HashMap<Integer, Task> tasks;
-    Identifier taskIdentifier;
     public HashMap<Integer, Subtask> subtasks;
-    Identifier subtaskIdentifier;
     public HashMap<Integer, Epic> epics;
-    Identifier epicIdentifier;
 
     public ManagerTask() {
+        this.idGen = new Identifier();
         this.tasks = new HashMap<>();
-        this.taskIdentifier = new Identifier();
         this.subtasks = new HashMap<>();
-        this.subtaskIdentifier = new Identifier();
         this.epics = new HashMap<>();
-        this.epicIdentifier = new Identifier();
     }
 
     //region Task методы
@@ -43,7 +39,7 @@ public class ManagerTask {
 
     // Cоздание Task
     public void addTask(Task task) {
-        task.setId(taskIdentifier.next());
+        task.setId(idGen.next());
         tasks.putIfAbsent(task.getId(), task);
     }
 
@@ -134,7 +130,7 @@ public class ManagerTask {
 
     // Cоздание Epic
     public void addEpic(Epic epic) {
-        epic.setId(epicIdentifier.next());
+        epic.setId(idGen.next());
         epics.putIfAbsent(epic.getId(), epic);
     }
 
@@ -146,7 +142,7 @@ public class ManagerTask {
         if (epics.containsKey(epicId)) {
             // Создаем Subtask
             Subtask subtask = new Subtask(epicId, subtaskTitle, subtaskDescription);
-            subtask.setId(subtaskIdentifier.next());
+            subtask.setId(idGen.next());
             subtasks.put(subtask.getId(), subtask);
             // Привязываем к epic
             epics.get(epicId).add(subtask);
