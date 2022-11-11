@@ -1,5 +1,6 @@
 package service;
 
+import model.Base;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -7,7 +8,7 @@ import model.Task;
 import java.util.List;
 
 public interface TaskManager {
-    // Task
+    //region Task
     Task getTask(int id);
 
     List<Task> getAllTasks();
@@ -19,8 +20,9 @@ public interface TaskManager {
     void deleteTask(int id);
 
     void deleteAllTasks();
+    //endregion
 
-    // Subtask
+    //region Subtask
     Subtask getSubtask(int id);
 
     List<Subtask> getAllSubtasks();
@@ -32,8 +34,9 @@ public interface TaskManager {
     void deleteSubtask(int id);
 
     void deleteAllSubtasks();
+    //endregion
 
-    // Epic
+    //region Epic
     Epic getEpic(int id);
 
     public List<Epic> getAllEpics();
@@ -47,4 +50,5 @@ public interface TaskManager {
     void deleteEpic(int id);
 
     void deleteAllEpics();
+    //endregion
 }
