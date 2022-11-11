@@ -1,9 +1,6 @@
 package service.impl;
 
-import model.Epic;
-import model.Status;
-import model.Subtask;
-import model.Task;
+import model.*;
 import service.TaskManager;
 import util.Identifier;
 
@@ -20,11 +17,14 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Subtask> subtasks;
     public HashMap<Integer, Epic> epics;
 
+    public List<BaseTask> history;
+
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
+        this.history = new ArrayList<>();
     }
 
     //region Task методы
@@ -34,17 +34,20 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Получение всех записей Task-ов
+    @Override
     public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     // Cоздание Task
+    @Override
     public void addTask(Task task) {
         task.setId(idGen.next());
         tasks.putIfAbsent(task.getId(), task);
     }
 
     // Обновление Task
+    @Override
     public void updateTask(Task task) {
         // task.getId() не может вернуть null, возвращает int
         if (task != null && tasks.containsKey(task.getId())) {
@@ -53,6 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Удаление Task
+    @Override
     public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
             // Удаляем Task
@@ -68,16 +72,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     //region Subtask методы
     // Получение Subtask по идентификатору.
+    @Override
     public Subtask getSubtask(int id) {
         return subtasks.get(id);
     }
 
     // Получение всех записей Subtask-ов
+    @Override
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
     // Возвращаем вписок Subtasks по id эпика
+    @Override
     public List<Subtask> getSubtasksByEpicId(int epicId) {
         return subtasks.values()
                 .stream()
@@ -86,6 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Обновление Subtask
+    @Override
     public void updateSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
             subtasks.put(subtask.getId(), subtask);
@@ -95,6 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Удаление Subtask
+    @Override
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
             int epicId = getSubtask(id).getEpicId();
@@ -108,6 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Удалить все Subtask
+    @Override
     public void deleteAllSubtasks() {
         for (Subtask subtask : getAllSubtasks()) {
             // удалить id сабтасков из списка в эпике
@@ -120,16 +130,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     //region Epic методы
     // Получение Epic по идентификатору.
+    @Override
     public Epic getEpic(int id) {
         return epics.get(id);
     }
 
     // Получение всех записей Epic-ов
+    @Override
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
     // Cоздание Epic
+    @Override
     public void addEpic(Epic epic) {
         epic.setId(idGen.next());
         epics.putIfAbsent(epic.getId(), epic);
@@ -139,6 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Ваше замечание ... не должно быть возможности создать сабтаск без эпика
     // addSubtask был приватным и использовался только в этом методе (удалил метод)
     // Во время добавления сабтаска к эпику, сабтаск не имеет id эпика
+    @Override
     public void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription) {
         if (epics.containsKey(epicId)) {
             // Создаем Subtask
@@ -153,6 +167,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Обновление Epic
+    @Override
     public void updateEpic(Epic epic) {
         if (epic != null && epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
@@ -160,6 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Удаление Epic
+    @Override
     public void deleteEpic(int id) {
         if (epics.containsKey(id)) {
             // Удаляем Subtask для Epic
@@ -177,6 +193,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Удалить все Epic
+    @Override
     public void deleteAllEpics() {
         for (Epic epic : getAllEpics()) {
             // метод deleteEpic внутри удаляет epic и его сабтаски
@@ -214,5 +231,14 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epics.get(epicId).setStatus(Status.NEW);
         }
+    }
+
+    @Override
+    public List<BaseTask> getHistory() {
+        return null;
+    }
+
+    private void addToHistory(int id){
+
     }
 }

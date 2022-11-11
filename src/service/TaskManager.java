@@ -1,5 +1,6 @@
 package service;
 
+import model.BaseTask;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -50,4 +51,6 @@ public interface TaskManager {
 
     void deleteAllEpics();
     //endregion
+
+    List<BaseTask> getHistory();
 }
