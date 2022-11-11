@@ -17,19 +17,24 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Subtask> subtasks;
     public HashMap<Integer, Epic> epics;
 
-    public List<BaseTask> history;
+    //
+    public List<BaseTask> historyList;
 
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
-        this.history = new ArrayList<>();
+        this.historyList = new ArrayList<>();
     }
 
     //region Task методы
     // Получение Task по идентификатору.
     public Task getTask(int id) {
+        Task task = tasks.get(id);
+        if (task != null) {
+            addToHistory(task);
+        }
         return tasks.get(id);
     }
 
@@ -74,7 +79,11 @@ public class InMemoryTaskManager implements TaskManager {
     // Получение Subtask по идентификатору.
     @Override
     public Subtask getSubtask(int id) {
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+        if (subtask != null) {
+            addToHistory(subtask);
+        }
+        return subtask;
     }
 
     // Получение всех записей Subtask-ов
@@ -132,7 +141,11 @@ public class InMemoryTaskManager implements TaskManager {
     // Получение Epic по идентификатору.
     @Override
     public Epic getEpic(int id) {
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            addToHistory(epic);
+        }
+        return epic;
     }
 
     // Получение всех записей Epic-ов
@@ -235,10 +248,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<BaseTask> getHistory() {
-        return null;
+        return historyList;
     }
 
-    private void addToHistory(int id){
-
+    private void addToHistory(BaseTask task) {
+        if (historyList.size() == 10) {
+            historyList.remove(0);
+        }
+        historyList.add(task);
     }
 }
