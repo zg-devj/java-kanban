@@ -1,10 +1,15 @@
 package util;
 
 import service.TaskManager;
-import service.impl.InMemoryTaskManager;
 
 public class Managers<T extends TaskManager> {
+    private T obj;
+
+    public Managers(T obj) {
+        this.obj = obj;
+    }
+
     public T getDefault() {
-        return (T) new InMemoryTaskManager();
+        return obj;
     }
 }
