@@ -1,6 +1,5 @@
 package service;
 
-import model.Base;
 import model.Epic;
 import model.Subtask;
 import model.Task;

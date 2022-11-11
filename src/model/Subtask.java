@@ -7,7 +7,7 @@ package model;
 // не нарушает ли разделение этих сущностей принципам DRY
 
 // Подзадача
-public class Subtask extends Base {
+public class Subtask extends BaseTask {
     private int epicId;
 
     public Subtask(int epicId, String title, String descriptions) {

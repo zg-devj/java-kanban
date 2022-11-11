@@ -3,7 +3,7 @@ package model;
 import java.util.HashSet;
 
 // Эпик
-public class Epic extends Base {
+public class Epic extends BaseTask {
     private HashSet<Integer> subtaskIds;
 
     public Epic(String title, String description) {

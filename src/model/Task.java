@@ -1,7 +1,7 @@
 package model;
 
 // Задача
-public class Task extends Base {
+public class Task extends BaseTask {
 
     public Task(String title, String descriptions) {
         super(title, descriptions);

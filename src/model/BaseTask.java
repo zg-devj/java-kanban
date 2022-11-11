@@ -1,6 +1,6 @@
 package model;
 
-public abstract class Base {
+public abstract class BaseTask {
     // Идентификатор
     protected int id;
     // Заголовок
@@ -10,12 +10,12 @@ public abstract class Base {
     // Статус задачи
     protected Status status;
 
-    public Base(String title, String descriptions) {
+    public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
     }
 
-    public Base(String title) {
+    public BaseTask(String title) {
         this(title, null);
     }
 
