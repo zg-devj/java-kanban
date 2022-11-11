@@ -1,8 +1,10 @@
 package service.impl;
 
 import model.*;
+import service.HistoryManager;
 import service.TaskManager;
 import util.Identifier;
+import util.Managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,19 +15,18 @@ public class InMemoryTaskManager implements TaskManager {
     // Идентификаторы для Task, Subtask, Epic
     private Identifier idGen;
 
+    private HistoryManager historyManager;
+
     public HashMap<Integer, Task> tasks;
     public HashMap<Integer, Subtask> subtasks;
     public HashMap<Integer, Epic> epics;
 
-    //
-    public List<BaseTask> historyList;
-
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
+        this.historyManager = Managers.getDefaultHistory();
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
-        this.historyList = new ArrayList<>();
     }
 
     //region Task методы
@@ -33,7 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTask(int id) {
         Task task = tasks.get(id);
         if (task != null) {
-            addToHistory(task);
+            this.historyManager.add(task);
         }
         return tasks.get(id);
     }
@@ -81,7 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         if (subtask != null) {
-            addToHistory(subtask);
+            this.historyManager.add(subtask);
         }
         return subtask;
     }
@@ -143,7 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpic(int id) {
         Epic epic = epics.get(id);
         if (epic != null) {
-            addToHistory(epic);
+            this.historyManager.add(epic);
         }
         return epic;
     }
@@ -246,15 +247,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+
     @Override
     public List<BaseTask> getHistory() {
-        return historyList;
-    }
-
-    private void addToHistory(BaseTask task) {
-        if (historyList.size() == 10) {
-            historyList.remove(0);
-        }
-        historyList.add(task);
+        return this.historyManager.getHistory();
     }
 }
