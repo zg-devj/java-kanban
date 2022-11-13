@@ -7,7 +7,8 @@ import util.Managers;
 
 public class MainTest {
     public static void main(String[] args) {
-        TaskManager manager = new Managers(new InMemoryTaskManager()).getDefault();
+        TaskManager manager = Managers.getDefault();
+
         manager.addTask(new Task("Task 1")); //1
         manager.addTask(new Task("Task 2")); //2
         manager.addTask(new Task("Task 3")); //3

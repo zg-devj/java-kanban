@@ -247,7 +247,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
+    // https://practicum-students.slack.com/archives/C043BP47XLL/p1668187895886019
+    // На вопрос об удалении задачи из истории наставник написал, что
+    // это будет в будущих спринтах.
+    // (В ТЗ нет упоминаний об удалении, только два метода интерфейса)
     @Override
     public List<BaseTask> getHistory() {
         return this.historyManager.getHistory();

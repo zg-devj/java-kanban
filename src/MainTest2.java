@@ -1,10 +1,12 @@
 import model.Epic;
 import model.Status;
 import model.Task;
+import service.TaskManager;
+import util.Managers;
 
 public class MainTest2 {
     public static void main(String[] args) {
-        ManagerTask managerTask = new ManagerTask();
+        TaskManager managerTask = Managers.getDefault();
 
         Task task1 = new Task("Задача 1");
         Task task2 = new Task("Задача 2", "Описание задачи 2");
@@ -18,42 +20,34 @@ public class MainTest2 {
 
         Epic epic1 = new Epic("Эпик 1");
         managerTask.addEpic(epic1);
-        managerTask.addSubtaskToEpic(1, "Подзадача 1", null);
-        managerTask.addSubtaskToEpic(1, "Подзадача 2", "Описание подзадачи");
-        managerTask.addSubtaskToEpic(1, "Подзадача 3", null);
+        int epic1Id = epic1.getId();
+        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 1", null);
+        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 2", "Описание подзадачи");
+        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 3", null);
 
         Epic epic2 = new Epic("Эпик 2");
         managerTask.addEpic(epic2);
+        int epic2Id = epic2.getId();
+        managerTask.addSubtaskToEpic(epic2Id, "Подзадача 4", null);
+        managerTask.addSubtaskToEpic(epic2Id, "Подзадача 5", "Описание подзадачи");
 
-        Task update1 = managerTask.getTaskById(1);
+        Task update1 = managerTask.getTask(1);
         update1.setStatus(Status.IN_PROGRESS);
         managerTask.updateTask(update1);
 
-        Task update2 = managerTask.getTaskById(2);
+        Task update2 = managerTask.getTask(2);
         update2.setStatus(Status.NEW);
         managerTask.updateTask(update2);
 
-        Task update3 = managerTask.getTaskById(3);
+        Task update3 = managerTask.getTask(3);
         update3.setStatus(Status.DONE);
         managerTask.updateTask(update3);
 
-        Task update4 = managerTask.getTaskById(4);
+        Task update4 = managerTask.getTask(4);
         update4.setStatus(Status.DONE);
         managerTask.updateTask(update4);
 
         // -------------------------------------
-
-//        Subtask subtask1 = managerTask.getSubtaskById(1);
-//        subtask1.setStatus(Status.IN_PROGRESS);
-//        managerTask.updateSubtask(subtask1);
-//
-//        Subtask subtask2 = managerTask.getSubtaskById(2);
-//        subtask2.setStatus(Status.DONE);
-//        managerTask.updateSubtask(subtask2);
-//
-//        Subtask subtask3 = managerTask.getSubtaskById(3);
-//        subtask3.setStatus(Status.DONE);
-//        managerTask.updateSubtask(subtask3);
 
         // Здесь указывать команды для тестирования
 
