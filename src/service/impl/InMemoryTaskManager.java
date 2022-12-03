@@ -15,11 +15,12 @@ public class InMemoryTaskManager implements TaskManager {
     // Идентификаторы для Task, Subtask, Epic
     private Identifier idGen;
 
+    // история просмотров
     private HistoryManager historyManager;
 
-    public HashMap<Integer, Task> tasks;
-    public HashMap<Integer, Subtask> subtasks;
-    public HashMap<Integer, Epic> epics;
+    private HashMap<Integer, Task> tasks;
+    private HashMap<Integer, Subtask> subtasks;
+    private HashMap<Integer, Epic> epics;
 
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
@@ -65,14 +66,18 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
-            // Удаляем Task
+            // удаляем из истории
+            historyManager.remove(id);
+            // удаляем Task
             tasks.remove(id);
         }
     }
 
     // Удаление все Tasks
     public void deleteAllTasks() {
-        tasks.clear();
+        for (Task task : getAllTasks()) {
+            deleteTask(task.getId());
+        }
     }
     //endregion
 
@@ -116,9 +121,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(int id) {
         if (subtasks.containsKey(id)) {
-            int epicId = getSubtask(id).getEpicId();
+            int epicId = subtasks.get(id).getEpicId();
             // Отвязываем Subtask от Epic (удалить id сабтасков из списка в эпике)
-            getEpic(epicId).getSubtaskIds().remove(id);
+            epics.get(epicId).getSubtaskIds().remove(id);
+            // удаляем из истории
+            historyManager.remove(id);
             // Удаляем Subtask
             subtasks.remove(id);
             // Обновляем статус у Epic
@@ -201,6 +208,8 @@ public class InMemoryTaskManager implements TaskManager {
                 // Удаляем сабтаски
                 deleteSubtask(delId);
             }
+            // удаляем эпик из истории
+            historyManager.remove(id);
             // Удаляем Epic
             epics.remove(id);
         }
@@ -247,10 +256,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // https://practicum-students.slack.com/archives/C043BP47XLL/p1668187895886019
-    // На вопрос об удалении задачи из истории наставник написал, что
-    // это будет в будущих спринтах.
-    // (В ТЗ нет упоминаний об удалении, только два метода интерфейса)
     @Override
     public List<BaseTask> getHistory() {
         return this.historyManager.getHistory();
