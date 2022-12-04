@@ -4,6 +4,8 @@ import model.Task;
 import service.TaskManager;
 import util.Managers;
 
+import java.util.LinkedList;
+
 public class MainTest2 {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
@@ -24,17 +26,11 @@ public class MainTest2 {
         int epicId = epic.getId();
         manager.addSubtaskToEpic(epicId, "Subtask 1", null); //13
 
+        manager.getTask(5);
         manager.getEpic(12);
         manager.getTask(8);
-        //manager.getTask(22); // null
         manager.getSubtask(13);
-        manager.getTask(8);
         manager.getTask(3);
-
-        //        manager.deleteTask(8);
-        //        manager.deleteSubtask(13);
-        //        manager.deleteEpic(12);
-
 
         for (BaseTask task : manager.getHistory()) {
             System.out.println("id=" + task.getId() + ", " + task.getTitle());
