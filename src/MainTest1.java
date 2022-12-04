@@ -1,3 +1,4 @@
+import model.BaseTask;
 import model.Epic;
 import model.Status;
 import model.Task;
