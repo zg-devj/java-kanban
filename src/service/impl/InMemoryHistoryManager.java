@@ -19,7 +19,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(BaseTask task) {
-        list.removeNode(task.getId());
+        // добавляем в конец списка
         list.linkLast(task);
     }
 
@@ -30,7 +30,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<BaseTask> getHistory() {
-        return list.getTasks();
+        return list.getTasksRev();
     }
 
     class CustomLinkedList<T extends BaseTask> {
@@ -40,8 +40,12 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         private Map<Integer, Node<T>> nodeMap = new HashMap<>();
 
-        // добавляет задачу в конец списка
+        // Добавляет задачу в конец списка.
+        // Проверил, head и tail после добавления первого элемента
+        // ссылаются на него. При последующих добавлениях
+        // меняется tail на добавленный эл-т
         public void linkLast(T element) {
+            removeNode(element.getId());
             final Node<T> oldTail = tail;
             final Node<T> newTail = new Node<>(oldTail, element, null);
             tail = newTail;
@@ -55,9 +59,12 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             nodeMap.put(element.getId(), newTail);
             size++;
+            // проверка для head и tail
+            // System.out.println(head.data + " - " + tail.data);
         }
 
-        // возвращает задачи в виде ArrayList
+        // возвращает задачи в виде ArrayList от
+        // последнего просмотра до первого
         public List<T> getTasks() {
             List<T> list = new ArrayList<>();
             if (size > 0) {
@@ -65,6 +72,20 @@ public class InMemoryHistoryManager implements HistoryManager {
                 for (int i = 0; i < size; i++) {
                     list.add(cur.data);
                     cur = cur.prev;
+                }
+            }
+            return list;
+        }
+
+        // возвращает задачи в виде ArrayList от
+        // первого просмотра до последнего
+        public List<T> getTasksRev() {
+            List<T> list = new ArrayList<>();
+            if (size > 0) {
+                Node<T> cur = head;
+                for (int i = 0; i < size; i++) {
+                    list.add(cur.data);
+                    cur = cur.next;
                 }
             }
             return list;
@@ -90,9 +111,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                     // если удаляем последний элемент
                     head = null;
                     tail = null;
-                    node.data = null;
-                    node.next = null;
-                    node.prev = null;
                 }
                 nodeMap.remove(id);
                 size--;

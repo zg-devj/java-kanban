@@ -4,8 +4,6 @@ import model.Task;
 import service.TaskManager;
 import util.Managers;
 
-import java.util.LinkedList;
-
 public class MainTest2 {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
@@ -31,6 +29,7 @@ public class MainTest2 {
         manager.getTask(8);
         manager.getSubtask(13);
         manager.getTask(3);
+
 
         for (BaseTask task : manager.getHistory()) {
             System.out.println("id=" + task.getId() + ", " + task.getTitle());
