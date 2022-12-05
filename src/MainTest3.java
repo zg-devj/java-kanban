@@ -27,18 +27,18 @@ public class MainTest3 {
         manager.getTask(2);
         manager.getSubtask(4);
         manager.getEpic(7);
-        printHistory(manager); // 7,4,2,1
+        printHistory(manager); // 1,2,4,7
 
         manager.getSubtask(6);
         manager.getTask(2);
         manager.getEpic(3);
-        printHistory(manager); // 3,2,6,7,4,1
+        printHistory(manager); // 1,4,7,6,2,3
 
         manager.deleteTask(1);
-        printHistory(manager); // 3,2,6,7,4
+        printHistory(manager); // 4,7,6,2,3
 
         manager.deleteEpic(3);
-        printHistory(manager); // 2,7
+        printHistory(manager); // 7,2
     }
 
     public static void printHistory(TaskManager manager) {
