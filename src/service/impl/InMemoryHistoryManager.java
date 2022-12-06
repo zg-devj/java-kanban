@@ -41,23 +41,17 @@ public class InMemoryHistoryManager implements HistoryManager {
         private Map<Integer, Node<T>> nodeMap = new HashMap<>();
 
         // Добавляет задачу в конец списка.
-        // Проверил, head и tail после добавления первого элемента
-        // ссылаются на него. При последующих добавлениях
-        // меняется tail на добавленный эл-т
         public void linkLast(T element) {
             removeNode(element.getId());
             final Node<T> oldTail = tail;
-            final Node<T> newTail = new Node<>(oldTail, element, null);
-            tail = newTail;
-            if (head == null) {
-                head = newTail;
-            }
+            final Node<T> newNode = new Node<>(oldTail, element, null);
+            tail = newNode;
             if (oldTail == null) {
-                tail = newTail;
+                head = newNode;
             } else {
-                oldTail.next = newTail;
+                oldTail.next = newNode;
             }
-            nodeMap.put(element.getId(), newTail);
+            nodeMap.put(element.getId(), newNode);
             size++;
         }
 
