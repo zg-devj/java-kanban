@@ -18,6 +18,7 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
+    //для хранения в файле
     public static TaskManager getFileStorage() {
         Path path = Paths.get(DATA_FILE_PATH);
         return FileBackedTasksManager.loadFromFile(path.toFile());

@@ -22,5 +22,11 @@ public class MainTest4 {
         manager.getSubtask(4);
         manager.getEpic(3);
         manager.getSubtask(5);
+        manager.getTask(2);
+
+
+        // для теста
+        // manager.deleteTask(1); // удалятся 1
+        // manager.deleteEpic(3); // удалятся 3,4,5
     }
 }

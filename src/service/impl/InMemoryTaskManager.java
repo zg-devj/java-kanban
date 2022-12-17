@@ -30,32 +30,21 @@ public class InMemoryTaskManager implements TaskManager {
         this.epics = new HashMap<>();
     }
 
+    // возвращаем историю
     protected HistoryManager getHistoryManager() {
         return historyManager;
     }
 
-    public HashMap<Integer, Task> getTasks() {
+    protected HashMap<Integer, Task> getTasks() {
         return tasks;
     }
 
-    public HashMap<Integer, Subtask> getSubtasks() {
+    protected HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
     }
 
-    public HashMap<Integer, Epic> getEpics() {
+    protected HashMap<Integer, Epic> getEpics() {
         return epics;
-    }
-
-    protected void addItemToTaskList(Task task) {
-        tasks.put(task.getId(), task);
-    }
-
-    protected void addItemToEpicList(Epic epic) {
-        epics.put(epic.getId(), epic);
-    }
-
-    protected void addItemToSubtaskList(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
     }
 
     //region Task методы
