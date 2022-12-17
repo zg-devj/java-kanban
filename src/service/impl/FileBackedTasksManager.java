@@ -3,6 +3,7 @@ package service.impl;
 import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
 import model.*;
+import service.HistoryManager;
 import util.TaskType;
 
 import java.io.*;
@@ -117,7 +118,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 epic.setId(id);
                 epic.setStatus(status);
                 if (Integer.valueOf(subtasks[0]) != 0) {
-                    for(String unit : subtasks) {
+                    for (String unit : subtasks) {
                         epic.add(Integer.valueOf(unit));
                     }
                 }
@@ -144,9 +145,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     // преобразуем строку в историю
     private List<Integer> historyFromString(String value) {
+        String[] historyArr = value.split(",");
+        if (historyArr.length > 0) {
+            List<Integer> ret = new ArrayList<>();
+            for (int i = 0; i < historyArr.length; i++) {
+                ret.add(Integer.valueOf(historyArr[i]));
+            }
+            return ret;
+        }
         return null;
     }
 
+    // Сохраняем состояние задач и истории
     private void save() {
         if (!file.exists()) {
             // создаем файл, если не существует
@@ -194,7 +204,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         continue;
                     }
                     if (!isHistory) {
-                        System.out.println("Загружаем таски");
                         BaseTask task = backed.taskFromString(line);
                         if (task instanceof Task) {
                             backed.addItemToTaskList((Task) task);
@@ -205,6 +214,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         }
                     } else {
                         System.out.println("Загружаем историю");
+                        HistoryManager historyManager = backed.getHistoryManager();
+                        List<Integer> list = backed.historyFromString(line);
+                        for (Integer unit : list) {
+                            if (backed.getTasks().containsKey(unit)) {
+                                historyManager.add(backed.getTasks().get(unit));
+                            } else if (backed.getEpics().containsKey(unit)) {
+                                historyManager.add(backed.getEpics().get(unit));
+                            } else if (backed.getSubtasks().containsKey(unit)) {
+                                historyManager.add(backed.getSubtasks().get(unit));
+                            }
+                        }
                     }
                 }
             } catch (IOException ex) {

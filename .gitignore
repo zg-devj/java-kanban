@@ -25,3 +25,5 @@ hs_err_pid*
 info/
 src/example/
 out/
+
+resources/tasks.csv

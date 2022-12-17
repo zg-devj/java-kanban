@@ -21,5 +21,6 @@ public class MainTest4 {
         manager.getTask(1);
         manager.getSubtask(4);
         manager.getEpic(3);
+        manager.getSubtask(5);
     }
 }

@@ -1,3 +1,4 @@
+import model.BaseTask;
 import service.TaskManager;
 import util.Managers;
 
@@ -10,5 +11,14 @@ public class MainTest5 {
         System.out.println(manager.getAllTasks());
         System.out.println(manager.getAllEpics());
         System.out.println(manager.getAllSubtasks());
+
+        printHistory(manager);
+    }
+
+    public static void printHistory(TaskManager manager) {
+        System.out.println();
+        for (BaseTask task : manager.getHistory()) {
+            System.out.println("id=" + task.getId() + ", " + task.getTitle());
+        }
     }
 }
