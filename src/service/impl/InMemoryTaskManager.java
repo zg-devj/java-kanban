@@ -30,6 +30,18 @@ public class InMemoryTaskManager implements TaskManager {
         this.epics = new HashMap<>();
     }
 
+    protected void addItemToTaskList(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    protected void addItemToEpicList(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    protected void addItemToSubtaskList(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+    }
+
     //region Task методы
     // Получение Task по идентификатору.
     public Task getTask(int id) {

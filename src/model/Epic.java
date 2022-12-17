@@ -29,6 +29,13 @@ public class Epic extends BaseTask {
         }
     }
 
+    // метод толька для загрузки данных из файла
+    public void add(Integer id) {
+        if (!subtaskIds.contains(id)) {
+            subtaskIds.add(id);
+        }
+    }
+
     @Override
     public String toString() {
         return "Epic{" +

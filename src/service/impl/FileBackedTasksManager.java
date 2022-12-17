@@ -1,18 +1,14 @@
 package service.impl;
 
+import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
-import model.BaseTask;
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import model.*;
 import util.TaskType;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -75,16 +71,64 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
                     subtask.getStatus().name(), subtask.getDescriptions(),
                     subtask.getEpicId());
-        } else {
-            return String.format("%d,%s,%s,%s,%s%n",
-                    task.getId(), TaskType.EPIC.name(), task.getTitle(),
-                    task.getStatus().name(), task.getDescriptions());
+        } else if (task instanceof Epic) {
+            Epic epic = (Epic) task;
+            return String.format("%d,%s,%s,%s,%s,%s%n",
+                    epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
+                    epic.getStatus().name(), epic.getDescriptions(),
+                    getSubtasksIdToString(epic.getSubtaskIds()));
         }
+        return null;
+    }
 
+    // преобразуем в строку ссылки эпика на сабтаски
+    // пример:
+    // return: 2:3:4  -> эпик ссылается на сабтаски c id: 2,3,4
+    private String getSubtasksIdToString(HashSet<Integer> list) {
+        if (list.size() > 0) {
+            List<String> ret = new ArrayList<>();
+            for (Integer id : new ArrayList<>(list)) {
+                ret.add(String.valueOf(id));
+            }
+            return String.join(":", ret);
+        } else {
+            // если у эпика еще нет сабтасков
+            return "0";
+        }
     }
 
     // преобразуем строку в таск
     private BaseTask taskFromString(String value) {
+        String[] taskLine = value.split(",");
+        Integer id = Integer.valueOf(taskLine[0]);
+        TaskType type = TaskType.valueOf(taskLine[1]);
+        String title = taskLine[2].toString();
+        Status status = Status.valueOf(taskLine[3]);
+        String desc = taskLine[4].toString();
+        switch (type) {
+            case TASK:
+                Task task = new Task(title, desc);
+                task.setId(id);
+                task.setStatus(status);
+                return task;
+            case EPIC:
+                String[] subtasks = taskLine[5].split(":");
+                Epic epic = new Epic(title, desc);
+                epic.setId(id);
+                epic.setStatus(status);
+                if (Integer.valueOf(subtasks[0]) != 0) {
+                    for(String unit : subtasks) {
+                        epic.add(Integer.valueOf(unit));
+                    }
+                }
+                return epic;
+            case SUBTASK:
+                Integer epicId = Integer.valueOf(taskLine[5]);
+                Subtask subtask = new Subtask(epicId, title, desc);
+                subtask.setId(id);
+                subtask.setStatus(status);
+                return subtask;
+        }
         return null;
     }
 
@@ -134,10 +178,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
 
+    // загрузка данных из файла
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager backed = new FileBackedTasksManager(file);
         // Если файл существует загружаем данные из файла
         if (file.exists()) {
+            boolean isHistory = false;
+            // читаем файл
+            try (FileReader reader = new FileReader(file);
+                 BufferedReader br = new BufferedReader(reader)) {
+                while (br.ready()) {
+                    String line = br.readLine();
+                    if (line.isBlank() || line.isEmpty()) {
+                        isHistory = true;
+                        continue;
+                    }
+                    if (!isHistory) {
+                        System.out.println("Загружаем таски");
+                        BaseTask task = backed.taskFromString(line);
+                        if (task instanceof Task) {
+                            backed.addItemToTaskList((Task) task);
+                        } else if (task instanceof Epic) {
+                            backed.addItemToEpicList((Epic) task);
+                        } else if (task instanceof Subtask) {
+                            backed.addItemToSubtaskList((Subtask) task);
+                        }
+                    } else {
+                        System.out.println("Загружаем историю");
+                    }
+                }
+            } catch (IOException ex) {
+                throw new ManagerLoadException();
+            }
 
         }
         return backed;
