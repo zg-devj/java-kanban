@@ -49,7 +49,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             if (oldTail == null) {
                 head = newNode;
             } else {
-                oldTail.next = newNode;
+                oldTail.setNext(newNode);
             }
             nodeMap.put(element.getId(), newNode);
             size++;
@@ -62,8 +62,8 @@ public class InMemoryHistoryManager implements HistoryManager {
             if (size > 0) {
                 Node<T> current = head;
                 while (current != null) {
-                    list.add(current.data);
-                    current = current.next;
+                    list.add(current.getData());
+                    current = current.getNext();
                 }
             }
             return list;
@@ -73,17 +73,17 @@ public class InMemoryHistoryManager implements HistoryManager {
         public void removeNode(int id) {
             Node<T> node = nodeMap.get(id);
             if (node != null) {
-                Node<T> prevNode = node.prev;
-                Node<T> nextNode = node.next;
+                Node<T> prevNode = node.getPrev();
+                Node<T> nextNode = node.getNext();
                 if (prevNode != null && nextNode != null) {
                     // если элемент находится между двумя
-                    nextNode.prev = prevNode;
-                    prevNode.next = nextNode;
+                    nextNode.setPrev(prevNode);
+                    prevNode.setNext(nextNode);
                 } else if (prevNode == null && nextNode != null) {
-                    nextNode.prev = null;
+                    nextNode.setPrev(null);
                     head = nextNode;
                 } else if (nextNode == null && prevNode != null) {
-                    prevNode.next = null;
+                    prevNode.setNext(null);
                     tail = prevNode;
                 } else {
                     // если удаляем последний элемент
