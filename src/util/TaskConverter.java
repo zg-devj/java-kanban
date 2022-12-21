@@ -22,10 +22,16 @@ public class TaskConverter {
     }
 
     public static String taskToString(Epic epic) {
-        return String.format("%d,%s,%s,%s,%s,%s%n",
-                epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
-                epic.getStatus().name(), epic.getDescriptions(),
-                getSubtasksIdToString(epic.getSubtaskIds()));
+        String str = getSubtasksIdToString(epic.getSubtaskIds());
+        if (!str.isEmpty()) {
+            return String.format("%d,%s,%s,%s,%s,%s%n",
+                    epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
+                    epic.getStatus().name(), epic.getDescriptions(), str);
+        } else {
+            return String.format("%d,%s,%s,%s,%s%n",
+                    epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
+                    epic.getStatus().name(), epic.getDescriptions());
+        }
     }
 
     // преобразуем строку в таск
@@ -43,11 +49,11 @@ public class TaskConverter {
                 task.setStatus(status);
                 return task;
             case EPIC:
-                String[] subtasks = taskLine[5].split(":");
                 Epic epic = new Epic(title, desc);
                 epic.setId(id);
                 epic.setStatus(status);
-                if (Integer.valueOf(subtasks[0]) != 0) {
+                if (taskLine.length > 5) {
+                    String[] subtasks = taskLine[5].split(":");
                     for (String unit : subtasks) {
                         epic.add(Integer.valueOf(unit));
                     }
@@ -98,7 +104,7 @@ public class TaskConverter {
             return String.join(":", ret);
         } else {
             // если у эпика еще нет сабтасков
-            return "0";
+            return "";
         }
     }
 }
