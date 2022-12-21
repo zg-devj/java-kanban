@@ -4,6 +4,7 @@ import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
 import model.*;
 import service.HistoryManager;
+import util.TaskConverter;
 import util.TaskType;
 
 import java.io.*;
@@ -16,7 +17,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private File file;
 
-    public FileBackedTasksManager(File file) {
+    private FileBackedTasksManager(File file) {
         super();
         this.file = file;
     }
@@ -114,102 +115,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
     //endregion
 
-    // преобразуем таск в строку
-    private String taskToString(BaseTask task) {
-        if (task instanceof Task) {
-            return String.format("%d,%s,%s,%s,%s%n",
-                    task.getId(), TaskType.TASK.name(), task.getTitle(),
-                    task.getStatus().name(), task.getDescriptions());
-        } else if (task instanceof Subtask) {
-            Subtask subtask = (Subtask) task;
-            return String.format("%d,%s,%s,%s,%s,%d%n",
-                    subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
-                    subtask.getStatus().name(), subtask.getDescriptions(),
-                    subtask.getEpicId());
-        } else if (task instanceof Epic) {
-            Epic epic = (Epic) task;
-            return String.format("%d,%s,%s,%s,%s,%s%n",
-                    epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
-                    epic.getStatus().name(), epic.getDescriptions(),
-                    getSubtasksIdToString(epic.getSubtaskIds()));
-        }
-        return null;
-    }
-
-    // преобразуем в строку ссылки эпика на сабтаски
-    // пример:
-    // return: 2:3:4  -> эпик ссылается на сабтаски c id: 2,3,4
-    private String getSubtasksIdToString(HashSet<Integer> list) {
-        if (list.size() > 0) {
-            List<String> ret = new ArrayList<>();
-            for (Integer id : new ArrayList<>(list)) {
-                ret.add(String.valueOf(id));
-            }
-            return String.join(":", ret);
-        } else {
-            // если у эпика еще нет сабтасков
-            return "0";
-        }
-    }
-
-    // преобразуем строку в таск
-    private BaseTask taskFromString(String value) {
-        String[] taskLine = value.split(",");
-        Integer id = Integer.valueOf(taskLine[0]);
-        TaskType type = TaskType.valueOf(taskLine[1]);
-        String title = taskLine[2].toString();
-        Status status = Status.valueOf(taskLine[3]);
-        String desc = taskLine[4].toString().equals("null") ? null : taskLine[4].toString();
-        switch (type) {
-            case TASK:
-                Task task = new Task(title, desc);
-                task.setId(id);
-                task.setStatus(status);
-                return task;
-            case EPIC:
-                String[] subtasks = taskLine[5].split(":");
-                Epic epic = new Epic(title, desc);
-                epic.setId(id);
-                epic.setStatus(status);
-                if (Integer.valueOf(subtasks[0]) != 0) {
-                    for (String unit : subtasks) {
-                        epic.add(Integer.valueOf(unit));
-                    }
-                }
-                return epic;
-            case SUBTASK:
-                Integer epicId = Integer.valueOf(taskLine[5]);
-                Subtask subtask = new Subtask(epicId, title, desc);
-                subtask.setId(id);
-                subtask.setStatus(status);
-                return subtask;
-        }
-        return null;
-    }
-
-    // преобразуем историю в строку
-    private String historyToString() {
-        List<String> ret = new ArrayList<>();
-        for (BaseTask task : super.getHistory()) {
-            ret.add(String.valueOf(task.getId()));
-        }
-        return String.join(",", ret);
-
-    }
-
-    // преобразуем строку в историю
-    private List<Integer> historyFromString(String value) {
-        String[] historyArr = value.split(",");
-        if (historyArr.length > 0) {
-            List<Integer> ret = new ArrayList<>();
-            for (int i = 0; i < historyArr.length; i++) {
-                ret.add(Integer.valueOf(historyArr[i]));
-            }
-            return ret;
-        }
-        return null;
-    }
-
     // Сохраняем состояние задач и истории
     private void save() {
         if (!file.exists()) {
@@ -223,18 +128,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (Writer fileWriter = new FileWriter(file);) {
             // сохраняем таски
             for (Task task : getAllTasks()) {
-                fileWriter.write(taskToString(task));
+                fileWriter.write(TaskConverter.taskToString(task));
             }
             for (Epic epic : getAllEpics()) {
-                fileWriter.write(taskToString(epic));
+                fileWriter.write(TaskConverter.taskToString(epic));
             }
             for (Subtask subtask : getAllSubtasks()) {
-                fileWriter.write(taskToString(subtask));
+                fileWriter.write(TaskConverter.taskToString(subtask));
             }
             // сохраняем историю
             if (super.getHistory().size() > 0) {
                 fileWriter.write(" \n");
-                fileWriter.write(historyToString());
+                fileWriter.write(TaskConverter.historyToString(super.getHistory()));
             }
         } catch (IOException e) {
             throw new ManagerSaveException();
@@ -259,7 +164,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     }
                     if (!isHistory) {
                         // если задача
-                        BaseTask task = backed.taskFromString(line);
+                        BaseTask task = TaskConverter.taskFromString(line);
                         if (task instanceof Task) {
                             backed.addItemToTaskList((Task) task);
                         } else if (task instanceof Epic) {
@@ -269,7 +174,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         }
                     } else {
                         // если история
-                        List<Integer> list = backed.historyFromString(line);
+                        List<Integer> list = TaskConverter.historyFromString(line);
                         if (list != null) {
                             HistoryManager historyManager = backed.getHistoryManager();
                             for (Integer unit : list) {
