@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     // Идентификаторы для Task, Subtask, Epic
-    private Identifier idGen;
+    protected Identifier idGen;
 
     // история просмотров
     private HistoryManager historyManager;

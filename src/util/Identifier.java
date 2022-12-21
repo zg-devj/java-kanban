@@ -13,4 +13,11 @@ public class Identifier {
     public int next() {
         return ++id;
     }
+
+    // Устанавливаем максимальное значение
+    public void setMaxId(int newId) {
+        if (this.id < newId) {
+            this.id = newId;
+        }
+    }
 }

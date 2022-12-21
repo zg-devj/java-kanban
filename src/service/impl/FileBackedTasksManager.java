@@ -25,14 +25,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void addItemToTaskList(Task task) {
         getTasks().put(task.getId(), task);
+        idGen.setMaxId(task.getId());
     }
 
     private void addItemToEpicList(Epic epic) {
         getEpics().put(epic.getId(), epic);
+        idGen.setMaxId(epic.getId());
     }
 
     private void addItemToSubtaskList(Subtask subtask) {
         getSubtasks().put(subtask.getId(), subtask);
+        idGen.setMaxId(subtask.getId());
     }
 
     //region Task

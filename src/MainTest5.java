@@ -1,4 +1,6 @@
 import model.BaseTask;
+import model.Epic;
+import model.Task;
 import service.TaskManager;
 import util.Managers;
 
@@ -7,6 +9,10 @@ public class MainTest5 {
         // тестирование считывания и заполнения данных из файла
 
         TaskManager manager = Managers.getFileStorage();
+
+        //manager.addTask(new Task("Example"));
+        //manager.addEpic(new Epic("EPIC"));
+        manager.addSubtaskToEpic(6,"SubTaskA",null);
 
         System.out.println(manager.getAllTasks());
         System.out.println(manager.getAllEpics());
