@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+// преобразование тасков и истории в строку и обратно
 public class TaskConverter {
     // преобразуем таск в строку
     public static String taskToString(Task task) {

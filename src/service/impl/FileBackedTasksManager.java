@@ -35,6 +35,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     //region Task
+    // метод save() из ТЗ-6:
+    // - "Создайте метод save без параметров — он будет сохранять
+    // текущее состояние менеджера в указанный файл."
+    // - "Что он должен сохранять? Все задачи, подзадачи,
+    // эпики и историю просмотра любых задач."
+    //  - метод getTask, getEpic, getSubtask изменяют
+    //  историю просмотра из условий ТЗ-5
     @Override
     public Task getTask(int id) {
         Task t = super.getTask(id);
