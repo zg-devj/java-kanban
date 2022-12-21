@@ -24,6 +24,11 @@ public class TaskConverter {
 
     public static String taskToString(Epic epic) {
         String str = getSubtasksIdToString(epic.getSubtaskIds());
+        // нп мой взгляд запись вида ниже выглядит как буд то что-то потерялось
+        // 3,EPIC,Epic1,NEW,Epic1 Description,
+        // лучше запись ниже
+        // 6,EPIC,Epic2,NEW,Epic2 Description
+        // 6,EPIC,Epic2,NEW,Epic2 Description,10
         if (!str.isEmpty()) {
             return String.format("%d,%s,%s,%s,%s,%s%n",
                     epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
@@ -80,6 +85,8 @@ public class TaskConverter {
     }
 
     // преобразуем строку в историю
+    // Я понимаю, что может возникнуть NPE, но пока этого не может случиться,
+    // т.к. не так много использования этого метода
     public static List<Integer> historyFromString(String value) {
         String[] historyArr = value.split(",");
         if (historyArr.length > 0) {
