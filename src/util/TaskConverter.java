@@ -36,8 +36,7 @@ public class TaskConverter {
     }
 
     // преобразуем строку в таск
-    public static BaseTask taskFromString(String value) {
-        String[] taskLine = value.split(",");
+    public static BaseTask taskFromString(String[] taskLine) {
         Integer id = Integer.valueOf(taskLine[0]);
         TaskType type = TaskType.valueOf(taskLine[1]);
         String title = taskLine[2].toString();

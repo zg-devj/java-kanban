@@ -2,15 +2,16 @@ package service.impl;
 
 import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
-import model.*;
+import model.BaseTask;
+import model.Epic;
+import model.Subtask;
+import model.Task;
 import service.HistoryManager;
 import util.TaskConverter;
 import util.TaskType;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -154,6 +155,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
 
+    private void addItemToLists(FileBackedTasksManager backed, BaseTask task, TaskType type) {
+        switch (type) {
+            case TASK:
+                backed.addItemToTaskList((Task) task);
+                break;
+            case EPIC:
+                backed.addItemToEpicList((Epic) task);
+                break;
+            case SUBTASK:
+                backed.addItemToSubtaskList((Subtask) task);
+                break;
+        }
+    }
+
     // загрузка данных из файла
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager backed = new FileBackedTasksManager(file);
@@ -163,6 +178,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             // читаем файл
             try (FileReader reader = new FileReader(file);
                  BufferedReader br = new BufferedReader(reader)) {
+                List<Integer> listHistory = null;
                 while (br.ready()) {
                     String line = br.readLine();
                     if (line.isBlank() || line.isEmpty()) {
@@ -171,28 +187,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     }
                     if (!isHistory) {
                         // если задача
-                        BaseTask task = TaskConverter.taskFromString(line);
-                        if (task instanceof Task) {
-                            backed.addItemToTaskList((Task) task);
-                        } else if (task instanceof Epic) {
-                            backed.addItemToEpicList((Epic) task);
-                        } else if (task instanceof Subtask) {
-                            backed.addItemToSubtaskList((Subtask) task);
-                        }
+                        String[] taskLine = line.split(",");
+                        BaseTask task = TaskConverter.taskFromString(taskLine);
+                        TaskType taskType = TaskType.valueOf(taskLine[1]);
+                        backed.addItemToLists(backed, task, taskType);
                     } else {
                         // если история
-                        List<Integer> list = TaskConverter.historyFromString(line);
-                        if (list != null) {
-                            HistoryManager historyManager = backed.getHistoryManager();
-                            for (Integer unit : list) {
-                                if (backed.getTasks().containsKey(unit)) {
-                                    historyManager.add(backed.getTasks().get(unit));
-                                } else if (backed.getEpics().containsKey(unit)) {
-                                    historyManager.add(backed.getEpics().get(unit));
-                                } else if (backed.getSubtasks().containsKey(unit)) {
-                                    historyManager.add(backed.getSubtasks().get(unit));
-                                }
-                            }
+                        listHistory = TaskConverter.historyFromString(line);
+                    }
+                }
+                if (listHistory != null) {
+                    HistoryManager historyManager = backed.getHistoryManager();
+                    for (Integer unit : listHistory) {
+                        if (backed.getTasks().containsKey(unit)) {
+                            historyManager.add(backed.getTasks().get(unit));
+                        } else if (backed.getEpics().containsKey(unit)) {
+                            historyManager.add(backed.getEpics().get(unit));
+                        } else if (backed.getSubtasks().containsKey(unit)) {
+                            historyManager.add(backed.getSubtasks().get(unit));
                         }
                     }
                 }
