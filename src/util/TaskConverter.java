@@ -8,25 +8,24 @@ import java.util.List;
 
 public class TaskConverter {
     // преобразуем таск в строку
-    public static String taskToString(BaseTask task) {
-        if (task instanceof Task) {
-            return String.format("%d,%s,%s,%s,%s%n",
-                    task.getId(), TaskType.TASK.name(), task.getTitle(),
-                    task.getStatus().name(), task.getDescriptions());
-        } else if (task instanceof Subtask) {
-            Subtask subtask = (Subtask) task;
-            return String.format("%d,%s,%s,%s,%s,%d%n",
-                    subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
-                    subtask.getStatus().name(), subtask.getDescriptions(),
-                    subtask.getEpicId());
-        } else if (task instanceof Epic) {
-            Epic epic = (Epic) task;
-            return String.format("%d,%s,%s,%s,%s,%s%n",
-                    epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
-                    epic.getStatus().name(), epic.getDescriptions(),
-                    getSubtasksIdToString(epic.getSubtaskIds()));
-        }
-        return null;
+    public static String taskToString(Task task) {
+        return String.format("%d,%s,%s,%s,%s%n",
+                task.getId(), TaskType.TASK.name(), task.getTitle(),
+                task.getStatus().name(), task.getDescriptions());
+    }
+
+    public static String taskToString(Subtask subtask) {
+        return String.format("%d,%s,%s,%s,%s,%d%n",
+                subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
+                subtask.getStatus().name(), subtask.getDescriptions(),
+                subtask.getEpicId());
+    }
+
+    public static String taskToString(Epic epic) {
+        return String.format("%d,%s,%s,%s,%s,%s%n",
+                epic.getId(), TaskType.EPIC.name(), epic.getTitle(),
+                epic.getStatus().name(), epic.getDescriptions(),
+                getSubtasksIdToString(epic.getSubtaskIds()));
     }
 
     // преобразуем строку в таск
