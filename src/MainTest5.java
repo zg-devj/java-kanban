@@ -12,7 +12,7 @@ public class MainTest5 {
 
         //manager.addTask(new Task("Example"));
         //manager.addEpic(new Epic("EPIC"));
-        manager.addSubtaskToEpic(6,"SubTaskA",null);
+        //manager.addSubtaskToEpic(6,"SubTaskA",null);
 
         System.out.println(manager.getAllTasks());
         System.out.println(manager.getAllEpics());

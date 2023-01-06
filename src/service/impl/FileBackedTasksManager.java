@@ -12,15 +12,17 @@ import util.TaskType;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private File file;
 
-    private FileBackedTasksManager(File file) {
+    private FileBackedTasksManager(Path path) {
         super();
-        this.file = file;
+        this.file = path.toFile();
     }
 
     private void addItemToTaskList(Task task) {
@@ -137,6 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 throw new ManagerSaveException();
             }
         }
+
         try (Writer fileWriter = new FileWriter(file);) {
             // сохраняем таски
             for (Task task : getAllTasks()) {
@@ -174,17 +177,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     // загрузка данных из файла
-    public static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager backed = new FileBackedTasksManager(file);
-        // Если файл существует загружаем данные из файла
-        if (file.exists()) {
+    public static FileBackedTasksManager loadFromFile(Path path) {
+        FileBackedTasksManager backed = new FileBackedTasksManager(path);
+        if (Files.exists(path)) {
             boolean isHistory = false;
-            // читаем файл
-            try (FileReader reader = new FileReader(file);
-                 BufferedReader br = new BufferedReader(reader)) {
+            try {
+                String data = Files.readString(path);
+                String[] lines = data.split("\n");
                 List<Integer> listHistory = null;
-                while (br.ready()) {
-                    String line = br.readLine();
+                for (String line : lines) {
                     if (line.isBlank() || line.isEmpty()) {
                         isHistory = true;
                         continue;
@@ -215,7 +216,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             } catch (IOException ex) {
                 throw new ManagerLoadException();
             }
-
         }
         return backed;
     }
