@@ -56,9 +56,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
-        super.addTask(task);
+    public int addTask(Task task) {
+        int id = super.addTask(task);
         save();
+        return id;
     }
 
     @Override

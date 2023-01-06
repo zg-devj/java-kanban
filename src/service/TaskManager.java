@@ -13,7 +13,7 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    void addTask(Task task);
+    int addTask(Task task);
 
     void updateTask(Task task);
 
