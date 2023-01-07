@@ -39,11 +39,11 @@ public interface TaskManager {
     //region Epic
     Epic getEpic(int id);
 
-    public List<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
-    public void addEpic(Epic epic);
+    int addEpic(Epic epic);
 
-    void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription);
+    int addSubtask(Subtask subtask);
 
     void updateEpic(Epic epic);
 

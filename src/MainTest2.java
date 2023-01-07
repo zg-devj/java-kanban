@@ -1,5 +1,6 @@
 import model.BaseTask;
 import model.Epic;
+import model.Subtask;
 import model.Task;
 import service.TaskManager;
 import util.Managers;
@@ -19,10 +20,10 @@ public class MainTest2 {
         manager.addTask(new Task("Task 9", "Description")); //9
         manager.addTask(new Task("Task 10", "Description")); //10
         manager.addTask(new Task("Task 11", "Description")); //11
-        Epic epic = new Epic("Epic 1");
+        Epic epic = new Epic("Epic 1","Description1");
         manager.addEpic(epic); //12
         int epicId = epic.getId();
-        manager.addSubtaskToEpic(epicId, "Subtask 1", null); //13
+        manager.addSubtask(new Subtask(epicId,"Subtask", "Description")); //13
 
         manager.getTask(5);
         manager.getEpic(12);

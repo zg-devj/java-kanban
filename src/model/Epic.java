@@ -12,10 +12,6 @@ public class Epic extends BaseTask {
         setStatus(Status.NEW);
     }
 
-    public Epic(String title) {
-        this(title, null);
-    }
-
     public HashSet<Integer> getSubtaskIds() {
         return subtaskIds;
     }

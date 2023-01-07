@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public abstract class BaseTask {
     // Идентификатор
     protected int id;
@@ -49,5 +51,18 @@ public abstract class BaseTask {
 
     public void setDescriptions(String descriptions) {
         this.descriptions = descriptions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseTask task = (BaseTask) o;
+        return id == task.id && Objects.equals(title, task.title) && Objects.equals(descriptions, task.descriptions) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, descriptions, status);
     }
 }

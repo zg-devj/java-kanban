@@ -1,7 +1,4 @@
-import model.BaseTask;
-import model.Epic;
-import model.Status;
-import model.Task;
+import model.*;
 import service.TaskManager;
 import util.Managers;
 
@@ -19,18 +16,18 @@ public class MainTest1 {
         managerTask.addTask(task4);
 
 
-        Epic epic1 = new Epic("Эпик 1");
+        Epic epic1 = new Epic("Эпик 1","Description");
         managerTask.addEpic(epic1);
         int epic1Id = epic1.getId();
-        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 1", null);
-        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 2", "Описание подзадачи");
-        managerTask.addSubtaskToEpic(epic1Id, "Подзадача 3", null);
+        managerTask.addSubtask(new Subtask(epic1Id, "Подзадача 1", "Description"));
+        managerTask.addSubtask(new Subtask(epic1Id, "Подзадача 2", "Description"));
+        managerTask.addSubtask(new Subtask(epic1Id, "Подзадача 3", "Description"));
 
-        Epic epic2 = new Epic("Эпик 2");
+        Epic epic2 = new Epic("Эпик 2","Description");
         managerTask.addEpic(epic2);
         int epic2Id = epic2.getId();
-        managerTask.addSubtaskToEpic(epic2Id, "Подзадача 4", null);
-        managerTask.addSubtaskToEpic(epic2Id, "Подзадача 5", "Описание подзадачи");
+        managerTask.addSubtask(new Subtask(epic2Id, "Подзадача 4", "Description"));
+        managerTask.addSubtask(new Subtask(epic2Id, "Подзадача 5", "Description"));
 
         Task update1 = managerTask.getTask(1);
         update1.setStatus(Status.IN_PROGRESS);

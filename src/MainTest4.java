@@ -1,4 +1,5 @@
 import model.Epic;
+import model.Subtask;
 import model.Task;
 import service.TaskManager;
 import util.Managers;
@@ -13,8 +14,8 @@ public class MainTest4 {
         Epic epic = new Epic("Epic1", "Epic1 Description");
         manager.addEpic(epic);
         int epicId = epic.getId(); //3
-        manager.addSubtaskToEpic(epicId, "Subtask1", "Subtask1 Description"); //4
-        manager.addSubtaskToEpic(epicId, "Subtask2", "Subtask2 Description"); //5
+        manager.addSubtask(new Subtask(epicId, "Subtask1", "Subtask1 Description")); //4
+        manager.addSubtask(new Subtask(epicId, "Subtask2", "Subtask2 Description")); //5
         Epic epic2 = new Epic("Epic2", "Epic2 Description");
         manager.addEpic(epic2); // 6
 

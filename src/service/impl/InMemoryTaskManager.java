@@ -182,9 +182,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     // Cоздание Epic
     @Override
-    public void addEpic(Epic epic) {
+    public int addEpic(Epic epic) {
         epic.setId(idGen.next());
         epics.putIfAbsent(epic.getId(), epic);
+        return epic.getId();
     }
 
     // Создаем Subtask и добавляем его к эпику
@@ -192,17 +193,18 @@ public class InMemoryTaskManager implements TaskManager {
     // addSubtask был приватным и использовался только в этом методе (удалил метод)
     // Во время добавления сабтаска к эпику, сабтаск не имеет id эпика
     @Override
-    public void addSubtaskToEpic(int epicId, String subtaskTitle, String subtaskDescription) {
-        if (epics.containsKey(epicId)) {
+    public int addSubtask(Subtask subtask) {
+        if (epics.containsKey(subtask.getEpicId())) {
             // Создаем Subtask
-            Subtask subtask = new Subtask(epicId, subtaskTitle, subtaskDescription);
             subtask.setId(idGen.next());
             subtasks.put(subtask.getId(), subtask);
             // Привязываем к epic
-            epics.get(epicId).add(subtask);
+            epics.get(subtask.getEpicId()).add(subtask);
             // Обновляем статус
-            updateEpicStatus(epicId);
+            updateEpicStatus(subtask.getEpicId());
+            return subtask.getId();
         }
+        return subtask.getId();
     }
 
     // Обновление Epic

@@ -16,10 +16,6 @@ public class Subtask extends BaseTask {
         setStatus(Status.NEW);
     }
 
-    public Subtask(int epicId, String title) {
-        this(epicId, title, null);
-    }
-
     public int getEpicId() {
         return epicId;
     }
