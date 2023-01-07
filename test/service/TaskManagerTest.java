@@ -254,6 +254,34 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    public void getSubtasksByEpicId() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        taskManager.addSubtask(subtask1);
+
+        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
+        taskManager.addSubtask(subtask2);
+
+        final List<Subtask> subtasks = taskManager.getSubtasksByEpicId(epicId);
+
+        assertEquals(2, subtasks.size(), "Неверное количество подзадач.");
+    }
+
+    @Test
+    public void getSubtasksNonExistentByEpicId() {
+        TaskManager taskManager = createInstance();
+
+        final List<Subtask> subtasks = taskManager.getSubtasksByEpicId(1);
+        final List<Subtask> expected = new ArrayList<>();
+
+        assertNotNull(subtasks, "Список не должен быть null");
+        assertEquals(expected, subtasks, "Подзадачи не должны существовать");
+    }
+
+    @Test
     public void updateSubtask() {
         TaskManager taskManager = createInstance();
         final Epic epic = new Epic("Epic", "Description");
@@ -358,7 +386,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
         taskManager.addSubtask(subtask);
 
-        final Subtask subtaskForUpdate = new Subtask(epicId,"NewSubtask", "NewDescription");
+        final Subtask subtaskForUpdate = new Subtask(epicId, "NewSubtask", "NewDescription");
         int id = subtaskForUpdate.getId();
         assertEquals(0, id, "id не должно быть отличным от 0");
 
@@ -367,4 +395,93 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(subtaskUpdated, "Задача не должна существовать");
     }
     // endregion
+
+    //region Epic Status Test
+    // Пустой список подзадач.
+    @Test
+    public void epicStatusIfEmptySubtasks() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        Epic savedEpic = taskManager.getEpic(epicId);
+        assertEquals(Status.NEW, savedEpic.getStatus(), "Статус эпика без подзадач должен быть NEW");
+    }
+
+    // Все подзадачи со статусом NEW.
+    @Test
+    public void epicStatusAllSubtasksIsNew() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        taskManager.addSubtask(subtask1);
+
+        final Epic savedEpic = taskManager.getEpic(epicId);
+        assertEquals(Status.NEW, savedEpic.getStatus(), "Статус эпика c подзадачи NEW, должен быть NEW");
+    }
+
+    // Все подзадачи со статусом DONE.
+    @Test
+    public void epicStatusAllSubtasksIsDone() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+
+        final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
+        subtaskDone1.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtaskDone1);
+
+        final Epic savedEpic = taskManager.getEpic(epicId);
+        assertEquals(Status.DONE, savedEpic.getStatus(), "Статус эпика c подзадачи DONE, должен быть DONE");
+    }
+
+    // Подзадачи со статусами NEW и DONE.
+    @Test
+    public void epicStatusSubtaskIsNewAndDone() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
+        final int subtaskId2 = taskManager.addSubtask(subtask2);
+
+        final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
+        subtaskDone1.setStatus(Status.NEW);
+        taskManager.updateSubtask(subtaskDone1);
+
+        final  Subtask subtaskDone2 = taskManager.getSubtask(subtaskId2);
+        subtaskDone2.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtaskDone2);
+
+        final Epic savedEpic = taskManager.getEpic(epicId);
+        assertEquals(Status.IN_PROGRESS, savedEpic.getStatus(),
+                "Статус эпика c подзадачами NEW и DONE, должен быть IN_PROGRESS");
+    }
+
+    // Подзадачи со статусом IN_PROGRESS.
+    @Test
+    public void epicStatusSubtaskIsInProgress() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+
+        final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
+        subtaskDone1.setStatus(Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtaskDone1);
+
+        final Epic savedEpic = taskManager.getEpic(epicId);
+        assertEquals(Status.IN_PROGRESS, savedEpic.getStatus(),
+                "Статус эпика c подзадачами IN_PROGRESS , должен быть IN_PROGRESS");
+    }
+    //endregion
 }
