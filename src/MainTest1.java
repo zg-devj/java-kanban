@@ -9,10 +9,10 @@ public class MainTest1 {
     public static void main(String[] args) {
         TaskManager managerTask = Managers.getDefault();
 
-        Task task1 = new Task("Задача 1");
+        Task task1 = new Task("Задача 1", "Description");
         Task task2 = new Task("Задача 2", "Описание задачи 2");
         Task task3 = new Task("Задача 3", "Описание задачи 3");
-        Task task4 = new Task("Задача 4");
+        Task task4 = new Task("Задача 4", "Description");
         managerTask.addTask(task1);
         managerTask.addTask(task2);
         managerTask.addTask(task3);

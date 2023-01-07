@@ -26,4 +26,4 @@ info/
 src/example/
 out/
 
-resources/tasks.csv
+resources/*.csv

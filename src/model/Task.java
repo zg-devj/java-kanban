@@ -8,10 +8,6 @@ public class Task extends BaseTask {
         setStatus(Status.NEW);
     }
 
-    public Task(String title) {
-        this(title, null);
-    }
-
     @Override
     public String toString() {
         return "Task{" +
@@ -21,4 +17,6 @@ public class Task extends BaseTask {
                 ", status=" + status +
                 '}';
     }
+
+
 }

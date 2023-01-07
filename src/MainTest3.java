@@ -8,8 +8,8 @@ public class MainTest3 {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-        manager.addTask(new Task("Task 1")); //1
-        manager.addTask(new Task("Task 2")); //2
+        manager.addTask(new Task("Task 1", "Description")); //1
+        manager.addTask(new Task("Task 2", "Description")); //2
         Epic epic = new Epic("Epic 1");
         manager.addEpic(epic); //3
         int epicId = epic.getId();
