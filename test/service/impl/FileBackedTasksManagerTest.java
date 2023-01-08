@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
-    public static final String DATA_FILE_PATH = "resources/tasks-test.csv";
+public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
+    public static final String DATA_FILE_PATH = "testresources/tasks-test.csv";
 
     @Override
     public FileBackedTasksManager createInstance() {
