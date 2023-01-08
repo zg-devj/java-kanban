@@ -3,7 +3,9 @@ package service;
 import model.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -769,6 +771,36 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "Статус эпика c подзадачами IN_PROGRESS , должен быть IN_PROGRESS");
     }
     //endregion
+
+    @Test
+    public void checkEpicForSubtask() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        final int epicId = taskManager.addEpic(epic);
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        int subtaskId1 = taskManager.addSubtask(subtask1);
+
+        final Subtask subtask = taskManager.getSubtask(subtaskId1);
+
+        assertEquals(epicId, subtask.getEpicId(), "Эпики не соответствуют");
+    }
+
+    @Test
+    public void checkSubtasksForEpic() {
+        TaskManager taskManager = createInstance();
+        final Epic epic = new Epic("Epic", "Description");
+        final int epicId = taskManager.addEpic(epic);
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
+        final int subtaskId2 = taskManager.addSubtask(subtask2);
+
+        final Epic epicCheck = taskManager.getEpic(epicId);
+        Set<Integer> subtaskIds = epicCheck.getSubtaskIds();
+        assertEquals(2,subtaskIds.size(),"Не соответствие кол-ву подзадач");
+        assertTrue(subtaskIds.contains(subtaskId1));
+        assertTrue(subtaskIds.contains(subtaskId2));
+    }
 
     //region History
     @Test
