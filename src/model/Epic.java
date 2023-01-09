@@ -1,10 +1,14 @@
 package model;
 
+import java.time.Instant;
 import java.util.HashSet;
 
 // Эпик
 public class Epic extends BaseTask {
+
     private HashSet<Integer> subtaskIds;
+
+    private Instant endTime;
 
     public Epic(String title, String description) {
         super(title, description);
@@ -16,6 +20,16 @@ public class Epic extends BaseTask {
         return subtaskIds;
     }
 
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+
     public void add(Subtask subtask) {
         if (!subtaskIds.contains(subtask.getId())) {
             // Устанавливаем у Подзадачи Id родителя
@@ -25,7 +39,7 @@ public class Epic extends BaseTask {
         }
     }
 
-    // метод толька для загрузки данных из файла
+    // метод только для загрузки данных из файла
     public void add(Integer id) {
         if (!subtaskIds.contains(id)) {
             subtaskIds.add(id);

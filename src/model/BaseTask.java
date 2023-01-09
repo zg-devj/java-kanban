@@ -1,8 +1,14 @@
 package model;
 
+import util.DateTimeConverter;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public abstract class BaseTask {
+    final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     // Идентификатор
     protected int id;
     // Заголовок
@@ -11,14 +17,14 @@ public abstract class BaseTask {
     protected String descriptions;
     // Статус задачи
     protected Status status;
+    // момент начала задачи
+    protected Instant startTime = null;
+    // период
+    protected Duration duration = null;
 
     public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
-    }
-
-    public BaseTask(String title) {
-        this(title, null);
     }
 
     public int getId() {
@@ -51,6 +57,42 @@ public abstract class BaseTask {
 
     public void setDescriptions(String descriptions) {
         this.descriptions = descriptions;
+    }
+
+    // TODO: 09.01.2023 test
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    // TODO: 09.01.2023 test
+    public void setStartTime(long milli) {
+        this.startTime = DateTimeConverter.fromMilliToInstant(milli);
+    }
+
+    // TODO: 09.01.2023 test
+
+    /**
+     * Установить строкой время старта задачи
+     *
+     * @param dateTime format "dd.MM.yyyy HH:mm"
+     */
+    public void setStartTime(String dateTime) {
+        this.startTime = DateTimeConverter.fromStringToInstant(dateTime);
+    }
+
+    // TODO: 09.01.2023 test
+    public long getDurationMinute() {
+        return duration.toMinutes();
+    }
+
+    // TODO: 09.01.2023 test
+    public void setDuration(long minute) {
+        this.duration = Duration.ofMinutes(minute);
+    }
+
+    // TODO: 09.01.2023 test
+    public Instant getEndTime() {
+        return startTime.plusSeconds(duration.toSeconds());
     }
 
     @Override

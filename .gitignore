@@ -23,7 +23,8 @@
 hs_err_pid*
 
 info/
-src/example/
+src/example
+src/mytests
 out/
 
 resources/*.csv

@@ -6,13 +6,27 @@ package model;
 // parentId = epicId -> Subtask
 // не нарушает ли разделение этих сущностей принципам DRY
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 // Подзадача
 public class Subtask extends BaseTask {
     private int epicId;
 
     public Subtask(int epicId, String title, String descriptions) {
+        this(epicId,title,descriptions,null,0);
+    }
+
+    public Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
         super(title, descriptions);
         this.epicId = epicId;
+        if (minuteDuration != 0) {
+            setDuration(minuteDuration);
+        }
+        if (startTime != null) {
+            setStartTime(startTime);
+        }
         setStatus(Status.NEW);
     }
 
