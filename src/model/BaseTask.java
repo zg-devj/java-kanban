@@ -69,6 +69,10 @@ public abstract class BaseTask {
         this.startTime = DateTimeConverter.fromMilliToInstant(milli);
     }
 
+    public void setStartTime(Instant instant) {
+        this.startTime = instant;
+    }
+
     // TODO: 09.01.2023 test
 
     /**
@@ -86,13 +90,16 @@ public abstract class BaseTask {
     }
 
     // TODO: 09.01.2023 test
-    public void setDuration(long minute) {
+    public void setDurationMinute(long minute) {
         this.duration = Duration.ofMinutes(minute);
     }
 
     // TODO: 09.01.2023 test
     public Instant getEndTime() {
-        return startTime.plusSeconds(duration.toSeconds());
+        if(startTime!=null) {
+            return startTime.plusSeconds(duration.toSeconds());
+        }
+        return null;
     }
 
     @Override

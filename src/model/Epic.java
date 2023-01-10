@@ -13,6 +13,8 @@ public class Epic extends BaseTask {
     public Epic(String title, String description) {
         super(title, description);
         subtaskIds = new HashSet<>();
+        setDurationMinute(0);
+        this.startTime = null;
         setStatus(Status.NEW);
     }
 
@@ -20,8 +22,8 @@ public class Epic extends BaseTask {
         return subtaskIds;
     }
 
-    public void setEndTime(Instant endTime) {
-        this.endTime = endTime;
+    public void setEndTime(Instant instant) {
+        this.endTime = instant;
     }
 
     @Override

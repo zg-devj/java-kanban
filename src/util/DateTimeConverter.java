@@ -12,7 +12,7 @@ public class DateTimeConverter {
     public static final ZoneId ZONE_ID = ZoneId.of("Europe/Moscow");
 
     public static Instant fromStringToInstant(String datetime) {
-        LocalDateTime dateTime = LocalDateTime.parse("09.01.2023 15:00", FORMATTER_INPUT);
+        LocalDateTime dateTime = LocalDateTime.parse(datetime, FORMATTER_INPUT);
         return ZonedDateTime.of(dateTime, ZONE_ID).toInstant();
     }
 
@@ -21,7 +21,10 @@ public class DateTimeConverter {
     }
 
     public static String fromInstantToString(Instant instant) {
-        ZonedDateTime zonedDateTime1 = ZonedDateTime.ofInstant(instant, ZONE_ID);
-        return zonedDateTime1.format(DateTimeFormatter.ofPattern(OUTPUT_FORMAT));
+        if(instant!=null) {
+            ZonedDateTime zonedDateTime1 = ZonedDateTime.ofInstant(instant, ZONE_ID);
+            return zonedDateTime1.format(DateTimeFormatter.ofPattern(OUTPUT_FORMAT));
+        }
+        return "Не указано";
     }
 }

@@ -3,15 +3,18 @@ package service.impl;
 import model.*;
 import service.HistoryManager;
 import service.TaskManager;
+import util.DateTimeConverter;
 import util.Identifier;
 import util.Managers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
+    private final static int SECONDS_IN_MINUTE = 60;
     // Идентификаторы для Task, Subtask, Epic
     protected Identifier idGen;
 
@@ -139,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(subtask.getEpicId()).add(subtask);
             // Обновляем статус
             updateEpicStatus(subtask.getEpicId());
+            updateEpicTimeInterval(subtask.getEpicId());
             return subtask.getId();
         }
         return subtask.getId();
@@ -148,10 +152,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
-            if(subtasks.containsKey(subtask.getId())) {
+            if (subtasks.containsKey(subtask.getId())) {
                 subtasks.put(subtask.getId(), subtask);
                 // Обновляем статус
                 updateEpicStatus(subtask.getEpicId());
+                updateEpicTimeInterval(subtask.getEpicId());
             }
         }
     }
@@ -169,6 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.remove(id);
             // Обновляем статус у Epic
             updateEpicStatus(epicId);
+            updateEpicTimeInterval(epicId);
         }
     }
 
@@ -179,7 +185,8 @@ public class InMemoryTaskManager implements TaskManager {
             // удалить id сабтасков из списка в эпике
             deleteSubtask(subtask.getId());
             // Обновляем статус
-            updateEpicStatus(subtask.getEpicId());
+            // TODO: 09.01.2023 Delete, вызывается в deleteSubtask(subtask.getId());
+            //updateEpicStatus(subtask.getEpicId());
         }
     }
     //endregion
@@ -276,6 +283,56 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epics.get(epicId).setStatus(Status.NEW);
         }
+    }
+
+    // обновляем данные для Эпика по временным интервалам
+    private void updateEpicTimeInterval(int epicId) {
+        Epic epic = epics.get(epicId);
+        epic.setEndTime(null);
+        List<Subtask> subtaskList = getSubtasksByEpicId(epicId);
+        Long durationMinute = 0L;
+        Instant instantFirst = null;
+        Instant instantLast = null;
+        Long durationLast = 0L;
+        for (Subtask subtask : subtaskList) {
+            // TODO: 10.01.2023 Delete 
+//            System.out.println(
+//                    DateTimeConverter.fromInstantToString(subtask.getStartTime())
+//                            + " : "
+//                            + subtask.getDurationMinute() + " : "
+//                            + DateTimeConverter.fromInstantToString(subtask.getEndTime())
+//            );
+            if (subtask.getDurationMinute() > 0L) {
+                durationMinute += subtask.getDurationMinute();
+            }
+            if (subtask.getStartTime() != null) {
+                if (instantFirst != null) {
+                    if (subtask.getStartTime().isBefore(instantFirst)) {
+                        instantFirst = subtask.getStartTime();
+                    }
+                } else {
+                    instantFirst = subtask.getStartTime();
+                }
+                if (instantLast != null) {
+                    if (subtask.getStartTime().isAfter(instantLast)) {
+                        instantLast = subtask.getStartTime();
+                        durationLast = subtask.getDurationMinute();
+                    }
+                } else {
+                    instantLast = subtask.getStartTime();
+                    durationLast = subtask.getDurationMinute();
+                }
+            }
+        }
+        epic.setDurationMinute(durationMinute);
+        epic.setStartTime(instantFirst);
+        if (instantLast != null) {
+            epic.setEndTime(instantLast.plusSeconds(durationLast * SECONDS_IN_MINUTE));
+        }
+        // TODO: 10.01.2023 Delete
+//        System.out.println("Epic: \nduration=" + epic.getDurationMinute()
+//                + "\n startTime=" + DateTimeConverter.fromInstantToString(epic.getStartTime())
+//                + "\n endTime=" + DateTimeConverter.fromInstantToString(epic.getEndTime()));
     }
 
     @Override

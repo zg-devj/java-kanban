@@ -21,9 +21,7 @@ public class Subtask extends BaseTask {
     public Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
         super(title, descriptions);
         this.epicId = epicId;
-        if (minuteDuration != 0) {
-            setDuration(minuteDuration);
-        }
+        setDurationMinute(minuteDuration);
         if (startTime != null) {
             setStartTime(startTime);
         }
