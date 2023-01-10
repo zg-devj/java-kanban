@@ -3,7 +3,6 @@ package service.impl;
 import model.*;
 import service.HistoryManager;
 import service.TaskManager;
-import util.DateTimeConverter;
 import util.Identifier;
 import util.Managers;
 
@@ -286,7 +285,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // обновляем данные для Эпика по временным интервалам
-    private void updateEpicTimeInterval(int epicId) {
+    protected void updateEpicTimeInterval(int epicId) {
         Epic epic = epics.get(epicId);
         epic.setEndTime(null);
         List<Subtask> subtaskList = getSubtasksByEpicId(epicId);

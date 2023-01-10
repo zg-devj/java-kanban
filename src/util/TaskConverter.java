@@ -2,6 +2,7 @@ package util;
 
 import model.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,16 +10,27 @@ import java.util.List;
 // преобразование тасков и истории в строку и обратно
 public class TaskConverter {
     // преобразуем таск в строку
+    // Формат: 3,TASK,Title,NEW,Description,1673337857927,15
+    // Формат: 3,TASK,Title,NEW,Description,null,0
     public static String taskToString(Task task) {
-        return String.format("%d,%s,%s,%s,%s%n",
+
+        String savedStartTime = (task.getStartTime() == null)
+                ? "null" : String.valueOf(task.getStartTime().toEpochMilli());
+
+        return String.format("%d,%s,%s,%s,%s,%s,%d%n",
                 task.getId(), TaskType.TASK.name(), task.getTitle(),
-                task.getStatus().name(), task.getDescriptions());
+                task.getStatus().name(), task.getDescriptions(),
+                savedStartTime, task.getDurationMinute());
     }
 
     public static String taskToString(Subtask subtask) {
-        return String.format("%d,%s,%s,%s,%s,%d%n",
+        String savedStartTime = (subtask.getStartTime() == null)
+                ? "null" : String.valueOf(subtask.getStartTime().toEpochMilli());
+
+        return String.format("%d,%s,%s,%s,%s,%s,%d,%d%n",
                 subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
                 subtask.getStatus().name(), subtask.getDescriptions(),
+                savedStartTime, subtask.getDurationMinute(),
                 subtask.getEpicId());
     }
 
@@ -47,11 +59,19 @@ public class TaskConverter {
         String title = taskLine[2].toString();
         Status status = Status.valueOf(taskLine[3]);
         String desc = taskLine[4].toString().equals("null") ? null : taskLine[4].toString();
+        Instant startTime;
+        long duration;
         switch (type) {
             case TASK:
+                startTime = taskLine[5].toString().equals("null")
+                        ? null : Instant.ofEpochMilli(Long.parseLong(taskLine[5]));
+                duration = Long.parseLong(taskLine[6]);
+
                 Task task = new Task(title, desc);
                 task.setId(id);
                 task.setStatus(status);
+                task.setStartTime(startTime);
+                task.setDurationMinute(duration);
                 return task;
             case EPIC:
                 Epic epic = new Epic(title, desc);
@@ -65,10 +85,16 @@ public class TaskConverter {
                 }
                 return epic;
             case SUBTASK:
-                Integer epicId = Integer.valueOf(taskLine[5]);
+                startTime = taskLine[5].toString().equals("null")
+                        ? null : Instant.ofEpochMilli(Long.parseLong(taskLine[5]));
+                duration = Long.parseLong(taskLine[6]);
+
+                Integer epicId = Integer.valueOf(taskLine[7]);
                 Subtask subtask = new Subtask(epicId, title, desc);
                 subtask.setId(id);
                 subtask.setStatus(status);
+                subtask.setStartTime(startTime);
+                subtask.setDurationMinute(duration);
                 return subtask;
         }
         return null;
@@ -114,4 +140,5 @@ public class TaskConverter {
             return "";
         }
     }
+
 }
