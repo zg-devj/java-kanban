@@ -33,6 +33,9 @@ public class SortedBaseTask {
         BaseTask prevTask = null;
         while (iter.hasNext()) {
             BaseTask value = iter.next();
+            if (value.getStartTime() == null) {
+                continue;
+            }
             if (value.getStartTime().equals(task.getStartTime())) {
                 isValid = false;
                 break;

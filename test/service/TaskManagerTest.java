@@ -1,15 +1,18 @@
 package service;
 
+import exceptions.OutOfTimeIntervalException;
 import model.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
+    public static final String ERROR_MESSAGE = "Добавляемая задача пересекается с существующими";
+
     public abstract T createInstance();
 
     //region Task
@@ -111,6 +114,47 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Task> tasks = taskManager.getAllTasks();
 
         assertEquals(2, tasks.size());
+    }
+
+    // проверка задачи на пересечение
+    @Test
+    public void checkingTheIntersectionTaskAddAndUpdate() {
+        TaskManager taskManager = createInstance();
+        final Task task1 = new Task("Task1", "Description");
+        task1.setStartTime("11.01.2023 12:00");
+        task1.setDurationMinute(30);
+        final int taskId1 = taskManager.addTask(task1);
+
+        final Task task2 = new Task("Task2", "Description");
+        task2.setStartTime("11.01.2023 11:00");
+        task2.setDurationMinute(30);
+        final int taskId2 = taskManager.addTask(task2);
+
+        final Task newTask = new Task("NewTask", "Description");
+        newTask.setStartTime("11.01.2023 12:15");
+        newTask.setDurationMinute(30);
+
+        // проверка на добавления
+        final OutOfTimeIntervalException ex1 = assertThrows(
+                OutOfTimeIntervalException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.addTask(newTask);
+                    }
+                }
+        );
+        assertEquals(ERROR_MESSAGE, ex1.getMessage());
+
+        // проверка на обновления
+        final Task savedTask = taskManager.getTask(taskId2);
+        savedTask.setDurationMinute(120);
+
+        final OutOfTimeIntervalException ex2 = assertThrows(
+                OutOfTimeIntervalException.class,
+                () -> taskManager.updateTask(savedTask)
+        );
+        assertEquals(ERROR_MESSAGE, ex2.getMessage());
     }
 
     // Нормальное поведение
@@ -358,6 +402,56 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Subtask> subtasks = taskManager.getAllSubtasks();
 
         assertEquals(2, subtasks.size());
+    }
+
+    // проверка подзадачи на пересечение
+    @Test
+    public void checkingTheIntersectionSubtaskAddAndUpdate() {
+        TaskManager taskManager = createInstance();
+
+        final Epic epic = new Epic("Epic", "Desc");
+        final int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        subtask1.setStartTime("11.01.2023 12:00");
+        subtask1.setDurationMinute(30);
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+
+        final Subtask subtask2 = new Subtask(epicId, "Subtask1", "Description");
+        subtask2.setStartTime("11.01.2023 11:00");
+        subtask2.setDurationMinute(30);
+        final int subtaskId2 = taskManager.addSubtask(subtask2);
+
+        final Subtask newSubtask = new Subtask(epicId, "NewSubtask", "Description");
+        newSubtask.setStartTime("11.01.2023 12:15");
+        newSubtask.setDurationMinute(30);
+
+        // проверка на добавления
+        final OutOfTimeIntervalException ex1 = assertThrows(
+                OutOfTimeIntervalException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.addSubtask(newSubtask);
+                    }
+                }
+        );
+        assertEquals(ERROR_MESSAGE, ex1.getMessage());
+
+        // проверка на обновления
+        final Subtask savedSubtask = taskManager.getSubtask(subtaskId2);
+        savedSubtask.setDurationMinute(120);
+
+        final OutOfTimeIntervalException ex2 = assertThrows(
+                OutOfTimeIntervalException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        taskManager.updateSubtask(savedSubtask);
+                    }
+                }
+        );
+        assertEquals(ERROR_MESSAGE, ex2.getMessage());
     }
 
     // Нормальное поведение
@@ -681,6 +775,47 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Epic> epics2 = taskManager.getAllEpics();
         assertEquals(0, epics2.size(), "Неверное количество эпиков");
     }
+
+
+    @Test
+    public void checkEpicInterval() {
+        TaskManager taskManager = createInstance();
+
+        final Epic epic = new Epic("Epic", "EpicDesc");
+        final int epicId = taskManager.addEpic(epic);
+
+        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(subtask1);
+
+        final Epic savedEpic1 = taskManager.getEpic(epicId);
+
+        assertNull(savedEpic1.getStartTime());
+        assertNull(savedEpic1.getEndTime());
+        assertEquals(0, savedEpic1.getDurationMinute());
+
+        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
+        subtask2.setStartTime("11.01.2023 12:00");
+        subtask2.setDurationMinute(30);
+        final int subtaskId2 = taskManager.addSubtask(subtask2);
+
+        final Epic savedEpic2 = taskManager.getEpic(epicId);
+
+        assertEquals(1673427600000L, savedEpic2.getStartTime().toEpochMilli());
+        assertEquals(30, savedEpic2.getDurationMinute());
+        assertEquals(1673429400000L, savedEpic2.getEndTime().toEpochMilli());
+
+
+        final Subtask subtask3 = new Subtask(epicId, "Subtask3", "Description");
+        subtask3.setStartTime("11.01.2023 15:00");
+        subtask3.setDurationMinute(6 * 60); // 6ч
+        final int subtaskId3 = taskManager.addSubtask(subtask3);
+
+        final Epic savedEpic3 = taskManager.getEpic(epicId);
+
+        assertEquals(1673427600000L, savedEpic3.getStartTime().toEpochMilli());
+        assertEquals(390L, savedEpic3.getDurationMinute()); // 360 + 30
+        assertEquals(1673460000000L, savedEpic3.getEndTime().toEpochMilli());
+    }
     //endregion
 
     //region Epic Status Test
@@ -772,6 +907,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
     //endregion
 
+    //region Зависимости эпика и подзадачи
     @Test
     public void checkEpicForSubtask() {
         TaskManager taskManager = createInstance();
@@ -797,10 +933,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final Epic epicCheck = taskManager.getEpic(epicId);
         Set<Integer> subtaskIds = epicCheck.getSubtaskIds();
-        assertEquals(2,subtaskIds.size(),"Не соответствие кол-ву подзадач");
+        assertEquals(2, subtaskIds.size(), "Не соответствие кол-ву подзадач");
         assertTrue(subtaskIds.contains(subtaskId1));
         assertTrue(subtaskIds.contains(subtaskId2));
     }
+    //endregion
 
     //region History
     @Test

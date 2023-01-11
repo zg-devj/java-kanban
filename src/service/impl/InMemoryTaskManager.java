@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -94,6 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         // task.getId() не может вернуть null, возвращает int
         if (task != null && tasks.containsKey(task.getId())) {
+
             if (sortedTasks.validate(task)) {
                 sortedTasks.remove(task);
                 tasks.put(task.getId(), task);
@@ -101,6 +101,7 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
             }
+
         }
     }
 
@@ -159,9 +160,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
+            subtask.setId(idGen.next());
             if (sortedTasks.validate(subtask)) {
                 // Создаем Subtask
-                subtask.setId(idGen.next());
                 subtasks.put(subtask.getId(), subtask);
                 // добавляем в отсортированный список
                 sortedTasks.add(subtask);
@@ -290,11 +291,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     //endregion
-
-    // отсортированный по startTime список задач и подзадач
-    public TreeSet<BaseTask> getPrioritizedTasks() {
-        return sortedTasks.getList();
-    }
 
     // Обновление статуса Epic
     private void updateEpicStatus(int epicId) {
