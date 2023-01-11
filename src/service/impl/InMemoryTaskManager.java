@@ -1,5 +1,6 @@
 package service.impl;
 
+import exceptions.OutOfTimeIntervalException;
 import model.*;
 import service.HistoryManager;
 import service.TaskManager;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -36,15 +36,6 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.sortedTasks = new SortedBaseTask();
-        BaseTask.SetValid(new Predicate<BaseTask>() {
-            @Override
-            public boolean test(BaseTask task) {
-                if(sortedTasks.validate(task)){
-                    return true;
-                }
-                throw new RuntimeException("Ошибка");
-            }
-        });
     }
 
     // возвращаем историю
@@ -88,9 +79,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addTask(Task task) {
         task.setId(idGen.next());
-        tasks.putIfAbsent(task.getId(), task);
-        // добавляем в отсортированный список
-        sortedTasks.add(task);
+        if (sortedTasks.validate(task)) {
+            tasks.putIfAbsent(task.getId(), task);
+            // добавляем в отсортированный список
+            sortedTasks.add(task);
+        } else {
+            throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+        }
         return task.getId();
     }
 
@@ -99,9 +94,13 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         // task.getId() не может вернуть null, возвращает int
         if (task != null && tasks.containsKey(task.getId())) {
-            sortedTasks.remove(task);
-            tasks.put(task.getId(), task);
-            sortedTasks.add(task);
+            if (sortedTasks.validate(task)) {
+                sortedTasks.remove(task);
+                tasks.put(task.getId(), task);
+                sortedTasks.add(task);
+            } else {
+                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+            }
         }
     }
 
@@ -160,16 +159,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
-            // Создаем Subtask
-            subtask.setId(idGen.next());
-            subtasks.put(subtask.getId(), subtask);
-            // добавляем в отсортированный список
-            sortedTasks.add(subtask);
-            // Привязываем к epic
-            epics.get(subtask.getEpicId()).add(subtask);
-            // Обновляем статус
-            updateEpicStatus(subtask.getEpicId());
-            updateEpicTimeInterval(subtask.getEpicId());
+            if (sortedTasks.validate(subtask)) {
+                // Создаем Subtask
+                subtask.setId(idGen.next());
+                subtasks.put(subtask.getId(), subtask);
+                // добавляем в отсортированный список
+                sortedTasks.add(subtask);
+                // Привязываем к epic
+                epics.get(subtask.getEpicId()).add(subtask);
+                // Обновляем статус
+                updateEpicStatus(subtask.getEpicId());
+                updateEpicTimeInterval(subtask.getEpicId());
+            } else {
+                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+            }
         }
         return subtask.getId();
     }
@@ -179,12 +182,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
             if (subtasks.containsKey(subtask.getId())) {
-                sortedTasks.remove(subtask);
-                subtasks.put(subtask.getId(), subtask);
-                sortedTasks.add(subtask);
-                // Обновляем статус
-                updateEpicStatus(subtask.getEpicId());
-                updateEpicTimeInterval(subtask.getEpicId());
+                if (sortedTasks.validate(subtask)) {
+                    sortedTasks.remove(subtask);
+                    subtasks.put(subtask.getId(), subtask);
+                    sortedTasks.add(subtask);
+                    // Обновляем статус
+                    updateEpicStatus(subtask.getEpicId());
+                    updateEpicTimeInterval(subtask.getEpicId());
+                } else {
+                    throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+                }
             }
         }
     }
@@ -199,7 +206,7 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(epicId).getSubtaskIds().remove(id);
             // удаляем из истории
             historyManager.remove(id);
-            // добавляем из отсортированного списка
+            // удаляем из отсортированного списка
             sortedTasks.remove(subtask);
             // Удаляем Subtask
             subtasks.remove(id);
@@ -216,8 +223,7 @@ public class InMemoryTaskManager implements TaskManager {
             // удалить id сабтасков из списка в эпике
             deleteSubtask(subtask.getId());
             // Обновляем статус
-            // TODO: 09.01.2023 Delete, вызывается в deleteSubtask(subtask.getId());
-            //updateEpicStatus(subtask.getEpicId());
+            updateEpicStatus(subtask.getEpicId());
         }
     }
     //endregion
@@ -323,8 +329,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     // обновляем данные для Эпика по временным интервалам
     protected void updateEpicTimeInterval(int epicId) {
-        // TODO: 10.01.2023 Delete
-        //System.out.println("-".repeat(10));
         Epic epic = epics.get(epicId);
         epic.setEndTime(null);
         List<Subtask> subtaskList = getSubtasksByEpicId(epicId);
@@ -333,13 +337,6 @@ public class InMemoryTaskManager implements TaskManager {
         Instant instantLast = null;
         Long durationLast = 0L;
         for (Subtask subtask : subtaskList) {
-            // TODO: 10.01.2023 Delete 
-//            System.out.println(
-//                    DateTimeConverter.fromInstantToString(subtask.getStartTime())
-//                            + " : "
-//                            + subtask.getDurationMinute() + " : "
-//                            + DateTimeConverter.fromInstantToString(subtask.getEndTime())
-//            );
             if (subtask.getDurationMinute() > 0L) {
                 durationMinute += subtask.getDurationMinute();
             }
@@ -367,10 +364,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (instantLast != null) {
             epic.setEndTime(instantLast.plusSeconds(durationLast * SECONDS_IN_MINUTE));
         }
-        // TODO: 10.01.2023 Delete
-//        System.out.println("Epic: \nduration=" + epic.getDurationMinute()
-//                + "\n startTime=" + DateTimeConverter.fromInstantToString(epic.getStartTime())
-//                + "\n endTime=" + DateTimeConverter.fromInstantToString(epic.getEndTime()));
     }
 
     @Override

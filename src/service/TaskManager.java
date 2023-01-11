@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface TaskManager {
-    // TODO: 11.01.2023 Delete
-    Set<BaseTask> getPrioritizedTasks();
-    SortedBaseTask getSortedTasks();
-
     //region Task
     Task getTask(int id);
 

@@ -8,17 +8,12 @@ package model;
 
 import util.DateTimeConverter;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 // Подзадача
 public class Subtask extends BaseTask {
     private int epicId;
 
     public Subtask(int epicId, String title, String descriptions) {
-        this(epicId,title,descriptions,null,0);
+        this(epicId, title, descriptions, null, 0);
     }
 
     private Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
@@ -40,27 +35,8 @@ public class Subtask extends BaseTask {
     }
 
     @Override
-    public void setStartTime(Instant instant) {
-        super.setStartTime(instant);
-        onValid.test(this);
-    }
-
-    @Override
-    public void setStartTime(String dateTime) {
-        super.setStartTime(dateTime);
-        onValid.test(this);
-    }
-
-    @Override
-    public void setDurationMinute(long minute) {
-        super.setDurationMinute(minute);
-        onValid.test(this);
-    }
-
-    // TODO: 11.01.2023 Remove \n
-    @Override
     public String toString() {
-        return "\nSubtask{" +
+        return "Subtask{" +
                 "id=" + id +
                 ", epicId=" + epicId +
                 ", title='" + title + '\'' +

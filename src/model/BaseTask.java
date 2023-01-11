@@ -25,11 +25,6 @@ public abstract class BaseTask {
     // период
     protected Duration duration = Duration.ZERO;
 
-    public static Predicate<BaseTask> onValid;
-    public static void SetValid(Predicate<BaseTask> valid){
-       BaseTask.onValid = valid;
-    }
-
     public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
