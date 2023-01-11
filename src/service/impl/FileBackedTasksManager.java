@@ -7,6 +7,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import service.HistoryManager;
+import util.SortedBaseTask;
 import util.TaskConverter;
 import util.TaskType;
 
@@ -28,6 +29,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private void addItemToTaskList(Task task) {
         getTasks().put(task.getId(), task);
         idGen.setMaxId(task.getId());
+        getSortedTasks().add(task);
     }
 
     private void addItemToEpicList(Epic epic) {
@@ -38,6 +40,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private void addItemToSubtaskList(Subtask subtask) {
         getSubtasks().put(subtask.getId(), subtask);
         idGen.setMaxId(subtask.getId());
+        getSortedTasks().add(subtask);
         updateEpicTimeInterval(subtask.getEpicId());
     }
 
@@ -132,6 +135,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
     //endregion
+
+
+    @Override
+    public SortedBaseTask getSortedTasks() {
+        return super.getSortedTasks();
+    }
 
     // Сохраняем состояние задач и истории
     private void save() {

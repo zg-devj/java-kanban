@@ -1,11 +1,14 @@
 package model;
 
 import util.DateTimeConverter;
+import util.SortedBaseTask;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class BaseTask {
     final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
@@ -20,7 +23,12 @@ public abstract class BaseTask {
     // момент начала задачи
     protected Instant startTime = null;
     // период
-    protected Duration duration = null;
+    protected Duration duration = Duration.ZERO;
+
+    public static Predicate<BaseTask> onValid;
+    public static void SetValid(Predicate<BaseTask> valid){
+       BaseTask.onValid = valid;
+    }
 
     public BaseTask(String title, String descriptions) {
         this.title = title;
@@ -59,21 +67,13 @@ public abstract class BaseTask {
         this.descriptions = descriptions;
     }
 
-    // TODO: 09.01.2023 test
     public Instant getStartTime() {
         return startTime;
-    }
-
-    // TODO: 09.01.2023 test
-    public void setStartTime(long milli) {
-        this.startTime = DateTimeConverter.fromMilliToInstant(milli);
     }
 
     public void setStartTime(Instant instant) {
         this.startTime = instant;
     }
-
-    // TODO: 09.01.2023 test
 
     /**
      * Установить строкой время старта задачи
@@ -84,19 +84,16 @@ public abstract class BaseTask {
         this.startTime = DateTimeConverter.fromStringToInstant(dateTime);
     }
 
-    // TODO: 09.01.2023 test
     public long getDurationMinute() {
         return duration.toMinutes();
     }
 
-    // TODO: 09.01.2023 test
     public void setDurationMinute(long minute) {
         this.duration = Duration.ofMinutes(minute);
     }
 
-    // TODO: 09.01.2023 test
     public Instant getEndTime() {
-        if(startTime!=null) {
+        if (startTime != null) {
             return startTime.plusSeconds(duration.toSeconds());
         }
         return null;
@@ -107,11 +104,12 @@ public abstract class BaseTask {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseTask task = (BaseTask) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(descriptions, task.descriptions) && status == task.status;
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, descriptions, status);
+        return Objects.hash(id);
     }
 }
+

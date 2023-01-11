@@ -6,7 +6,10 @@ package model;
 // parentId = epicId -> Subtask
 // не нарушает ли разделение этих сущностей принципам DRY
 
+import util.DateTimeConverter;
+
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -18,7 +21,7 @@ public class Subtask extends BaseTask {
         this(epicId,title,descriptions,null,0);
     }
 
-    public Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
+    private Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
         super(title, descriptions);
         this.epicId = epicId;
         setDurationMinute(minuteDuration);
@@ -37,13 +40,34 @@ public class Subtask extends BaseTask {
     }
 
     @Override
+    public void setStartTime(Instant instant) {
+        super.setStartTime(instant);
+        onValid.test(this);
+    }
+
+    @Override
+    public void setStartTime(String dateTime) {
+        super.setStartTime(dateTime);
+        onValid.test(this);
+    }
+
+    @Override
+    public void setDurationMinute(long minute) {
+        super.setDurationMinute(minute);
+        onValid.test(this);
+    }
+
+    // TODO: 11.01.2023 Remove \n
+    @Override
     public String toString() {
-        return "Subtask{" +
+        return "\nSubtask{" +
                 "id=" + id +
                 ", epicId=" + epicId +
                 ", title='" + title + '\'' +
                 ", description='" + descriptions + '\'' +
                 ", status=" + status +
+                ", startTime=" + DateTimeConverter.fromInstantToString(startTime) +
+                ", duration=" + getDurationMinute() +
                 "}";
     }
 }

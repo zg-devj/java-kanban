@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Instant;
+
 // Задача
 public class Task extends BaseTask {
 
@@ -7,7 +9,7 @@ public class Task extends BaseTask {
         this(title, descriptions, null, 0);
     }
 
-    public Task(String title, String descriptions, String startTime, long minuteDuration) {
+    private Task(String title, String descriptions, String startTime, long minuteDuration) {
         super(title, descriptions);
         setDurationMinute(minuteDuration);
         if (startTime != null) {
@@ -17,12 +19,33 @@ public class Task extends BaseTask {
     }
 
     @Override
+    public void setStartTime(Instant instant) {
+        super.setStartTime(instant);
+        onValid.test(this);
+    }
+
+    @Override
+    public void setStartTime(String dateTime) {
+        super.setStartTime(dateTime);
+        onValid.test(this);
+    }
+
+    @Override
+    public void setDurationMinute(long minute) {
+        super.setDurationMinute(minute);
+        onValid.test(this);
+    }
+
+    // TODO: 11.01.2023 Remove \n
+    @Override
     public String toString() {
-        return "Task{" +
+        return "\nTask{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", descriptions='" + descriptions + '\'' +
                 ", status=" + status +
+                ", startTime=" + startTime +
+                ", duration=" + getDurationMinute() +
                 '}';
     }
 }
