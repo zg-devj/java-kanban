@@ -133,9 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Создаем Subtask и добавляем его к эпику
-    // Ваше замечание ... не должно быть возможности создать сабтаск без эпика
-    // addSubtask был приватным и использовался только в этом методе (удалил метод)
-    // Во время добавления сабтаска к эпику, сабтаск не имеет id эпика
+    // Вынес epicId из Subtask в отдельное поле
     @Override
     public int addSubtask(int epicId, Subtask subtask) {
         if (epics.containsKey(epicId)) {
@@ -149,8 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
                 // Привязываем к epic
                 epics.get(subtask.getEpicId()).add(subtask);
                 // Обновляем статус
-                updateEpicStatus(subtask.getEpicId());
-                updateEpicTimeInterval(subtask.getEpicId());
+                updateEpicState(subtask.getEpicId());
             } else {
                 throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
             }
@@ -161,18 +158,15 @@ public class InMemoryTaskManager implements TaskManager {
     // Обновление Subtask
     @Override
     public void updateSubtask(Subtask subtask) {
-        if (epics.containsKey(subtask.getEpicId())) {
-            if (subtasks.containsKey(subtask.getId())) {
-                if (sortedTasks.validate(subtask)) {
-                    sortedTasks.remove(subtask);
-                    subtasks.put(subtask.getId(), subtask);
-                    sortedTasks.add(subtask);
-                    // Обновляем статус
-                    updateEpicStatus(subtask.getEpicId());
-                    updateEpicTimeInterval(subtask.getEpicId());
-                } else {
-                    throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
-                }
+        if (epics.containsKey(subtask.getEpicId()) && subtasks.containsKey(subtask.getId())) {
+            if (sortedTasks.validate(subtask)) {
+                sortedTasks.remove(subtask);
+                subtasks.put(subtask.getId(), subtask);
+                sortedTasks.add(subtask);
+                // Обновляем статус
+                updateEpicState(subtask.getEpicId());
+            } else {
+                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
             }
         }
     }
@@ -192,8 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
             // Удаляем Subtask
             subtasks.remove(id);
             // Обновляем статус у Epic
-            updateEpicStatus(epicId);
-            updateEpicTimeInterval(epicId);
+            updateEpicState(epicId);
         }
     }
 
@@ -340,6 +333,11 @@ public class InMemoryTaskManager implements TaskManager {
         if (instantLast != null) {
             epic.setEndTime(instantLast.plusSeconds(durationLast * SECONDS_IN_MINUTE));
         }
+    }
+
+    private void updateEpicState(int epicId) {
+        updateEpicStatus(epicId);
+        updateEpicTimeInterval(epicId);
     }
 
     @Override
