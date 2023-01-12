@@ -1,10 +1,38 @@
 Здравствуйте.
-
+1.
 Посмотрел изменения до ТЗ-5 включительно, все на месте, отката не происходило,
 ваши комментарии и рекомендации были учтены, если на мой взгляд был спорный вопрос по
 причине не знанию с моей стороны дальнейшего плана развитие проекта, я оставлял комментарии
 в коде (таких было всего несколько). В Т3-6 было мной пропущено восстановление id (задач)
 при получении данных из файла (исправил в классе Identifier). Плюс некоторые из ваших
 рекомендаций оставленные в предыдущих ТЗ я довыполнил.
+2.
+Расчеты и схема валидации моего кода в скриншоте
+(Реализовал ваш код, но он на дабавлении Task2 выдает false)
+Код:
+        TaskManager manager = Managers.getDefault();
+
+        Task task1 = new Task("Task1", "Desc","12.01.2023 09:00",30L);
+        int taskId1 = manager.addTask(task1);
+
+        Task task2 = new Task("Task2", "Desc", "12.01.2023 12:00",30L);
+        int taskId2 = manager.addTask(task2);
+
+        Subtask addedTask1 = new Subtask("AddedTask", "Desc");
+
+        // все семь вариантов, соответствуют скриншоту
+        // нежный раскомментировать
+        //addedTask1.setStartTime("12.01.2023 08:00"); //true
+        //addedTask1.setStartTime("12.01.2023 08:45"); //false
+        //addedTask1.setStartTime("12.01.2023 09:15"); //false
+        addedTask1.setStartTime("12.01.2023 10:00"); //true
+        //addedTask1.setStartTime("12.01.2023 11:45"); //false
+        //addedTask1.setStartTime("12.01.2023 12:15"); //false
+        //addedTask1.setStartTime("12.01.2023 12:45"); //true
+
+        addedTask1.setDurationMinute(30);
+        //Проверка
+        System.out.println(((InMemoryTaskManager)manager).getSortedTasks().validate(addedTask1));
+
 
 Спасибо.

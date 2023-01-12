@@ -24,27 +24,26 @@ public class SortedBaseTask {
         return listSorted;
     }
 
+    // код оставил свой, на все возможных случаях проверил, работает
+    // Скриншот и комментарии в папке /feedback
     public boolean validate(BaseTask task) {
-        boolean isValid = true;
         if (task.getStartTime() == null || listSorted.size() < 1) {
-            return isValid;
+            return true;
         }
         Iterator<BaseTask> iter = listSorted.iterator();
         BaseTask prevTask = null;
         while (iter.hasNext()) {
             BaseTask value = iter.next();
             if (value.getStartTime() == null) {
-                continue;
+                return true;
             }
             if (value.getStartTime().equals(task.getStartTime())) {
-                isValid = false;
-                break;
+                return false;
             }
             if (!iter.hasNext()) {
                 // последняя итерация
                 if (task.getStartTime().isAfter(value.getEndTime())) {
-                    isValid = true;
-                    break;
+                    return true;
                 }
             }
             if (value.getStartTime() == null || task.getStartTime().isAfter(value.getStartTime())) {
@@ -55,10 +54,9 @@ public class SortedBaseTask {
             }
             if (prevTask != null && prevTask.getEndTime().isAfter(task.getStartTime())
                     || task.getEndTime().isAfter(value.getStartTime())) {
-                isValid = false;
-                break;
+                return false;
             }
         }
-        return isValid;
+        return true;
     }
 }

@@ -7,9 +7,11 @@ import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.util.Identifier;
 import ru.ya.practicum.zakharovg.javakanban.util.Managers;
 import ru.ya.practicum.zakharovg.javakanban.util.SortedBaseTask;
+import ru.ya.practicum.zakharovg.javakanban.util.TaskComparator;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,10 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics;
 
     protected SortedBaseTask sortedTasks;
+
+    public SortedBaseTask getSortedTasks() {
+        return sortedTasks;
+    }
 
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
@@ -210,7 +216,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             this.historyManager.add(epic);
         }
-        return epic;
+        return epics.get(id);
     }
 
     // Получение всех записей Epic-ов
@@ -301,6 +307,30 @@ public class InMemoryTaskManager implements TaskManager {
 
     // обновляем данные для Эпика по временным интервалам
     protected void updateEpicTimeInterval(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic.getSubtaskIds().size() > 0) {
+            List<Subtask> subtaskList = getSubtasksByEpicId(epicId);
+            Collections.sort(subtaskList, new TaskComparator());
+            epic.setStartTime(subtaskList.get(0).getStartTime());
+            epic.setDurationMinute(
+                    subtaskList.stream().mapToLong(i -> i.getDurationMinute()).sum()
+            );
+            // последняя подзадача эпика с startTime != null
+            Subtask lastSubtask = subtaskList.stream()
+                    .filter(t -> t.getStartTime() != null)
+                    .reduce((f, s) -> s).orElse(null);
+            if (lastSubtask != null) {
+                // устанавливаем время окончания эпика
+                epic.setEndTime(lastSubtask.getEndTime());
+            }
+        } else {
+            epic.setStartTime((Instant) null);
+            epic.setDurationMinute(0);
+            epic.setEndTime(null);
+        }
+    }
+
+    protected void updateEpicTimeInterval2(int epicId) {
         Epic epic = epics.get(epicId);
         epic.setEndTime(null);
         List<Subtask> subtaskList = getSubtasksByEpicId(epicId);
