@@ -30,9 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected SortedBaseTask sortedTasks;
 
-    public SortedBaseTask getSortedTasks() {
-        return sortedTasks;
-    }
+
 
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
@@ -327,44 +325,6 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStartTime((Instant) null);
             epic.setDurationMinute(0);
             epic.setEndTime(null);
-        }
-    }
-
-    protected void updateEpicTimeInterval2(int epicId) {
-        Epic epic = epics.get(epicId);
-        epic.setEndTime(null);
-        List<Subtask> subtaskList = getSubtasksByEpicId(epicId);
-        Long durationMinute = 0L;
-        Instant instantFirst = null;
-        Instant instantLast = null;
-        Long durationLast = 0L;
-        for (Subtask subtask : subtaskList) {
-            if (subtask.getDurationMinute() > 0L) {
-                durationMinute += subtask.getDurationMinute();
-            }
-            if (subtask.getStartTime() != null) {
-                if (instantFirst != null) {
-                    if (subtask.getStartTime().isBefore(instantFirst)) {
-                        instantFirst = subtask.getStartTime();
-                    }
-                } else {
-                    instantFirst = subtask.getStartTime();
-                }
-                if (instantLast != null) {
-                    if (subtask.getStartTime().isAfter(instantLast)) {
-                        instantLast = subtask.getStartTime();
-                        durationLast = subtask.getDurationMinute();
-                    }
-                } else {
-                    instantLast = subtask.getStartTime();
-                    durationLast = subtask.getDurationMinute();
-                }
-            }
-        }
-        epic.setDurationMinute(durationMinute);
-        epic.setStartTime(instantFirst);
-        if (instantLast != null) {
-            epic.setEndTime(instantLast.plusSeconds(durationLast * SECONDS_IN_MINUTE));
         }
     }
 

@@ -1,9 +1,9 @@
 package ru.ya.practicum.zakharovg.javakanban.service.impl;
 
+import org.junit.jupiter.api.Test;
 import ru.ya.practicum.zakharovg.javakanban.model.Epic;
 import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
-import org.junit.jupiter.api.Test;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManagerTest;
 
 import java.io.IOException;
@@ -25,9 +25,9 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
 
     // если указан пустой файл
     @Test
-    public void loadEmptyFile() {
+    public void loadFromFile_AllLiastReturn0Items_EmptyFile() {
         Path path = Paths.get("testresources/tasks-empty.csv");
-        if(!Files.exists(path)) {
+        if (!Files.exists(path)) {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
@@ -42,7 +42,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    public void loadAndSaveEpicFromFile() {
+    public void loadFromFile_LoadAndSaveFromFile_OnlyEpic() {
         Path path = Paths.get("testresources/tasks-epic.csv");
         clearTestCsvFile(path);
 
@@ -59,18 +59,18 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    public void checkEmptyHistory() {
+    public void loadFromFile_LoadAndSaveHistoryFromFile_WhenNoCallGetMethods() {
         Path path = Paths.get("testresources/tasks-history.csv");
         clearTestCsvFile(path);
 
         // сохраняем данные
         FileBackedTasksManager manager1 = FileBackedTasksManager.loadFromFile(path);
-        final Task task = new Task("Task", "Task Description");
-        final int taskId =  manager1.addTask(task);
+        final Task task = new Task("Task", "Task Description", "12.05.2023 11:23");
+        final int taskId = manager1.addTask(task);
         final Epic epic = new Epic("Epic", "Epic Description");
         final int epicId = manager1.addEpic(epic);
-        final Subtask subtask = new Subtask( "Subtask", "Subtask Description");
-        final int subtaskId = manager1.addSubtask(epicId,subtask);
+        final Subtask subtask = new Subtask("Subtask", "Subtask Description", 20);
+        final int subtaskId = manager1.addSubtask(epicId, subtask);
 
         // восстанавливаем данные
         FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(path);
@@ -78,18 +78,18 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
     }
 
     @Test
-    public void loadAndSaveFullDataWithHistory() {
+    public void checkHistory_3HistoryCountSaveAndLoad_WhenCalledGetMethods() {
         Path path = Paths.get("testresources/tasks-full.csv");
         clearTestCsvFile(path);
 
         // сохраняем данные
         FileBackedTasksManager manager1 = FileBackedTasksManager.loadFromFile(path);
         final Task task = new Task("Task", "Task Description");
-        final int taskId =  manager1.addTask(task);
+        final int taskId = manager1.addTask(task);
         final Epic epic = new Epic("Epic", "Epic Description");
         final int epicId = manager1.addEpic(epic);
-        final Subtask subtask = new Subtask( "Subtask", "Subtask Description");
-        final int subtaskId = manager1.addSubtask(epicId,subtask);
+        final Subtask subtask = new Subtask("Subtask", "Subtask Description");
+        final int subtaskId = manager1.addSubtask(epicId, subtask);
 
         manager1.getTask(taskId);
         manager1.getEpic(epicId);
