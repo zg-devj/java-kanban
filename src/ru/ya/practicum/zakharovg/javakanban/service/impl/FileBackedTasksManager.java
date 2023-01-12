@@ -29,20 +29,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private void addItemToTaskList(Task task) {
-        getTasks().put(task.getId(), task);
+        tasks.put(task.getId(), task);
         idGen.setMaxId(task.getId());
-        getSortedTasks().add(task);
+        sortedTasks.add(task);
     }
 
     private void addItemToEpicList(Epic epic) {
-        getEpics().put(epic.getId(), epic);
+        epics.put(epic.getId(), epic);
         idGen.setMaxId(epic.getId());
     }
 
     private void addItemToSubtaskList(Subtask subtask) {
-        getSubtasks().put(subtask.getId(), subtask);
+        subtasks.put(subtask.getId(), subtask);
         idGen.setMaxId(subtask.getId());
-        getSortedTasks().add(subtask);
+        sortedTasks.add(subtask);
         updateEpicTimeInterval(subtask.getEpicId());
     }
 
@@ -138,12 +138,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
     //endregion
 
-
-    @Override
-    public SortedBaseTask getSortedTasks() {
-        return super.getSortedTasks();
-    }
-
     // Сохраняем состояние задач и истории
     private void save() {
         if (!file.exists()) {
@@ -217,14 +211,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     }
                 }
                 if (listHistory != null) {
-                    HistoryManager historyManager = backed.getHistoryManager();
+                    HistoryManager historyManager = backed.historyManager;
                     for (Integer unit : listHistory) {
-                        if (backed.getTasks().containsKey(unit)) {
-                            historyManager.add(backed.getTasks().get(unit));
-                        } else if (backed.getEpics().containsKey(unit)) {
-                            historyManager.add(backed.getEpics().get(unit));
-                        } else if (backed.getSubtasks().containsKey(unit)) {
-                            historyManager.add(backed.getSubtasks().get(unit));
+                        if (backed.tasks.containsKey(unit)) {
+                            historyManager.add(backed.tasks.get(unit));
+                        } else if (backed.epics.containsKey(unit)) {
+                            historyManager.add(backed.epics.get(unit));
+                        } else if (backed.subtasks.containsKey(unit)) {
+                            historyManager.add(backed.subtasks.get(unit));
                         }
                     }
                 }

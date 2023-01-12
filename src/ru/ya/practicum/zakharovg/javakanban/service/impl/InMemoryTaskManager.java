@@ -20,13 +20,13 @@ public class InMemoryTaskManager implements TaskManager {
     protected Identifier idGen;
 
     // история просмотров
-    private HistoryManager historyManager;
+    protected HistoryManager historyManager;
 
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Subtask> subtasks;
-    private HashMap<Integer, Epic> epics;
+    protected HashMap<Integer, Task> tasks;
+    protected HashMap<Integer, Subtask> subtasks;
+    protected HashMap<Integer, Epic> epics;
 
-    private SortedBaseTask sortedTasks;
+    protected SortedBaseTask sortedTasks;
 
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
@@ -35,27 +35,6 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.sortedTasks = new SortedBaseTask();
-    }
-
-    // возвращаем историю
-    protected HistoryManager getHistoryManager() {
-        return historyManager;
-    }
-
-    protected HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    protected HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
-    }
-
-    protected HashMap<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    public SortedBaseTask getSortedTasks() {
-        return sortedTasks;
     }
 
     //region Task методы
