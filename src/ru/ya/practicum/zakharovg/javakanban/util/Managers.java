@@ -12,15 +12,16 @@ import java.nio.file.Paths;
 public class Managers {
 
     // путь к файлу
-    public static final String DATA_FILE_PATH = "resources/tasks.csv";
+    public static final String FILE_FOR_EXAMPLE = "tasks.csv";
+    public static final String DIR_FILE_RESOURCES = "resources";
 
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
     //для хранения в файле
-    public static TaskManager getFileStorage() {
-        Path path = Paths.get(DATA_FILE_PATH);
+    public static TaskManager getFileStorage(String fileName) {
+        Path path = Paths.get(DIR_FILE_RESOURCES, fileName);
         return FileBackedTasksManager.loadFromFile(path);
     }
 

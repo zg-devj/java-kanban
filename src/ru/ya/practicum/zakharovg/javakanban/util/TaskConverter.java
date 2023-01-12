@@ -14,6 +14,9 @@ public class TaskConverter {
     // Формат: 3,TASK,Title,NEW,Description,null,0
     public static String taskToString(Task task) {
 
+        // Я намеренно использовал хранение в Unix epoch.
+        // Для конвертации есть DateTimeConverter
+        // В классе Task, Formatter забыл удалить, его там не должно быть.
         String savedStartTime = (task.getStartTime() == null)
                 ? "null" : String.valueOf(task.getStartTime().toEpochMilli());
 
