@@ -90,11 +90,10 @@ public class TaskConverter {
                 duration = Long.parseLong(taskLine[6]);
 
                 Integer epicId = Integer.valueOf(taskLine[7]);
-                Subtask subtask = new Subtask(epicId, title, desc);
+                Subtask subtask = new Subtask(title, desc,startTime,duration);
                 subtask.setId(id);
+                subtask.setEpicId(epicId);
                 subtask.setStatus(status);
-                subtask.setStartTime(startTime);
-                subtask.setDurationMinute(duration);
                 return subtask;
         }
         return null;

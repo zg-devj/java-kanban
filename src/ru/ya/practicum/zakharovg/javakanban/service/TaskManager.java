@@ -29,6 +29,8 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksByEpicId(int epicId);
 
+    int addSubtask(int epicId, Subtask subtask);
+
     void updateSubtask(Subtask subtask);
 
     void deleteSubtask(int id);
@@ -42,8 +44,6 @@ public interface TaskManager {
     List<Epic> getAllEpics();
 
     int addEpic(Epic epic);
-
-    int addSubtask(Subtask subtask);
 
     void updateEpic(Epic epic);
 

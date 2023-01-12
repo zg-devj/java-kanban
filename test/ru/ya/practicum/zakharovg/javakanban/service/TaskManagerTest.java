@@ -265,8 +265,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
 
@@ -299,8 +299,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
         assertEquals(1, epicId);
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
         assertEquals(2, subtaskId);
 
         final Subtask subtaskWrong = taskManager.getSubtask(3);
@@ -314,13 +314,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final Epic epic1 = new Epic("Epic", "Description");
         final int epicId1 = taskManager.addEpic(epic1);
-        final Subtask subtask1 = new Subtask(epicId1, "Subtask1", "Description");
-        taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        taskManager.addSubtask(epicId1, subtask1);
 
         final Epic epic2 = new Epic("Epic2", "Description");
         final int epicId2 = taskManager.addEpic(epic2);
-        final Subtask subtask2 = new Subtask(epicId2, "Subtask2", "Description");
-        taskManager.addSubtask(subtask2);
+        final Subtask subtask2 = new Subtask("Subtask2", "Description");
+        taskManager.addSubtask(epicId2, subtask2);
 
         final List<Subtask> subtasks = taskManager.getAllSubtasks();
         assertEquals(2, subtasks.size(), "Подзадач в списке должно быть 2");
@@ -341,11 +341,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        taskManager.addSubtask(epicId, subtask1);
 
-        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
-        taskManager.addSubtask(subtask2);
+        final Subtask subtask2 = new Subtask("Subtask2", "Description");
+        taskManager.addSubtask(epicId, subtask2);
 
         final List<Subtask> subtasks = taskManager.getSubtasksByEpicId(epicId);
 
@@ -368,8 +368,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         TaskManager taskManager = createInstance();
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
-        final Subtask subtask = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask1", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
 
@@ -385,13 +385,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask1", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
-        final Subtask subtaskWrong = new Subtask(epicId, "SubtaskWrong", "Description");
+        final Subtask subtaskWrong = new Subtask("SubtaskWrong", "Description");
         subtaskWrong.setId(10);
         // при использования addSubtask, id изменится на 3
-        final int subtaskIdWrong = taskManager.addSubtask(subtaskWrong);
+        final int subtaskIdWrong = taskManager.addSubtask(epicId, subtaskWrong);
 
         assertEquals(3, subtaskIdWrong, "Id должен быть 3");
 
@@ -412,17 +412,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Desc");
         final int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
         subtask1.setStartTime("11.01.2023 12:00");
         subtask1.setDurationMinute(30);
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
 
-        final Subtask subtask2 = new Subtask(epicId, "Subtask1", "Description");
+        final Subtask subtask2 = new Subtask("Subtask1", "Description");
         subtask2.setStartTime("11.01.2023 11:00");
         subtask2.setDurationMinute(30);
-        final int subtaskId2 = taskManager.addSubtask(subtask2);
+        final int subtaskId2 = taskManager.addSubtask(epicId, subtask2);
 
-        final Subtask newSubtask = new Subtask(epicId, "NewSubtask", "Description");
+        final Subtask newSubtask = new Subtask("NewSubtask", "Description");
         newSubtask.setStartTime("11.01.2023 12:15");
         newSubtask.setDurationMinute(30);
 
@@ -432,7 +432,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 new Executable() {
                     @Override
                     public void execute() throws Throwable {
-                        taskManager.addSubtask(newSubtask);
+                        taskManager.addSubtask(epicId, newSubtask);
                     }
                 }
         );
@@ -461,8 +461,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
 
@@ -486,10 +486,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        taskManager.addSubtask(epicId, subtask);
 
-        final Subtask subtaskWithWrongId = new Subtask(epicId, "WrongSubtask",
+        final Subtask subtaskWithWrongId = new Subtask("WrongSubtask",
                 "WrongDescription");
         subtaskWithWrongId.setId(3);
         subtaskWithWrongId.setStatus(Status.IN_PROGRESS);
@@ -509,8 +509,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
         int idForDelete = savedSubtask.getId();
@@ -527,8 +527,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         assertEquals(2, subtaskId, "id должен быть 2");
 
@@ -545,8 +545,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final List<Subtask> subtasks1 = taskManager.getAllSubtasks();
         assertEquals(1, subtasks1.size(), "Неверное количество подзадач");
@@ -577,8 +577,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        final int subtaskId = taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        final int subtaskId = taskManager.addSubtask(epicId, subtask);
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
         assertEquals(Status.NEW, savedSubtask.getStatus(), "Статус не NEW");
@@ -713,8 +713,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        taskManager.addSubtask(epicId, subtask);
 
         final Epic savedEpic = taskManager.getEpic(epicId);
 
@@ -746,8 +746,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         TaskManager taskManager = createInstance();
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Description");
-        taskManager.addSubtask(subtask);
+        final Subtask subtask = new Subtask("Subtask", "Description");
+        taskManager.addSubtask(epicId, subtask);
 
         final List<Epic> epics1 = taskManager.getAllEpics();
         assertEquals(1, epics1.size(), "Неверное количество эпиков");
@@ -784,8 +784,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "EpicDesc");
         final int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
 
         final Epic savedEpic1 = taskManager.getEpic(epicId);
 
@@ -793,10 +793,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(savedEpic1.getEndTime());
         assertEquals(0, savedEpic1.getDurationMinute());
 
-        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
+        final Subtask subtask2 = new Subtask("Subtask2", "Description");
         subtask2.setStartTime("11.01.2023 12:00");
         subtask2.setDurationMinute(30);
-        final int subtaskId2 = taskManager.addSubtask(subtask2);
+        final int subtaskId2 = taskManager.addSubtask(epicId, subtask2);
 
         final Epic savedEpic2 = taskManager.getEpic(epicId);
 
@@ -805,10 +805,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1673429400000L, savedEpic2.getEndTime().toEpochMilli());
 
 
-        final Subtask subtask3 = new Subtask(epicId, "Subtask3", "Description");
+        final Subtask subtask3 = new Subtask("Subtask3", "Description");
         subtask3.setStartTime("11.01.2023 15:00");
         subtask3.setDurationMinute(6 * 60); // 6ч
-        final int subtaskId3 = taskManager.addSubtask(subtask3);
+        final int subtaskId3 = taskManager.addSubtask(epicId, subtask3);
 
         final Epic savedEpic3 = taskManager.getEpic(epicId);
 
@@ -837,8 +837,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        taskManager.addSubtask(epicId, subtask1);
 
         final Epic savedEpic = taskManager.getEpic(epicId);
         assertEquals(Status.NEW, savedEpic.getStatus(), "Статус эпика c подзадачи NEW, должен быть NEW");
@@ -851,8 +851,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
 
         final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
         subtaskDone1.setStatus(Status.DONE);
@@ -869,10 +869,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
-        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
-        final int subtaskId2 = taskManager.addSubtask(subtask2);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
+        final Subtask subtask2 = new Subtask("Subtask2", "Description");
+        final int subtaskId2 = taskManager.addSubtask(epicId, subtask2);
 
         final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
         subtaskDone1.setStatus(Status.NEW);
@@ -894,8 +894,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic = new Epic("Epic", "Description");
         int epicId = taskManager.addEpic(epic);
 
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
 
         final Subtask subtaskDone1 = taskManager.getSubtask(subtaskId1);
         subtaskDone1.setStatus(Status.IN_PROGRESS);
@@ -913,8 +913,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         TaskManager taskManager = createInstance();
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        int subtaskId1 = taskManager.addSubtask(subtask1);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
 
         final Subtask subtask = taskManager.getSubtask(subtaskId1);
 
@@ -926,10 +926,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         TaskManager taskManager = createInstance();
         final Epic epic = new Epic("Epic", "Description");
         final int epicId = taskManager.addEpic(epic);
-        final Subtask subtask1 = new Subtask(epicId, "Subtask1", "Description");
-        final int subtaskId1 = taskManager.addSubtask(subtask1);
-        final Subtask subtask2 = new Subtask(epicId, "Subtask2", "Description");
-        final int subtaskId2 = taskManager.addSubtask(subtask2);
+        final Subtask subtask1 = new Subtask("Subtask1", "Description");
+        final int subtaskId1 = taskManager.addSubtask(epicId, subtask1);
+        final Subtask subtask2 = new Subtask("Subtask2", "Description");
+        final int subtaskId2 = taskManager.addSubtask(epicId, subtask2);
 
         final Epic epicCheck = taskManager.getEpic(epicId);
         Set<Integer> subtaskIds = epicCheck.getSubtaskIds();

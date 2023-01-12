@@ -7,12 +7,16 @@ public class Task extends BaseTask {
         this(title, descriptions, null, 0);
     }
 
-    private Task(String title, String descriptions, String startTime, long minuteDuration) {
-        super(title, descriptions);
-        setDurationMinute(minuteDuration);
-        if (startTime != null) {
-            setStartTime(startTime);
-        }
+    public Task(String title, String descriptions, String startTime) {
+        this(title, descriptions, startTime, 0);
+    }
+
+    public Task(String title, String descriptions, long minuteDuration) {
+        this(title, descriptions, null, minuteDuration);
+    }
+
+    public Task(String title, String descriptions, String startTime, long minuteDuration) {
+        super(title, descriptions, startTime, minuteDuration);
         setStatus(Status.NEW);
     }
 

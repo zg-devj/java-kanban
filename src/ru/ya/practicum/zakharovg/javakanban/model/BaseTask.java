@@ -4,7 +4,6 @@ import ru.ya.practicum.zakharovg.javakanban.util.DateTimeConverter;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public abstract class BaseTask {
@@ -23,10 +22,23 @@ public abstract class BaseTask {
     // зачем использовать null, если 0 - это отсутствие времени?
     protected Duration duration = Duration.ZERO;
 
-
     public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
+    }
+
+    public BaseTask(String title, String descriptions, Instant startTime, long minuteDuration) {
+        this(title, descriptions);
+        setDurationMinute(minuteDuration);
+        this.startTime = startTime;
+    }
+
+    public BaseTask(String title, String descriptions, String startTime, long minuteDuration) {
+        this(title, descriptions);
+        setDurationMinute(minuteDuration);
+        if (startTime != null) {
+            setStartTime(startTime);
+        }
     }
 
     public int getId() {

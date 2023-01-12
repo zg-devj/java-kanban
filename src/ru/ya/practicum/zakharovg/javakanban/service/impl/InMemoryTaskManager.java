@@ -158,10 +158,11 @@ public class InMemoryTaskManager implements TaskManager {
     // addSubtask был приватным и использовался только в этом методе (удалил метод)
     // Во время добавления сабтаска к эпику, сабтаск не имеет id эпика
     @Override
-    public int addSubtask(Subtask subtask) {
-        if (epics.containsKey(subtask.getEpicId())) {
+    public int addSubtask(int epicId, Subtask subtask) {
+        if (epics.containsKey(epicId)) {
             subtask.setId(idGen.next());
             if (sortedTasks.validate(subtask)) {
+                subtask.setEpicId(epicId);
                 // Создаем Subtask
                 subtasks.put(subtask.getId(), subtask);
                 // добавляем в отсортированный список

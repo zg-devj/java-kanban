@@ -69,8 +69,8 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         final int taskId =  manager1.addTask(task);
         final Epic epic = new Epic("Epic", "Epic Description");
         final int epicId = manager1.addEpic(epic);
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Subtask Description");
-        final int subtaskId = manager1.addSubtask(subtask);
+        final Subtask subtask = new Subtask( "Subtask", "Subtask Description");
+        final int subtaskId = manager1.addSubtask(epicId,subtask);
 
         // восстанавливаем данные
         FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(path);
@@ -88,8 +88,8 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
         final int taskId =  manager1.addTask(task);
         final Epic epic = new Epic("Epic", "Epic Description");
         final int epicId = manager1.addEpic(epic);
-        final Subtask subtask = new Subtask(epicId, "Subtask", "Subtask Description");
-        final int subtaskId = manager1.addSubtask(subtask);
+        final Subtask subtask = new Subtask( "Subtask", "Subtask Description");
+        final int subtaskId = manager1.addSubtask(epicId,subtask);
 
         manager1.getTask(taskId);
         manager1.getEpic(epicId);

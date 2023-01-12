@@ -13,8 +13,6 @@ public class Epic extends BaseTask {
     public Epic(String title, String description) {
         super(title, description);
         subtaskIds = new HashSet<>();
-        setDurationMinute(0);
-        this.startTime = null;
         setStatus(Status.NEW);
     }
 

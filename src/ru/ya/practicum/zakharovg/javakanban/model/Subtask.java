@@ -8,21 +8,31 @@ package ru.ya.practicum.zakharovg.javakanban.model;
 
 import ru.ya.practicum.zakharovg.javakanban.util.DateTimeConverter;
 
+import java.time.Instant;
+
 // Подзадача
 public class Subtask extends BaseTask {
     private int epicId;
 
-    public Subtask(int epicId, String title, String descriptions) {
-        this(epicId, title, descriptions, null, 0);
+    public Subtask(String title, String descriptions) {
+        this(title, descriptions, (String) null, 0);
     }
 
-    private Subtask(int epicId, String title, String descriptions, String startTime, long minuteDuration) {
-        super(title, descriptions);
-        this.epicId = epicId;
-        setDurationMinute(minuteDuration);
-        if (startTime != null) {
-            setStartTime(startTime);
-        }
+    public Subtask(String title, String descriptions, String startTime) {
+        this(title, descriptions, startTime, 0);
+    }
+
+    public Subtask(String title, String descriptions, long minuteDuration) {
+        this(title, descriptions, (String) null, minuteDuration);
+    }
+
+    public Subtask(String title, String descriptions, String startTime, long minuteDuration) {
+        super(title, descriptions, startTime, minuteDuration);
+        setStatus(Status.NEW);
+    }
+
+    public Subtask(String title, String descriptions, Instant startTime, long minuteDuration) {
+        super(title, descriptions, startTime, minuteDuration);
         setStatus(Status.NEW);
     }
 
