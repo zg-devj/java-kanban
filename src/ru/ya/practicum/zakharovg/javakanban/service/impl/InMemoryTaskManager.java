@@ -238,14 +238,13 @@ public class InMemoryTaskManager implements TaskManager {
     // Удаление Epic
     @Override
     public void deleteEpic(int id) {
+        // Возвращаю все сабтаски эпика,
+        // удаляю сабтаски,
+        // удаляю эпик, из сета ничего не удаляется
         if (epics.containsKey(id)) {
-            // Удаляем Subtask для Epic
-            // getSubtaskIds() возвращает HeshSet что при удалении
-            // в методе deleteSubtask вызывает ошибку
-            // Статья о проблеме https://www.techiedelight.com/remove-elements-from-set-java/
             Integer[] list = epics.get(id).getSubtaskIds().toArray(new Integer[0]);
             for (Integer delId : list) {
-                // Удаляем сабтаски
+                // Удаляем сабтаски эпика
                 deleteSubtask(delId);
             }
             // удаляем эпик из истории
@@ -258,10 +257,14 @@ public class InMemoryTaskManager implements TaskManager {
     // Удалить все Epic
     @Override
     public void deleteAllEpics() {
-        for (Epic epic : getAllEpics()) {
-            // метод deleteEpic внутри удаляет epic и его сабтаски
-            deleteEpic(epic.getId());
+        for (Subtask subtask : getAllSubtasks()) {
+            historyManager.remove(subtask.getId());
         }
+        for (Epic epic : getAllEpics()) {
+            historyManager.remove(epic.getId());
+        }
+        subtasks.clear();
+        epics.clear();
     }
     //endregion
 
