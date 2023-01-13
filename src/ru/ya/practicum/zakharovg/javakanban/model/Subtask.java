@@ -15,15 +15,23 @@ public class Subtask extends BaseTask {
     private int epicId;
 
     public Subtask(String title, String descriptions) {
-        this(title, descriptions, (String) null, 0);
+        super(title, descriptions);
+        setStatus(Status.NEW);
     }
 
     public Subtask(String title, String descriptions, String startTime) {
-        this(title, descriptions, startTime, 0);
+        super(title, descriptions, startTime);
+        setStatus(Status.NEW);
+    }
+
+    public Subtask(String title, String descriptions, Instant startTime) {
+        super(title, descriptions, startTime);
+        setStatus(Status.NEW);
     }
 
     public Subtask(String title, String descriptions, long minuteDuration) {
-        this(title, descriptions, (String) null, minuteDuration);
+        super(title, descriptions, (Instant) null, minuteDuration);
+        setStatus(Status.NEW);
     }
 
     public Subtask(String title, String descriptions, String startTime, long minuteDuration) {
@@ -46,7 +54,8 @@ public class Subtask extends BaseTask {
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        // TODO: 14.01.2023 remove
+        return "\nSubtask{" +
                 "id=" + id +
                 ", epicId=" + epicId +
                 ", title='" + title + '\'' +

@@ -39,6 +39,11 @@ public class InMemoryTaskManager implements TaskManager {
         this.sortedTasks = new SortedBaseTask();
     }
 
+    // TODO: 14.01.2023 delete
+    public SortedBaseTask getSortedTasks() {
+        return sortedTasks;
+    }
+
     //region Task методы
     // Получение Task по идентификатору.
     public Task getTask(int id) {
@@ -310,7 +315,9 @@ public class InMemoryTaskManager implements TaskManager {
             Collections.sort(subtaskList, new TaskComparator());
             epic.setStartTime(subtaskList.get(0).getStartTime());
             epic.setDurationMinute(
-                    subtaskList.stream().mapToLong(i -> i.getDurationMinute()).sum()
+                    subtaskList.stream()
+                            .filter(t -> t.getDurationMinute() != null)
+                            .mapToLong(i -> i.getDurationMinute()).sum()
             );
             // последняя подзадача эпика с startTime != null
             Subtask lastSubtask = subtaskList.stream()
@@ -322,7 +329,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         } else {
             epic.setStartTime((Instant) null);
-            epic.setDurationMinute(0);
+            epic.setDurationMinute(null);
             epic.setEndTime(null);
         }
     }

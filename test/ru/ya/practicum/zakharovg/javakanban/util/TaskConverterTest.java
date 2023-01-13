@@ -21,7 +21,7 @@ public class TaskConverterTest {
         task.setId(1);
 
         String actual = TaskConverter.taskToString(task);
-        String expected = "1,TASK,Task1,NEW,Description1,null,0\n";
+        String expected = "1,TASK,Task1,NEW,Description1,null,null\n";
         assertEquals(expected, actual, "Конвертация Task не соответствует ожиданию");
     }
 
@@ -36,8 +36,8 @@ public class TaskConverterTest {
         Task task4 = new Task("Task", "Desc", DATETIME_FOR_TEST, 120);
         task4.setId(1);
 
-        String expected1 = "1,TASK,Task,NEW,Desc,null,0\n";
-        String expected2 = "1,TASK,Task,NEW,Desc,1673427600000,0\n";
+        String expected1 = "1,TASK,Task,NEW,Desc,null,null\n";
+        String expected2 = "1,TASK,Task,NEW,Desc,1673427600000,null\n";
         String expected3 = "1,TASK,Task,NEW,Desc,null,30\n";
         String expected4 = "1,TASK,Task,NEW,Desc,1673427600000,120\n";
 
@@ -68,7 +68,7 @@ public class TaskConverterTest {
 
         // Subtask To String
         String actual2 = TaskConverter.taskToString(subtask2);
-        String expected2 = "2,SUBTASK,Subtask2,NEW,Desc,null,0,1\n";
+        String expected2 = "2,SUBTASK,Subtask2,NEW,Desc,null,null,1\n";
         assertEquals(expected2, actual2, "Конвертация Subtask не соответствует ожиданию");
 
         // Subtask To String
@@ -100,7 +100,8 @@ public class TaskConverterTest {
         assertEquals(epic1, actual1, "Эпики не совпадают");
         assertEquals("Epic", actual1.getTitle());
         assertEquals(Status.NEW, actual1.getStatus());
-        assertEquals(0, actual1.getDurationMinute());
+        // TODO: 14.01.2023 check
+        assertNull(actual1.getDurationMinute());
     }
 
     @Test

@@ -20,22 +20,39 @@ public abstract class BaseTask {
     // период
     // 0 - это значение по умолчанию,
     // зачем использовать null, если 0 - это отсутствие времени?
-    protected Duration duration = Duration.ZERO;
+    protected Duration duration = null;
 
     public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
     }
 
+    public BaseTask(String title, String descriptions, long minuteDuration) {
+        this(title, descriptions);
+        this.duration = Duration.ofMinutes(minuteDuration);
+    }
+
+    public BaseTask(String title, String descriptions, Instant startTime) {
+        this(title, descriptions);
+        this.startTime = startTime;
+    }
+
+    public BaseTask(String title, String descriptions, String startTime) {
+        this(title, descriptions);
+        if (startTime != null) {
+            setStartTime(startTime);
+        }
+    }
+
     public BaseTask(String title, String descriptions, Instant startTime, long minuteDuration) {
         this(title, descriptions);
-        setDurationMinute(minuteDuration);
+        this.duration = Duration.ofMinutes(minuteDuration);
         this.startTime = startTime;
     }
 
     public BaseTask(String title, String descriptions, String startTime, long minuteDuration) {
         this(title, descriptions);
-        setDurationMinute(minuteDuration);
+        this.duration = Duration.ofMinutes(minuteDuration);
         if (startTime != null) {
             setStartTime(startTime);
         }
@@ -90,19 +107,35 @@ public abstract class BaseTask {
         this.startTime = DateTimeConverter.fromStringToInstant(dateTime);
     }
 
-    public long getDurationMinute() {
-        return duration.toMinutes();
+    public Long getDurationMinute() {
+        if (duration != null) {
+            return duration.toMinutes();
+        } else {
+            return null;
+        }
     }
 
     public void setDurationMinute(long minute) {
         this.duration = Duration.ofMinutes(minute);
     }
 
-    public Instant getEndTime() {
-        if (startTime != null) {
-            return startTime.plusSeconds(duration.toSeconds());
+    public void setDurationMinute(Long minute) {
+        if (minute != null) {
+            this.duration = Duration.ofMinutes(minute);
+        } else {
+            this.duration = null;
         }
-        return null;
+    }
+
+    public Instant getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        if (duration != null) {
+            return startTime.plusSeconds(duration.toSeconds());
+        } else {
+            return startTime;
+        }
     }
 
     @Override

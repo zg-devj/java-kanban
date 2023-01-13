@@ -19,21 +19,25 @@ public class TaskConverter {
         // В классе Task, Formatter забыл удалить, его там не должно быть.
         String savedStartTime = (task.getStartTime() == null)
                 ? "null" : String.valueOf(task.getStartTime().toEpochMilli());
+        String savedDuration = (task.getDurationMinute() == null)
+                ? "null" : String.valueOf(task.getDurationMinute());
 
-        return String.format("%d,%s,%s,%s,%s,%s,%d%n",
+        return String.format("%d,%s,%s,%s,%s,%s,%s%n",
                 task.getId(), TaskType.TASK.name(), task.getTitle(),
                 task.getStatus().name(), task.getDescriptions(),
-                savedStartTime, task.getDurationMinute());
+                savedStartTime, savedDuration);
     }
 
     public static String taskToString(Subtask subtask) {
         String savedStartTime = (subtask.getStartTime() == null)
                 ? "null" : String.valueOf(subtask.getStartTime().toEpochMilli());
+        String savedDuration = (subtask.getDurationMinute() == null)
+                ? "null" : String.valueOf(subtask.getDurationMinute());
 
-        return String.format("%d,%s,%s,%s,%s,%s,%d,%d%n",
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%d%n",
                 subtask.getId(), TaskType.SUBTASK.name(), subtask.getTitle(),
                 subtask.getStatus().name(), subtask.getDescriptions(),
-                savedStartTime, subtask.getDurationMinute(),
+                savedStartTime, savedDuration,
                 subtask.getEpicId());
     }
 
@@ -63,12 +67,13 @@ public class TaskConverter {
         Status status = Status.valueOf(taskLine[3]);
         String desc = taskLine[4].toString().equals("null") ? null : taskLine[4].toString();
         Instant startTime;
-        long duration;
+        Long duration;
         switch (type) {
             case TASK:
                 startTime = taskLine[5].toString().equals("null")
                         ? null : Instant.ofEpochMilli(Long.parseLong(taskLine[5]));
-                duration = Long.parseLong(taskLine[6]);
+                duration = taskLine[6].toString().equals("null")
+                        ? null : Long.parseLong(taskLine[6]);
 
                 Task task = new Task(title, desc);
                 task.setId(id);
@@ -90,17 +95,18 @@ public class TaskConverter {
             case SUBTASK:
                 startTime = taskLine[5].toString().equals("null")
                         ? null : Instant.ofEpochMilli(Long.parseLong(taskLine[5]));
-                duration = Long.parseLong(taskLine[6]);
+                duration = taskLine[6].toString().equals("null")
+                        ? null : Long.parseLong(taskLine[6]);
 
                 Integer epicId = Integer.valueOf(taskLine[7]);
-                Subtask subtask = new Subtask(title, desc,startTime,duration);
+                Subtask subtask = new Subtask(title, desc, startTime);
                 subtask.setId(id);
                 subtask.setEpicId(epicId);
+                subtask.setDurationMinute(duration);
                 subtask.setStatus(status);
                 return subtask;
-            default:
-                return null;
         }
+        return null;
     }
 
     // преобразуем историю в строку
@@ -117,7 +123,7 @@ public class TaskConverter {
     // Я понимаю, что может возникнуть NPE, но пока этого не может случиться,
     // т.к. не так много использования этого метода
     public static List<Integer> historyFromString(String value) {
-        if (value!=null && !value.isEmpty() && !value.isBlank()) {
+        if (value != null && !value.isEmpty() && !value.isBlank()) {
             String[] historyArr = value.split(",");
             List<Integer> ret = new ArrayList<>();
             for (int i = 0; i < historyArr.length; i++) {

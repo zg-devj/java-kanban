@@ -28,6 +28,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = path.toFile();
     }
 
+    // TODO: 14.01.2023 delete
+    @Override
+    public SortedBaseTask getSortedTasks() {
+        return super.getSortedTasks();
+    }
+
     private void addItemToTaskList(Task task) {
         tasks.put(task.getId(), task);
         idGen.setMaxId(task.getId());
