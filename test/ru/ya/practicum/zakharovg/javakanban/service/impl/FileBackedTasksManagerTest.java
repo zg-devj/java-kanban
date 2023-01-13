@@ -25,7 +25,7 @@ public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksM
 
     // если указан пустой файл
     @Test
-    public void loadFromFile_AllLiastReturn0Items_EmptyFile() {
+    public void loadFromFile_AllLastReturn0Items_EmptyFile() {
         Path path = Paths.get("testresources/tasks-empty.csv");
         if (!Files.exists(path)) {
             try {

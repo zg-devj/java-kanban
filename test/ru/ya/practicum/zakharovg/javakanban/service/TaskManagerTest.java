@@ -503,7 +503,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final Subtask savedSubtask = taskManager.getSubtask(subtaskId);
         int idForDelete = savedSubtask.getId();
-        System.out.println(taskManager.getAllSubtasks());
+
 
         taskManager.deleteSubtask(idForDelete);
 

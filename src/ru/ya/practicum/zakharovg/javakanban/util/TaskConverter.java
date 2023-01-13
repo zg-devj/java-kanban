@@ -98,8 +98,9 @@ public class TaskConverter {
                 subtask.setEpicId(epicId);
                 subtask.setStatus(status);
                 return subtask;
+            default:
+                return null;
         }
-        return null;
     }
 
     // преобразуем историю в строку
@@ -116,8 +117,8 @@ public class TaskConverter {
     // Я понимаю, что может возникнуть NPE, но пока этого не может случиться,
     // т.к. не так много использования этого метода
     public static List<Integer> historyFromString(String value) {
-        String[] historyArr = value.split(",");
-        if (historyArr.length > 0) {
+        if (value!=null && !value.isEmpty() && !value.isBlank()) {
+            String[] historyArr = value.split(",");
             List<Integer> ret = new ArrayList<>();
             for (int i = 0; i < historyArr.length; i++) {
                 ret.add(Integer.valueOf(historyArr[i]));
