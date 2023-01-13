@@ -64,10 +64,7 @@ class SortedBaseTaskTest {
         assertEquals(task1, sortedBaseTask.getList().first(), "Задачи не совпадают");
     }
 
-    //
-    // Тесты валидации
-    //
-
+    //region Тесты валидации
     @Test
     void validate_ReturnTrue_WhenAddIn08_00_Dur_30() {
         Task task1 = new Task("Task", "Desc", "10.01.2023 09:00", 30);
@@ -229,4 +226,5 @@ class SortedBaseTaskTest {
 
         assertTrue(sortedBaseTask.validate(taskAdded));
     }
+    //endregion
 }

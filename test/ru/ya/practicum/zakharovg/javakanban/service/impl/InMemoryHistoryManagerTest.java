@@ -1,5 +1,6 @@
 package ru.ya.practicum.zakharovg.javakanban.service.impl;
 
+import org.junit.jupiter.api.DisplayName;
 import ru.ya.practicum.zakharovg.javakanban.model.BaseTask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,6 @@ public class InMemoryHistoryManagerTest {
         historyManager = new InMemoryHistoryManager();
     }
 
-    // Пустая история задач.
     @Test
     public void checkEmptyTaskHistory() {
         List<BaseTask> empty = new ArrayList<>();
@@ -32,7 +32,6 @@ public class InMemoryHistoryManagerTest {
         assertEquals(empty, emptyHistory, "История должна быть пустой");
     }
 
-    // Дублирование с InMemoryTaskManager
     @Test
     public void checkDuplicationWithTaskManager() {
         TaskManager taskManager = new InMemoryTaskManager();
@@ -53,7 +52,6 @@ public class InMemoryHistoryManagerTest {
                 "Не соответствие с количеством записей в истории");
     }
 
-    // Дублирование
     @Test
     public void checkDuplicationWithHistoryManager() {
         Task task1 = new Task("Task1", "Description1");
@@ -79,7 +77,6 @@ public class InMemoryHistoryManagerTest {
         assertArrayEquals(new Integer[]{2, 1, 3}, ids, "Результаты не совпадают");
     }
 
-    // удаление с начала, середины и конца
     @Test
     public void deletionFromHistoryBeginningMiddleEnd() {
         Task task1 = new Task("Task1", "Description1");

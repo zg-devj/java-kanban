@@ -15,7 +15,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public abstract T createInstance();
 
     //region Task
-    // С нормальном функционированием
     @Test
     public void getTask_CheckDifferentResults_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -34,7 +33,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
     }
 
-    // С пустым списком задач
     @Test
     public void getTask_ShouldNotReturnTask_WithEmptyList() {
         TaskManager taskManager = createInstance();
@@ -45,7 +43,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(task, "Задача не должна существовать.");
     }
 
-    // С неверным id
     @Test
     public void getTask_ShouldNotReturnTask_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -56,7 +53,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(taskWrong, "Задача не должна существовать");
     }
 
-    // С заполненным списком задач
     @Test
     public void getAllTasks_Return2Tasks_WithAdded2Task() {
         TaskManager taskManager = createInstance();
@@ -69,7 +65,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, tasks.size(), "Задач в списке должно быть 2");
     }
 
-    // С пустым списком задач
     @Test
     public void getAllTasks_Return0Tasks_WithEmptyTaskList() {
         TaskManager taskManager = createInstance();
@@ -78,7 +73,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, tasks.size(), "Неверное количество задач");
     }
 
-    // Нормальное добавление задачи
     @Test
     public void addTask_ReturnSavedTask_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -91,7 +85,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task, savedTask, "Задачи не совпадают.");
     }
 
-    // С неверным (не существующем id)
     @Test
     public void addTask_ReturnAddedTask_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -115,7 +108,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, tasks.size());
     }
 
-    // проверка задачи на пересечение
     @Test
     public void checkingValidation_returnException_TheIntersectionTaskAddAndUpdate() {
         TaskManager taskManager = createInstance();
@@ -149,7 +141,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(ERROR_MESSAGE, ex2.getMessage());
     }
 
-    // Нормальное поведение
     @Test
     public void updateTask_CheckUpdated_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -170,7 +161,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.IN_PROGRESS, updatedTask.getStatus(), "Статус не изменился");
     }
 
-    // Обновление с несуществующим id
     @Test
     public void updateTask_NoUpdate_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -188,7 +178,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, taskManager.getAllTasks().size(), "Задача должна быть одна");
     }
 
-    // Нормальное удаление
     @Test
     public void deleteTask_ShouldBeRemoved_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -203,7 +192,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(taskManager.getTask(taskId), "Задача не была удалена");
     }
 
-    // Удаляем не существующую задачу
     @Test
     public void deleteTask_ShouldNotBeDeleted_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -219,7 +207,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "Неверное количество задач");
     }
 
-    // Удаление всех задач
     @Test
     public void deleteAllTasks_Return0Tasks_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -235,7 +222,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, tasks2.size(), "Задачи не удалены");
     }
 
-    // Удаление всех задач из пустого списка
     @Test
     public void deleteAllTasks_Return0Tasks_WithEmptyList() {
         TaskManager taskManager = createInstance();
@@ -251,7 +237,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     //endregion
 
     //region Subtask
-    // С нормальном функционированием
     @Test
     public void getSubtask_CheckDifferentResults_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -274,7 +259,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(subtask, subtasks.get(0), "Подзадачи не совпадают.");
     }
 
-    // С пустым списком подзадач
     @Test
     public void getSubtask_ShouldNotReturnSubtask_WithEmptyList() {
         TaskManager taskManager = createInstance();
@@ -285,7 +269,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(subtask, "Задача не должна существовать.");
     }
 
-    // С неверным id
     @Test
     public void getSubtask_ShouldNotReturnSubtask_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -300,7 +283,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(subtaskWrong, "Задача не должна существовать");
     }
 
-    // С заполненным списком подзадач
     @Test
     public void getAllSubtasks_Return2Tasks_WithAdded2Subtask() {
         TaskManager taskManager = createInstance();
@@ -361,7 +343,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, subtasks.size(), "Подзадачи не должны существовать");
     }
 
-    // Нормальное добавление подзадачи
     @Test
     public void addSubtask_ReturnSavedSubtask_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -377,7 +358,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, savedSubtask.getId());
     }
 
-    // С неверным (не существующем id)
     @Test
     public void addSubtask_ReturnAddedSubtask_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -403,7 +383,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, subtasks.size());
     }
 
-    // проверка подзадачи на пересечение
     @Test
     public void checkingValidation_returnException_TheIntersectionSubtaskAddAndUpdate() {
         TaskManager taskManager = createInstance();
@@ -443,7 +422,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(ERROR_MESSAGE, ex2.getMessage());
     }
 
-    // Нормальное поведение
     @Test
     public void updateSubtask_CheckUpdated_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -468,7 +446,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.IN_PROGRESS, updatedTask.getStatus(), "Статус не изменился");
     }
 
-    // Обновление с несуществующим id
     @Test
     public void updateSubtask_NoUpdate_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -490,7 +467,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, taskManager.getAllSubtasks().size(), "Подзадача должна быть одна");
     }
 
-    // Нормальное удаление
     @Test
     public void deleteSubtaskNormal() {
         TaskManager taskManager = createInstance();
@@ -510,7 +486,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(taskManager.getSubtask(idForDelete), "Подзадача не была удалена");
     }
 
-    // Удаляем не существующую подзадачу
     @Test
     public void deleteSubtask_ShouldBeRemoved_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -528,7 +503,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "Неверное количество задач");
     }
 
-    // Удаление всех подзадач
     @Test
     public void deleteSubtask_ShouldNotBeDeleted_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -547,7 +521,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, subtasks2.size(), "Подзадачи не удалены");
     }
 
-    // Удаление всех задач из пустого списка
     @Test
     public void deleteAllSubtasks_Return0Tasks_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -582,7 +555,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     //endregion
 
     //region Epic
-    // С нормальном функционированием
     @Test
     public void getEpic_CheckDifferentResults_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -601,7 +573,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic, epics.get(0), "Задачи не совпадают.");
     }
 
-    // С пустым списком эпиков
     @Test
     public void getEpic_ShouldNotReturnTask_WithEmptyList() {
         TaskManager taskManager = createInstance();
@@ -612,7 +583,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(epic, "Эпик не должен существовать.");
     }
 
-    // С неверным id
     @Test
     public void getEpic_ShouldNotReturnEpic_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -623,7 +593,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(epicWrong, "Эпика не должно существовать");
     }
 
-    // Нормальное добавление эпика
     @Test
     public void addEpic_ReturnSavedEpic_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -636,7 +605,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic, savedEpic, "Эпики не совпадают.");
     }
 
-    // С неверным (не существующем id)
     @Test
     public void addEpic_ReturnAddedEpic_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -659,7 +627,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, epics.size());
     }
 
-    // Нормальное поведение
     @Test
     public void updateEPic_CheckUpdated_WithNormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -679,7 +646,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("NewDescription", updatedEpic.getDescriptions(), "Описание не изменилось");
     }
 
-    // Обновление с несуществующим id
     @Test
     public void updateEpic_NoUpdate_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -696,7 +662,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, taskManager.getAllEpics().size(), "Эпик должен быть один");
     }
 
-    // Нормальное удаление
     @Test
     public void deleteEpic_ShouldBeRemoved_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -715,7 +680,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, taskManager.getAllSubtasks().size(), "Подзадач не должно быть");
     }
 
-    // Удаляем не существующий эпик
     @Test
     public void deleteEpic_ShouldNotBeDeleted_WithWrongId() {
         TaskManager taskManager = createInstance();
@@ -730,7 +694,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "Неверное количество эпиков");
     }
 
-    // Удаление всех эпиков
     @Test
     public void deleteAllEpic_Return0EpicsAndSubtasks_NormalBehaviour() {
         TaskManager taskManager = createInstance();
@@ -752,7 +715,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, subtasks2.size(), "Подзадачи не удалены");
     }
 
-    // Удаление всех эпиков из пустого списка
     @Test
     public void deleteAllEpics_Return0Epics_WithEmptyList() {
         TaskManager taskManager = createInstance();
@@ -765,7 +727,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Epic> epics2 = taskManager.getAllEpics();
         assertEquals(0, epics2.size(), "Неверное количество эпиков");
     }
-
 
     @Test
     public void checkEpicInterval_ReturnCorrectInterval_NormalBehaviour() {
@@ -809,7 +770,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     //endregion
 
     //region Epic Status Test
-    // Пустой список подзадач.
     @Test
     public void epicStatusIfEmptySubtasks() {
         TaskManager taskManager = createInstance();
@@ -820,7 +780,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.NEW, savedEpic.getStatus(), "Статус эпика без подзадач должен быть NEW");
     }
 
-    // Все подзадачи со статусом NEW.
     @Test
     public void epicStatusAllSubtasksIsNew() {
         TaskManager taskManager = createInstance();
@@ -834,7 +793,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.NEW, savedEpic.getStatus(), "Статус эпика c подзадачи NEW, должен быть NEW");
     }
 
-    // Все подзадачи со статусом DONE.
     @Test
     public void epicStatusAllSubtasksIsDone() {
         TaskManager taskManager = createInstance();
@@ -852,7 +810,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.DONE, savedEpic.getStatus(), "Статус эпика c подзадачи DONE, должен быть DONE");
     }
 
-    // Подзадачи со статусами NEW и DONE.
     @Test
     public void epicStatusSubtaskIsNewAndDone() {
         TaskManager taskManager = createInstance();
@@ -877,7 +834,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "Статус эпика c подзадачами NEW и DONE, должен быть IN_PROGRESS");
     }
 
-    // Подзадачи со статусом IN_PROGRESS.
     @Test
     public void epicStatusSubtaskIsInProgress() {
         TaskManager taskManager = createInstance();

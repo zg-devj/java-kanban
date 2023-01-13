@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTimeConverterTest {
     @Test
-    public void fromStringToInstant() {
+    public void convertFromStringToInstant() {
         String datetime = "10.01.2023 12:30";
 
         Instant actual = Instant.ofEpochMilli(1673343000000L);
@@ -18,7 +18,7 @@ public class DateTimeConverterTest {
     }
 
     @Test
-    public void fromInstantToString() {
+    public void convertFromInstantToString() {
         Instant datetime = Instant.ofEpochMilli(1673343000000L);
 
         String actual = DateTimeConverter.fromInstantToString(datetime);

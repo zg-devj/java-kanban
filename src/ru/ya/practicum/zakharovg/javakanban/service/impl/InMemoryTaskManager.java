@@ -30,8 +30,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected SortedBaseTask sortedTasks;
 
-
-
     public InMemoryTaskManager() {
         this.idGen = new Identifier();
         this.historyManager = Managers.getDefaultHistory();
@@ -162,17 +160,18 @@ public class InMemoryTaskManager implements TaskManager {
     // Обновление Subtask
     @Override
     public void updateSubtask(Subtask subtask) {
-        if (epics.containsKey(subtask.getEpicId()) && subtasks.containsKey(subtask.getId())) {
-            if (sortedTasks.validate(subtask)) {
-                sortedTasks.remove(subtask);
-                subtasks.put(subtask.getId(), subtask);
-                sortedTasks.add(subtask);
-                // Обновляем статус
-                updateEpicState(subtask.getEpicId());
-            } else {
-                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
-            }
+        if (!epics.containsKey(subtask.getEpicId())
+                || !subtasks.containsKey(subtask.getId())) {
+            return;
         }
+        if (!sortedTasks.validate(subtask)) {
+            throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+        }
+        sortedTasks.remove(subtask);
+        subtasks.put(subtask.getId(), subtask);
+        sortedTasks.add(subtask);
+        // Обновляем статус
+        updateEpicState(subtask.getEpicId());
     }
 
     // Удаление Subtask
