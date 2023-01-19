@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -26,12 +27,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private FileBackedTasksManager(Path path) {
         super();
         this.file = path.toFile();
-    }
-
-    // TODO: 14.01.2023 delete
-    @Override
-    public SortedBaseTask getSortedTasks() {
-        return super.getSortedTasks();
     }
 
     private void addItemToTaskList(Task task) {
@@ -143,6 +138,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
     //endregion
+
+
+    @Override
+    public Set<BaseTask> getPrioritizedTasks() {
+        return super.getPrioritizedTasks();
+    }
 
     // Сохраняем состояние задач и истории
     private void save() {

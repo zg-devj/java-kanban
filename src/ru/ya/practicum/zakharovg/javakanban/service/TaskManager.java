@@ -6,6 +6,7 @@ import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     //region Task
@@ -51,6 +52,8 @@ public interface TaskManager {
 
     void deleteAllEpics();
     //endregion
+
+    Set<BaseTask> getPrioritizedTasks();
 
     List<BaseTask> getHistory();
 }

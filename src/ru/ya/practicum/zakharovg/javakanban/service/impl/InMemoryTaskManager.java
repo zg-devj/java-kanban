@@ -10,10 +10,7 @@ import ru.ya.practicum.zakharovg.javakanban.util.SortedBaseTask;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskComparator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -37,11 +34,6 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.sortedTasks = new SortedBaseTask();
-    }
-
-    // TODO: 14.01.2023 delete
-    public SortedBaseTask getSortedTasks() {
-        return sortedTasks;
     }
 
     //region Task методы
@@ -273,6 +265,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.clear();
         epics.clear();
+    }
+
+    @Override
+    public Set<BaseTask> getPrioritizedTasks() {
+        return sortedTasks.getList();
     }
     //endregion
 
