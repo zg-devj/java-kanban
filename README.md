@@ -2,8 +2,9 @@
 
 Repository for homework project.
 
-**Сервер:**
-> src/ru/ya/practicum/zakharovg/taskserver/server/HttpTaskServer.java
+**Сервер:** файл запуска.
+
+> src/ru/ya/practicum/zakharovg/taskserver/server/Main.java
 
 ## Эндпоинты
 

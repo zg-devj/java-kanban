@@ -1,5 +1,6 @@
 package ru.ya.practicum.zakharovg.taskserver.model;
 
+// Для сообщения сервера в JSON формате
 public class MessageResp {
     private String message;
 

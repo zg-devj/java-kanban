@@ -54,8 +54,7 @@ public class Subtask extends BaseTask {
 
     @Override
     public String toString() {
-        // TODO: 14.01.2023 remove
-        return "\nSubtask{" +
+        return "Subtask{" +
                 "id=" + id +
                 ", epicId=" + epicId +
                 ", title='" + title + '\'' +

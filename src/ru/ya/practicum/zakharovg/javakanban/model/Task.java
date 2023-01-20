@@ -37,8 +37,7 @@ public class Task extends BaseTask {
 
     @Override
     public String toString() {
-        // TODO: 14.01.2023 remove \n
-        return "\nTask{" +
+        return "Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", descriptions='" + descriptions + '\'' +
