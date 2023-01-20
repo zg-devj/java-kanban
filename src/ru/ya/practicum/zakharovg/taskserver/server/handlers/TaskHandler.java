@@ -33,7 +33,7 @@ public class TaskHandler implements HttpHandler {
                     actionToGetTask(exchange, queryString);
                 } else {
                     // вернуть все задачи
-                    HelperServer.sendResponse(exchange, gson.toJson(manager.getAllTasks()));
+                    HelperServer.responseCode200(exchange,gson.toJson(manager.getAllTasks()));
                 }
                 break;
             case "POST":
@@ -52,7 +52,7 @@ public class TaskHandler implements HttpHandler {
                 }
                 break;
             default:
-                HelperServer.responseCode400(exchange, gson);
+                HelperServer.responseCode405(exchange, gson,"Метод запроса не поддерживается");
         }
         exchange.close();
     }
@@ -60,10 +60,10 @@ public class TaskHandler implements HttpHandler {
     private void actionToGetTask(HttpExchange exchange, String queryString) throws IOException {
         String[] queries = queryString.split("&");
         Integer id = HelperServer.getIdFromQueries(queries);
-        if (id != null && id >= 0) {
+        if (id >= 0) {
             Task task = manager.getTask(id);
             if (task != null) {
-                HelperServer.sendResponse(exchange, gson.toJson(manager.getTask(id)));
+                HelperServer.responseCode200(exchange, gson.toJson(manager.getTask(id)));
             } else {
                 HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
             }
@@ -88,7 +88,7 @@ public class TaskHandler implements HttpHandler {
         Task taskPut = gson.fromJson(bodyPut, Task.class);
         if (manager.getTask(taskPut.getId()) != null) {
             manager.updateTask(taskPut);
-            HelperServer.sendResponse(exchange, null, 204);
+            HelperServer.responseCode204(exchange);
         } else {
             HelperServer.responseCode404(exchange, gson, "Задачи с id=" + taskPut.getId() + " нет, нельзя обновить задачу.");
         }
@@ -97,11 +97,11 @@ public class TaskHandler implements HttpHandler {
     private void actionToDeleteTaskOne(HttpExchange exchange, String queryString) throws IOException {
         String[] queries = queryString.split("&");
         Integer id = HelperServer.getIdFromQueries(queries);
-        if (id != null && id >= 0) {
+        if (id >= -1) {
             Task taskDelete = manager.getTask(id);
             if (taskDelete != null) {
                 manager.deleteTask(id);
-                HelperServer.responseCode204(exchange, gson);
+                HelperServer.responseCode204(exchange);
             } else {
                 HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
             }
@@ -113,7 +113,7 @@ public class TaskHandler implements HttpHandler {
     private void actionToDeleteTaskAll(HttpExchange exchange) throws IOException {
         if (manager.getAllTasks().size() > 0) {
             manager.deleteAllTasks();
-            HelperServer.sendResponse(exchange, null, 204);
+            HelperServer.responseCode204(exchange);
         } else {
             HelperServer.responseCode404(exchange, gson, "Задач не найдено.");
         }

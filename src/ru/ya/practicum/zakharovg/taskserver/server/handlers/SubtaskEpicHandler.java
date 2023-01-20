@@ -21,6 +21,6 @@ public class SubtaskEpicHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Запрос подзадач по эпику");
-        HelperServer.sendResponse(exchange, "Запрос подзадач по эпику");
+        HelperServer.responseCode200(exchange, "Запрос подзадач по эпику");
     }
 }

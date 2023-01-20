@@ -21,6 +21,6 @@ public class HistoryHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Запрос истории");
-        HelperServer.sendResponse(exchange, "Запрос истории");
+        HelperServer.responseCode200(exchange, "Запрос истории");
     }
 }

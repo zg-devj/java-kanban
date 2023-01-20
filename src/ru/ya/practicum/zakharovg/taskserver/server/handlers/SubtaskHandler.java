@@ -21,6 +21,6 @@ public class SubtaskHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Запрос подзадач");
-        HelperServer.sendResponse(exchange, "Запрос подзадач");
+        HelperServer.responseCode200(exchange, "Запрос подзадач");
     }
 }

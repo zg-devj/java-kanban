@@ -15,28 +15,32 @@ public class HttpTaskServer {
 
     private TaskManager manager;
     private Gson gson;
+    private HttpServer httpServer;
 
     public HttpTaskServer() {
-        manager = Managers.getFileStorage("tasks.csv");
-        gson = new GsonBuilder().serializeNulls().create();
+        this(Managers.getFileStorage("tasks.csv"));
     }
 
-    public void start() {
+    public HttpTaskServer(TaskManager taskManager) {
+        this.manager = taskManager;
+        this.gson = new GsonBuilder().serializeNulls().create();
         try {
-            HttpServer httpServer = HttpServer.create();
+            httpServer = HttpServer.create();
             httpServer.bind(new InetSocketAddress(PORT), 0);
 
-            httpServer.createContext("/tasks", new TasksHandler(manager, gson));
-            httpServer.createContext("/tasks/task", new TaskHandler(manager, gson));
-            httpServer.createContext("/tasks/subtask", new SubtaskHandler(manager, gson));
-            httpServer.createContext("/tasks/epic", new EpicHandler(manager, gson));
-            httpServer.createContext("/tasks/history", new HistoryHandler(manager, gson));
-            httpServer.createContext("/tasks/subtask/epic", new SubtaskEpicHandler(manager, gson));
-
-            httpServer.start();
-            System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
+            httpServer.createContext("/api/tasks", new TasksHandler(manager, gson));
+            httpServer.createContext("/api/tasks/task", new TaskHandler(manager, gson));
+            httpServer.createContext("/api/tasks/subtask", new SubtaskHandler(manager, gson));
+            httpServer.createContext("/api/tasks/epic", new EpicHandler(manager, gson));
+            httpServer.createContext("/api/tasks/history", new HistoryHandler(manager, gson));
+            httpServer.createContext("/api/tasks/subtask/epic", new SubtaskEpicHandler(manager, gson));
         } catch (IOException e) {
             System.out.println("Ошибка при создании сервера: " + e.getMessage());
         }
+    }
+
+    public void start() {
+        httpServer.start();
+        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
 }

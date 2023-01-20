@@ -21,6 +21,6 @@ public class EpicHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Запрос эпиков");
-        HelperServer.sendResponse(exchange, "Запрос эпиков");
+        HelperServer.responseCode200(exchange, "Запрос эпиков");
     }
 }
