@@ -100,7 +100,6 @@ public class TaskConverterTest {
         assertEquals(epic1, actual1, "Эпики не совпадают");
         assertEquals("Epic", actual1.getTitle());
         assertEquals(Status.NEW, actual1.getStatus());
-        // TODO: 14.01.2023 check
         assertNull(actual1.getDurationMinute());
     }
 

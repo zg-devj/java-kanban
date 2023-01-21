@@ -1,4 +1,4 @@
-package ru.ya.practicum.zakharovg.taskserver.server.handlers;
+package ru.ya.practicum.zakharovg.taskserver.server.handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -30,9 +30,8 @@ public class TasksHandler implements HttpHandler {
             HelperServer.responseCode200(exchange, response);
         } else {
             // если запрос не GET
-            HelperServer.responseCode400(exchange, gson);
+            HelperServer.responseCode405(exchange, gson);
         }
         exchange.close();
-
     }
 }

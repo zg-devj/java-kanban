@@ -1,4 +1,4 @@
-package ru.ya.practicum.zakharovg.taskserver.server.handlers;
+package ru.ya.practicum.zakharovg.taskserver.server.handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;

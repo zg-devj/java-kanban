@@ -10,7 +10,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class HelperServer {
-    private static final String RESPONSE_CODE_400_MSG = "Вы использовали неверный запрос";
+    private static final String RESPONSE_CODE_400_MSG = "Вы использовали неверный запрос.";
+    private static final String RESPONSE_CODE_405_MSG = "Метод запроса не поддерживается.";
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     public static void sendResponse(HttpExchange exchange, String response, int statusCode) throws IOException {
@@ -51,8 +52,12 @@ public class HelperServer {
         responseCode(exchange, gson, msg, 404);
     }
 
-    public static void responseCode405(HttpExchange exchange, Gson gson, String msg) throws IOException {
-        responseCode(exchange, gson, msg, 405);
+    public static void responseCode405(HttpExchange exchange, Gson gson) throws IOException {
+        responseCode(exchange, gson, RESPONSE_CODE_405_MSG, 405);
+    }
+
+    public static void responseCode422(HttpExchange exchange, Gson gson, String msg) throws IOException {
+        responseCode(exchange, gson, msg, 422);
     }
 
     private static void responseCode(HttpExchange exchange, Gson gson, String msg, int statusCode) throws IOException {

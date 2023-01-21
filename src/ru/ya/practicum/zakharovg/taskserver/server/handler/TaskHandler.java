@@ -1,8 +1,9 @@
-package ru.ya.practicum.zakharovg.taskserver.server.handlers;
+package ru.ya.practicum.zakharovg.taskserver.server.handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import ru.ya.practicum.zakharovg.javakanban.exceptions.OutOfTimeIntervalException;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.taskserver.util.HelperServer;
@@ -33,7 +34,7 @@ public class TaskHandler implements HttpHandler {
                     actionToGetTask(exchange, queryString);
                 } else {
                     // вернуть все задачи
-                    HelperServer.responseCode200(exchange,gson.toJson(manager.getAllTasks()));
+                    HelperServer.responseCode200(exchange, gson.toJson(manager.getAllTasks()));
                 }
                 break;
             case "POST":
@@ -52,7 +53,7 @@ public class TaskHandler implements HttpHandler {
                 }
                 break;
             default:
-                HelperServer.responseCode405(exchange, gson,"Метод запроса не поддерживается");
+                HelperServer.responseCode405(exchange, gson);
         }
         exchange.close();
     }
@@ -77,8 +78,12 @@ public class TaskHandler implements HttpHandler {
         String bodyPost = new String(inputStreamPost.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Task taskPost = gson.fromJson(bodyPost, Task.class);
         if (taskPost != null) {
-            manager.addTask(taskPost);
-            HelperServer.responseCode201(exchange, gson, "Задача добавлена");
+            try {
+                manager.addTask(taskPost);
+            } catch (OutOfTimeIntervalException e) {
+                HelperServer.responseCode422(exchange, gson, e.getMessage());
+            }
+            HelperServer.responseCode201(exchange, gson, "Задача добавлена.");
         }
     }
 
@@ -87,17 +92,21 @@ public class TaskHandler implements HttpHandler {
         String bodyPut = new String(inputStreamPut.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Task taskPut = gson.fromJson(bodyPut, Task.class);
         if (manager.getTask(taskPut.getId()) != null) {
-            manager.updateTask(taskPut);
+            try {
+                manager.updateTask(taskPut);
+            } catch (OutOfTimeIntervalException e) {
+                HelperServer.responseCode422(exchange, gson, e.getMessage());
+            }
             HelperServer.responseCode204(exchange);
         } else {
-            HelperServer.responseCode404(exchange, gson, "Задачи с id=" + taskPut.getId() + " нет, нельзя обновить задачу.");
+            HelperServer.responseCode404(exchange, gson, "Задачи с id=" + taskPut.getId() + " не найдено.");
         }
     }
 
     private void actionToDeleteTaskOne(HttpExchange exchange, String queryString) throws IOException {
         String[] queries = queryString.split("&");
-        Integer id = HelperServer.getIdFromQueries(queries);
-        if (id >= -1) {
+        int id = HelperServer.getIdFromQueries(queries);
+        if (id >= 0) {
             Task taskDelete = manager.getTask(id);
             if (taskDelete != null) {
                 manager.deleteTask(id);

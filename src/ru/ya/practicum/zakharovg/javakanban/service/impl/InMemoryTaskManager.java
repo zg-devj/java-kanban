@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
+    private final static String MSG_WRONG_VALIDATE = "Добавляемая задача пересекается с существующими.";
     private final static int SECONDS_IN_MINUTE = 60;
     // Идентификаторы для Task, Subtask, Epic
     protected Identifier idGen;
@@ -61,7 +62,7 @@ public class InMemoryTaskManager implements TaskManager {
             // добавляем в отсортированный список
             sortedTasks.add(task);
         } else {
-            throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+            throw new OutOfTimeIntervalException(MSG_WRONG_VALIDATE);
         }
         return task.getId();
     }
@@ -77,7 +78,7 @@ public class InMemoryTaskManager implements TaskManager {
                 tasks.put(task.getId(), task);
                 sortedTasks.add(task);
             } else {
-                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+                throw new OutOfTimeIntervalException(MSG_WRONG_VALIDATE);
             }
 
         }
@@ -148,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
                 // Обновляем статус
                 updateEpicState(subtask.getEpicId());
             } else {
-                throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+                throw new OutOfTimeIntervalException(MSG_WRONG_VALIDATE);
             }
         }
         return subtask.getId();
@@ -162,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         if (!sortedTasks.validate(subtask)) {
-            throw new OutOfTimeIntervalException("Добавляемая задача пересекается с существующими");
+            throw new OutOfTimeIntervalException(MSG_WRONG_VALIDATE);
         }
         sortedTasks.remove(subtask);
         subtasks.put(subtask.getId(), subtask);
