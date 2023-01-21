@@ -10,7 +10,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
-    public static final String ERROR_MESSAGE = "Добавляемая задача пересекается с существующими";
+    public static final String ERROR_MESSAGE = "Добавляемая задача пересекается с существующими.";
 
     public abstract T createInstance();
 

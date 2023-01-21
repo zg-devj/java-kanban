@@ -38,9 +38,11 @@ public class TaskHandler implements HttpHandler {
                 }
                 break;
             case "POST":
+                // добавляем задачу
                 actionToPostTask(exchange);
                 break;
             case "PUT":
+                // обновляем задачу
                 actionToPutTask(exchange);
                 break;
             case "DELETE":
