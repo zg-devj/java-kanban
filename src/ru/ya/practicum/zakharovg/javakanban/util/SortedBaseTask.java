@@ -37,6 +37,11 @@ public class SortedBaseTask {
             if (value.getStartTime() == null) {
                 return true;
             }
+            // проверка только при обновлении задачи
+            // задача пропускает саму себя чтоб не пересекаться с собой
+            if(value.getId() == task.getId()){
+                continue;
+            }
             if (value.getStartTime().equals(task.getStartTime())) {
                 return false;
             }
