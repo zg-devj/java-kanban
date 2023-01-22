@@ -9,6 +9,8 @@ import java.util.Objects;
 public abstract class BaseTask {
     // Идентификатор
     protected Integer id;
+
+    public String type = "BaseTask";
     // Заголовок
     protected String title;
     // Описание

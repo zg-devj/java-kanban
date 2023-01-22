@@ -3,9 +3,14 @@ package ru.ya.practicum.zakharovg.taskserver.server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
+import ru.ya.practicum.zakharovg.javakanban.model.BaseTask;
+import ru.ya.practicum.zakharovg.javakanban.model.Epic;
+import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
+import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.util.Managers;
 import ru.ya.practicum.zakharovg.taskserver.server.handler.*;
+import ru.ya.practicum.zakharovg.taskserver.util.BaseTaskDeserializer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -23,9 +28,14 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.manager = taskManager;
+
+        BaseTaskDeserializer deserializer = new BaseTaskDeserializer("type");
+        deserializer.registerBarnType("Task", Task.class);
+        deserializer.registerBarnType("Subtask", Subtask.class);
+        deserializer.registerBarnType("Epic", Epic.class);
+
         this.gson = new GsonBuilder()
-                //.registerTypeAdapter(BaseTask.class, new BaseTaskAdapter())
-                //.serializeNulls()
+                .registerTypeAdapter(BaseTask.class, deserializer)
                 .create();
 
         httpServer = HttpServer.create();

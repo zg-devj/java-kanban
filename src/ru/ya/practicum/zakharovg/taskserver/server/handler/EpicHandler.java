@@ -68,7 +68,7 @@ public class EpicHandler implements HttpHandler {
             if (epic != null) {
                 HelperServer.responseCode200(exchange, gson.toJson(manager.getEpic(id)));
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);
@@ -93,7 +93,7 @@ public class EpicHandler implements HttpHandler {
             manager.updateEpic(epicPut);
             HelperServer.responseCode204(exchange);
         } else {
-            HelperServer.responseCode404(exchange, gson, "Задачи с id=" + epicPut.getId() + " не найдено.");
+            HelperServer.responseCode404(exchange, gson, "Задачи с id " + epicPut.getId() + " не найдено.");
         }
     }
 
@@ -106,7 +106,7 @@ public class EpicHandler implements HttpHandler {
                 manager.deleteEpic(id);
                 HelperServer.responseCode204(exchange);
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);

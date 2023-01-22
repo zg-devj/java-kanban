@@ -68,7 +68,7 @@ public class TaskHandler implements HttpHandler {
             if (task != null) {
                 HelperServer.responseCode200(exchange, gson.toJson(manager.getTask(id)));
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);
@@ -87,8 +87,6 @@ public class TaskHandler implements HttpHandler {
             }
             HelperServer.responseCode201(exchange, gson, "Задача добавлена.");
         }
-        // TODO: 22.01.2023 проверить этот вариант
-        // WrongTask
     }
 
     private void actionToPutTask(HttpExchange exchange) throws IOException {
@@ -103,7 +101,7 @@ public class TaskHandler implements HttpHandler {
             }
             HelperServer.responseCode204(exchange);
         } else {
-            HelperServer.responseCode404(exchange, gson, "Задачи с id=" + taskPut.getId() + " не найдено.");
+            HelperServer.responseCode404(exchange, gson, "Задачи с id " + taskPut.getId() + " не найдено.");
         }
     }
 
@@ -116,7 +114,7 @@ public class TaskHandler implements HttpHandler {
                 manager.deleteTask(id);
                 HelperServer.responseCode204(exchange);
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);

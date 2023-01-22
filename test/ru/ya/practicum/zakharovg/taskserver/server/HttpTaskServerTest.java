@@ -24,12 +24,13 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpTaskServerTest {
+    private BaseTaskDeserializer deserializer;
     private HttpTaskServer taskServer;
-    private Gson gson = new GsonBuilder().serializeNulls().create();
+    private Gson gson;
     private TaskManager taskManager;
     private Task task;
     private Task task2;
@@ -40,6 +41,15 @@ public class HttpTaskServerTest {
     @BeforeEach
     void setUp() throws IOException {
         System.out.println();
+        deserializer = new BaseTaskDeserializer("type");
+        deserializer.registerBarnType("Task", Task.class);
+        deserializer.registerBarnType("Subtask", Subtask.class);
+        deserializer.registerBarnType("Epic", Epic.class);
+
+        gson = new GsonBuilder()
+                .registerTypeAdapter(BaseTask.class, deserializer)
+                .serializeNulls().create();
+
         taskManager = Managers.getDefault();
         taskServer = new HttpTaskServer(taskManager);
 
@@ -1025,7 +1035,7 @@ public class HttpTaskServerTest {
         assertEquals("Метод запроса не поддерживается.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
-    /*@Test
+    @Test
     public void history_ReturnHistory_GETHistoryList() throws IOException, InterruptedException {
         taskManager.getTask(task.getId());
         taskManager.getEpic(epic.getId());
@@ -1038,15 +1048,16 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Не верный код ответа");
 
-        //Type type = new TypeToken<ArrayList<BaseTask>>()
-        // {
-        //}
-        //.getType();
-        List<BaseTask> actual = Collections.singletonList(gson.fromJson(response.body(), BaseTask.class));
+        Type type = new TypeToken<ArrayList<BaseTask>>() {
+        }.getType();
+
+        List<BaseTask> actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Истории не возвращаются");
         assertEquals(3, actual.size(), "Не верное количество задач");
-    }*/
+        assertTrue(actual.get(0) instanceof Task);
+        assertTrue(actual.get(2) instanceof Subtask);
+    }
 
     @Test
     public void history_ReturnHistory_GETEmptyHistory() throws IOException, InterruptedException {
@@ -1063,27 +1074,6 @@ public class HttpTaskServerTest {
 
         assertNotNull(actual, "Истории не возвращаются");
         assertEquals(0, actual.size(), "Не верное количество задач");
-    }
-
-    @Test
-    public void testMy() {
-        List<BaseTask> list = new ArrayList<>();
-        Task t1 = new Task("Task", "Desc", "10.01.2023 11:00", 10);
-        t1.setId(1);
-        list.add(t1);
-        Epic e1 = new Epic("Epic", "Desc");
-        e1.setId(2);
-        list.add(e1);
-
-        //BaseTaskDeserializer deserializer = new BaseTaskDeserializer("type")
-
-
-        Gson gson1 = new GsonBuilder().serializeNulls()
-                .setPrettyPrinting()
-
-                .create();
-        String json = gson1.toJson(list);
-        System.out.println(json);
     }
     //endregion
 }

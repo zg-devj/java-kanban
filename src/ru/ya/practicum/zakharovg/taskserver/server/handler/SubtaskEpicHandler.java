@@ -8,6 +8,7 @@ import ru.ya.practicum.zakharovg.taskserver.util.HelperServer;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 
 public class SubtaskEpicHandler implements HttpHandler {
 
@@ -50,7 +51,7 @@ public class SubtaskEpicHandler implements HttpHandler {
                 HelperServer.responseCode200(exchange, response);
             } else {
                 // если эпика с запрашиваемым id не существует
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             // если id не корректен

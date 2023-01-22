@@ -15,7 +15,7 @@ public class HelperServer {
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     public static void sendResponse(HttpExchange exchange, String response, int statusCode) throws IOException {
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
         switch (statusCode) {
             case 204:
                 exchange.sendResponseHeaders(statusCode, -1);

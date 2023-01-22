@@ -14,6 +14,7 @@ public class Epic extends BaseTask {
         super(title, description);
         subtaskIds = new HashSet<>();
         setStatus(Status.NEW);
+        this.type = "Epic";
     }
 
     public HashSet<Integer> getSubtaskIds() {

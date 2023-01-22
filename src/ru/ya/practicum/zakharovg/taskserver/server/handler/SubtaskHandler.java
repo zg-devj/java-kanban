@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.ya.practicum.zakharovg.javakanban.exceptions.OutOfTimeIntervalException;
 import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
-import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.taskserver.util.HelperServer;
 
@@ -70,7 +69,7 @@ public class SubtaskHandler implements HttpHandler {
             if (task != null) {
                 HelperServer.responseCode200(exchange, gson.toJson(manager.getSubtask(id)));
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);
@@ -89,8 +88,6 @@ public class SubtaskHandler implements HttpHandler {
             }
             HelperServer.responseCode201(exchange, gson, "Задача добавлена.");
         }
-        // TODO: 22.01.2023 проверить этот вариант :
-        // Wrong epicId, no epicId
     }
 
     private void actionToPutSubtask(HttpExchange exchange) throws IOException {
@@ -105,7 +102,7 @@ public class SubtaskHandler implements HttpHandler {
             }
             HelperServer.responseCode204(exchange);
         } else {
-            HelperServer.responseCode404(exchange, gson, "Задачи с id=" + subtaskPut.getId() + " не найдено.");
+            HelperServer.responseCode404(exchange, gson, "Задачи с id " + subtaskPut.getId() + " не найдено.");
         }
     }
 
@@ -118,7 +115,7 @@ public class SubtaskHandler implements HttpHandler {
                 manager.deleteSubtask(id);
                 HelperServer.responseCode204(exchange);
             } else {
-                HelperServer.responseCode404(exchange, gson, "Задачи с id=" + id + " не найдено.");
+                HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
         } else {
             HelperServer.responseCode400(exchange, gson);
