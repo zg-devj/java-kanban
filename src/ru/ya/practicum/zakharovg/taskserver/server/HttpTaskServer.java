@@ -23,7 +23,10 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.manager = taskManager;
-        this.gson = new GsonBuilder().serializeNulls().create();
+        this.gson = new GsonBuilder()
+                //.registerTypeAdapter(BaseTask.class, new BaseTaskAdapter())
+                //.serializeNulls()
+                .create();
 
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);

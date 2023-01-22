@@ -23,10 +23,10 @@ public class TasksHandler implements HttpHandler {
 
         System.out.println("Запрос отсортированных задач и подзадач");
         String method = exchange.getRequestMethod();
-        String response;
+
         if (method.equals("GET")) {
             // возвращаем отсортированный список или пустой список
-            response = gson.toJson(manager.getPrioritizedTasks());
+            String response = gson.toJson(manager.getPrioritizedTasks());
             HelperServer.responseCode200(exchange, response);
         } else {
             // если запрос не GET

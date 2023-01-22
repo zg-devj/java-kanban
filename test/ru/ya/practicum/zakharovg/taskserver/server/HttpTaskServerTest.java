@@ -6,12 +6,14 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ya.practicum.zakharovg.javakanban.model.BaseTask;
 import ru.ya.practicum.zakharovg.javakanban.model.Epic;
 import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.util.Managers;
 import ru.ya.practicum.zakharovg.taskserver.model.MessageResp;
+import ru.ya.practicum.zakharovg.taskserver.util.BaseTaskDeserializer;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -1003,6 +1005,85 @@ public class HttpTaskServerTest {
     //endregion
 
     //region history
+    @Test
+    public void history_ReturnCode405_WrongMethod() throws IOException, InterruptedException {
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson("{\"a\":\"b\"}"));
 
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/history");
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).method("OPTION", bodyPublisher).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(405, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Метод запроса не поддерживается.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    /*@Test
+    public void history_ReturnHistory_GETHistoryList() throws IOException, InterruptedException {
+        taskManager.getTask(task.getId());
+        taskManager.getEpic(epic.getId());
+        taskManager.getSubtask(subtask.getId());
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/history");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode(), "Не верный код ответа");
+
+        //Type type = new TypeToken<ArrayList<BaseTask>>()
+        // {
+        //}
+        //.getType();
+        List<BaseTask> actual = Collections.singletonList(gson.fromJson(response.body(), BaseTask.class));
+
+        assertNotNull(actual, "Истории не возвращаются");
+        assertEquals(3, actual.size(), "Не верное количество задач");
+    }*/
+
+    @Test
+    public void history_ReturnHistory_GETEmptyHistory() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/history");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<ArrayList<BaseTask>>() {
+        }.getType();
+        List<BaseTask> actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Истории не возвращаются");
+        assertEquals(0, actual.size(), "Не верное количество задач");
+    }
+
+    @Test
+    public void testMy() {
+        List<BaseTask> list = new ArrayList<>();
+        Task t1 = new Task("Task", "Desc", "10.01.2023 11:00", 10);
+        t1.setId(1);
+        list.add(t1);
+        Epic e1 = new Epic("Epic", "Desc");
+        e1.setId(2);
+        list.add(e1);
+
+        //BaseTaskDeserializer deserializer = new BaseTaskDeserializer("type")
+
+
+        Gson gson1 = new GsonBuilder().serializeNulls()
+                .setPrettyPrinting()
+
+                .create();
+        String json = gson1.toJson(list);
+        System.out.println(json);
+    }
     //endregion
 }
