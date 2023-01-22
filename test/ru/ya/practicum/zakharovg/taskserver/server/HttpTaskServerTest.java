@@ -626,4 +626,383 @@ public class HttpTaskServerTest {
         assertEquals("Задач не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
     //endregion
+
+    //region subtask
+    @Test
+    public void subtask_ReturnCode405_WrongMethod() throws IOException, InterruptedException {
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson("{\"a\":\"b\"}"));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).method("OPTION", bodyPublisher).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(405, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Метод запроса не поддерживается.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskGET_ReturnSubtaskById() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=4");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<Subtask>() {
+        }.getType();
+        Subtask actual = gson.fromJson(response.body(), type);
+
+        System.out.println(subtask);
+
+        assertNotNull(actual, "Задача не возвращается");
+        assertEquals(subtask, actual, "Задачи не совпадают");
+
+    }
+
+    @Test
+    public void subtaskGET_ReturnSubtaskById_WithWrongId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=55");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+
+    }
+
+    @Test
+    public void subtaskGET_ReturnCode400_WithNotCorrectId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=wrong");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Вы использовали неверный запрос.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskGET_ReturnAllSubtask_Normal() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<ArrayList<Subtask>>() {
+        }.getType();
+        List<Subtask> actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Задача не возвращается");
+        assertEquals(2, actual.size(), "Не верное количество задач");
+        assertEquals(subtask, actual.get(0), "Задачи не совпадают");
+    }
+
+    @Test
+    public void subtaskPOST_ReturnCode201_AddNewSubtask_Normal() throws IOException, InterruptedException {
+        Subtask newSubtask = new Subtask("New Subtask", "New Desc");
+        newSubtask.setEpicId(epic.getId());
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson(newSubtask));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().POST(bodyPublisher).uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode(), "Не верный код ответа");
+    }
+
+    @Test
+    public void subtaskPOST_ReturnCode422_AddNewSubtask_WrongValidate() throws IOException, InterruptedException {
+        Subtask newSubtask = new Subtask("New Subtask", "Desc", "14.01.2023 11:00", 10);
+        newSubtask.setEpicId(epic.getId());
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson(newSubtask));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().POST(bodyPublisher).uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(422, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Добавляемая задача пересекается с существующими.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskPUT_ReturnCode204_UpdateSubtask_Normal() throws IOException, InterruptedException {
+        Subtask updateSubtask =
+                new Subtask("Updated Task", "Updated Desc"
+                        , "13.01.2023 11:00", 20);
+        updateSubtask.setId(subtask.getId());
+
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson(updateSubtask));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().PUT(bodyPublisher).uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(204, response.statusCode(), "Не верный код ответа");
+    }
+
+    @Test
+    public void subtaskPUT_ReturnCode422_UpdateSubtask_WrongValidate() throws IOException, InterruptedException {
+        Subtask updateSubtask =
+                new Subtask("Updated Task", "Updated Desc"
+                        , "14.01.2023 11:00", 20);
+        updateSubtask.setEpicId(subtask.getEpicId());
+        updateSubtask.setId(subtask.getId());
+
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson(updateSubtask));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().PUT(bodyPublisher).uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(422, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Добавляемая задача пересекается с существующими.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskPUT_ReturnCode404_UpdateSubtask_WithWrongId() throws IOException, InterruptedException {
+        Subtask updateSubtask =
+                new Subtask("Updated Task", "Updated Desc"
+                        , "20.01.2023 11:00", 20);
+        updateSubtask.setEpicId(epic.getId());
+        updateSubtask.setId(55);
+
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson(updateSubtask));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().PUT(bodyPublisher).uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskDELETE_ReturnCode204_DeleteSubtask_Normal() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=4");
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(204, response.statusCode(), "Не верный код ответа");
+
+        assertEquals(1, taskManager.getAllSubtasks().size(), "Не верное количество задач");
+    }
+
+    @Test
+    public void subtaskDELETE_ReturnCode404_DeleteSubtask_WithWrongId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=55");
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode(), "Не верный код ответа");
+
+        assertEquals(2, taskManager.getAllSubtasks().size(), "Не верное количество задач");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskDELETE_ReturnCode400_DeleteSubtask_WithNotCorrectId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask?id=wrong");
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Вы использовали неверный запрос.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskDELETE_ReturnCode204_DeleteAllSubtasks_Normal() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(204, response.statusCode(), "Не верный код ответа");
+
+        assertEquals(0, taskManager.getAllSubtasks().size(), "Не верное количество задач");
+    }
+
+    @Test
+    public void subtaskDELETE_ReturnCode404_DeleteAllSubtasks_WithEmptySubtasks() throws IOException, InterruptedException {
+        taskManager.deleteAllSubtasks();
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask");
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode(), "Не верный код ответа");
+
+        assertEquals(0, taskManager.getAllSubtasks().size(), "Не верное количество задач");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Задач не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+    //endregion
+
+    //region subtasks by epic
+    @Test
+    public void subtasksEpic_ReturnCode405_WrongMethod() throws IOException, InterruptedException {
+        HttpRequest.BodyPublisher bodyPublisher
+                = HttpRequest.BodyPublishers.ofString(gson.toJson("{\"a\":\"b\"}"));
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask/epic?id=" + epic.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).method("OPTION", bodyPublisher).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(405, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Метод запроса не поддерживается.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtasksEpicGET_ReturnAllSubtaskByEpic_Normal() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask/epic?id=" + epic.getId());
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<ArrayList<Subtask>>() {
+        }.getType();
+        List<Subtask> actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Задача не возвращается");
+        assertEquals(2, actual.size(), "Не верное количество задач");
+        assertEquals(subtask, actual.get(0), "Задачи не совпадают");
+    }
+
+    @Test
+    public void subtasksEpicGET_ReturnCode400_WithNoQueryString() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask/epic");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Вы использовали неверный запрос.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtasksEpicGET_ReturnCode400_WithNotCorrectId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask/epic?id=wrong");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Вы использовали неверный запрос.", actual.getMessage(), "Сообщения не совпадают.");
+    }
+
+    @Test
+    public void subtaskEpicGET_ReturnCode404_WithWrongId() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/api/tasks/subtask/epic?id=55");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode(), "Не верный код ответа");
+
+        Type type = new TypeToken<MessageResp>() {
+        }.getType();
+        MessageResp actual = gson.fromJson(response.body(), type);
+
+        assertNotNull(actual, "Сообщение не возвращается.");
+        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+
+    }
+    //endregion
+
+    //region history
+
+    //endregion
 }

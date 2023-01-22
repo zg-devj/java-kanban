@@ -87,6 +87,8 @@ public class TaskHandler implements HttpHandler {
             }
             HelperServer.responseCode201(exchange, gson, "Задача добавлена.");
         }
+        // TODO: 22.01.2023 проверить этот вариант
+        // WrongTask
     }
 
     private void actionToPutTask(HttpExchange exchange) throws IOException {

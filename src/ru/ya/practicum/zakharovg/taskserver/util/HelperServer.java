@@ -52,6 +52,7 @@ public class HelperServer {
         responseCode(exchange, gson, msg, 404);
     }
 
+    // не верный метод запроса OPTION, HEAD ...
     public static void responseCode405(HttpExchange exchange, Gson gson) throws IOException {
         responseCode(exchange, gson, RESPONSE_CODE_405_MSG, 405);
     }
