@@ -3,9 +3,12 @@ package ru.ya.practicum.zakharovg.javakanban.util;
 import ru.ya.practicum.zakharovg.javakanban.service.HistoryManager;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.service.impl.FileBackedTasksManager;
+import ru.ya.practicum.zakharovg.javakanban.service.impl.HttpTaskManager;
 import ru.ya.practicum.zakharovg.javakanban.service.impl.InMemoryHistoryManager;
 import ru.ya.practicum.zakharovg.javakanban.service.impl.InMemoryTaskManager;
 
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,6 +26,10 @@ public class Managers {
     public static TaskManager getFileStorage(String fileName) {
         Path path = Paths.get(DIR_FILE_RESOURCES, fileName);
         return FileBackedTasksManager.loadFromFile(path);
+    }
+
+    public static TaskManager getServerStorage() throws IOException, InterruptedException {
+        return new HttpTaskManager(URI.create("http://localhost:8078"));
     }
 
     public static HistoryManager getDefaultHistory() {

@@ -7,6 +7,7 @@ import ru.ya.practicum.zakharovg.javakanban.model.Epic;
 import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.HistoryManager;
+import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.util.SortedBaseTask;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskConverter;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskType;
@@ -20,27 +21,31 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-public class FileBackedTasksManager extends InMemoryTaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
     private File file;
+
+    public FileBackedTasksManager() {
+        super();
+    }
 
     private FileBackedTasksManager(Path path) {
         super();
         this.file = path.toFile();
     }
 
-    private void addItemToTaskList(Task task) {
+    protected void addItemToTaskList(Task task) {
         tasks.put(task.getId(), task);
         idGen.setMaxId(task.getId());
         sortedTasks.add(task);
     }
 
-    private void addItemToEpicList(Epic epic) {
+    protected void addItemToEpicList(Epic epic) {
         epics.put(epic.getId(), epic);
         idGen.setMaxId(epic.getId());
     }
 
-    private void addItemToSubtaskList(Subtask subtask) {
+    protected void addItemToSubtaskList(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
         idGen.setMaxId(subtask.getId());
         sortedTasks.add(subtask);
@@ -48,13 +53,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     //region Task
-    // метод save() из ТЗ-6:
-    // - "Создайте метод save без параметров — он будет сохранять
-    // текущее состояние менеджера в указанный файл."
-    // - "Что он должен сохранять? Все задачи, подзадачи,
-    // эпики и историю просмотра любых задач."
-    //  - метод getTask, getEpic, getSubtask изменяют
-    //  историю просмотра из условий ТЗ-5
     @Override
     public Task getTask(int id) {
         Task t = super.getTask(id);
@@ -146,7 +144,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     // Сохраняем состояние задач и истории
-    private void save() {
+    protected void save() {
         if (!file.exists()) {
             // создаем файл, если не существует
             try {
@@ -178,7 +176,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
 
-    private void addItemToLists(FileBackedTasksManager backed, BaseTask task, TaskType type) {
+    protected void addItemToLists(FileBackedTasksManager backed, BaseTask task, TaskType type) {
         switch (type) {
             case TASK:
                 backed.addItemToTaskList((Task) task);

@@ -23,8 +23,6 @@ public class HistoryHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Запрос истории");
         String method = exchange.getRequestMethod();
-        URI uri = exchange.getRequestURI();
-        String queryString = uri.getQuery();
         if (method.equals("GET"))   {
             String response = gson.toJson(manager.getHistory());
             HelperServer.responseCode200(exchange, response);
