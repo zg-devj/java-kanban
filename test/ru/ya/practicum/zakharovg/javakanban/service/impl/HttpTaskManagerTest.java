@@ -47,7 +47,7 @@ class HttpTaskManagerTest extends TaskManagerTest<TaskManager> {
     }
 
     @Test
-    public void test_Load() throws IOException, InterruptedException {
+    public void test_SaveDataOnKVServerAndLoadToAnotherTaskManager() throws IOException, InterruptedException {
         TaskManager manager = Managers.getServerStorage();
 
         manager.addTask(new Task("Task", "Desc")); //1
