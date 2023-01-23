@@ -7,7 +7,6 @@ import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.taskserver.util.HelperServer;
 
 import java.io.IOException;
-import java.net.URI;
 
 public class HistoryHandler implements HttpHandler {
 

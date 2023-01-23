@@ -8,7 +8,6 @@ import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.HistoryManager;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
-import ru.ya.practicum.zakharovg.javakanban.util.SortedBaseTask;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskConverter;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskType;
 

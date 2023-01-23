@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpTaskServerTest {
     private BaseTaskDeserializer deserializer;
@@ -188,7 +187,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
 
     }
 
@@ -327,7 +326,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -358,7 +357,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -465,7 +464,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
 
     }
 
@@ -554,7 +553,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -585,7 +584,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -694,7 +693,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
 
     }
 
@@ -837,7 +836,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -868,7 +867,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
     }
 
     @Test
@@ -1009,7 +1008,7 @@ public class HttpTaskServerTest {
         MessageResp actual = gson.fromJson(response.body(), type);
 
         assertNotNull(actual, "Сообщение не возвращается.");
-        assertEquals("Задачи с id=55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
+        assertEquals("Задачи с id 55 не найдено.", actual.getMessage(), "Сообщения не совпадают.");
 
     }
     //endregion

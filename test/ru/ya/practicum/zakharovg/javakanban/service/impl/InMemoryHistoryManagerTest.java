@@ -1,14 +1,11 @@
 package ru.ya.practicum.zakharovg.javakanban.service.impl;
 
-import org.junit.jupiter.api.DisplayName;
-import ru.ya.practicum.zakharovg.javakanban.model.BaseTask;
-import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.ya.practicum.zakharovg.javakanban.model.BaseTask;
+import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.HistoryManager;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
-import ru.ya.practicum.zakharovg.javakanban.service.impl.InMemoryHistoryManager;
-import ru.ya.practicum.zakharovg.javakanban.service.impl.InMemoryTaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
