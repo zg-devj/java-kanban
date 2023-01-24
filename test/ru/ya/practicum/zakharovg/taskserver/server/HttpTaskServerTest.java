@@ -12,6 +12,7 @@ import ru.ya.practicum.zakharovg.javakanban.model.Subtask;
 import ru.ya.practicum.zakharovg.javakanban.model.Task;
 import ru.ya.practicum.zakharovg.javakanban.service.TaskManager;
 import ru.ya.practicum.zakharovg.javakanban.util.Managers;
+import ru.ya.practicum.zakharovg.kvserver.KVServer;
 import ru.ya.practicum.zakharovg.taskserver.model.MessageResp;
 import ru.ya.practicum.zakharovg.taskserver.util.BaseTaskDeserializer;
 
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HttpTaskServerTest {
     private BaseTaskDeserializer deserializer;
     private HttpTaskServer taskServer;
+    private KVServer kvServer;
     private Gson gson;
     private TaskManager taskManager;
     private Task task;
@@ -38,7 +40,7 @@ public class HttpTaskServerTest {
     private Subtask subtask2;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, InterruptedException {
         System.out.println();
         deserializer = new BaseTaskDeserializer("type");
         deserializer.registerBarnType("Task", Task.class);
@@ -48,6 +50,9 @@ public class HttpTaskServerTest {
         gson = new GsonBuilder()
                 .registerTypeAdapter(BaseTask.class, deserializer)
                 .serializeNulls().create();
+
+        kvServer = new KVServer();
+        kvServer.start();
 
         taskManager = Managers.getDefault();
         taskServer = new HttpTaskServer(taskManager);
@@ -73,6 +78,7 @@ public class HttpTaskServerTest {
     @AfterEach
     void tearDown() {
         taskServer.stop();
+        kvServer.stop();
     }
 
     //region tasks

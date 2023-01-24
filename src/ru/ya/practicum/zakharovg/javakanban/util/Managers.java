@@ -18,20 +18,27 @@ public class Managers {
     public static final String FILE_FOR_EXAMPLE = "tasks.csv";
     public static final String DIR_FILE_RESOURCES = "resources";
 
-    public static TaskManager getDefault() {
+    public static TaskManager getDefault() throws IOException, InterruptedException {
+        return getServerStorage();
+    }
+
+    // для хранения в памяти
+    public static TaskManager getInMemoryStorage() {
         return new InMemoryTaskManager();
     }
 
-    //для хранения в файле
+    // для хранения в файле
     public static TaskManager getFileStorage(String fileName) {
         Path path = Paths.get(DIR_FILE_RESOURCES, fileName);
         return FileBackedTasksManager.loadFromFile(path);
     }
 
+    // для хранения на сервере
     public static TaskManager getServerStorage() throws IOException, InterruptedException {
         return new HttpTaskManager(URI.create("http://localhost:8078"));
     }
 
+    // для хранения истории
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }

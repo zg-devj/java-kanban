@@ -16,7 +16,7 @@ import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HttpTaskManagerTest extends TaskManagerTest<TaskManager> {
+class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     private KVServer kvServer;
 
@@ -36,7 +36,7 @@ class HttpTaskManagerTest extends TaskManagerTest<TaskManager> {
     }
 
     @Override
-    public TaskManager createInstance() {
+    public HttpTaskManager createInstance() {
         try {
             return new HttpTaskManager(URI.create("http://localhost:8078"));
         } catch (IOException e) {

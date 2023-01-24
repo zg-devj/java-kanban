@@ -35,11 +35,10 @@ public class HttpTaskManager extends FileBackedTasksManager {
         String json;
         try {
             json = client.load("data");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+
         if (!json.isBlank()) {
             StorageUnit storageUnit = gson.fromJson(json, StorageUnit.class);
 
@@ -80,9 +79,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
         try {
             client.put("data", json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

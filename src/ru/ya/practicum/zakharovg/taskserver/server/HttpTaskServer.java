@@ -22,8 +22,8 @@ public class HttpTaskServer {
     private Gson gson;
     private HttpServer httpServer;
 
-    public HttpTaskServer() throws IOException {
-        this(Managers.getFileStorage("tasks.csv"));
+    public HttpTaskServer() throws IOException, InterruptedException {
+        this(Managers.getDefault());
     }
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
