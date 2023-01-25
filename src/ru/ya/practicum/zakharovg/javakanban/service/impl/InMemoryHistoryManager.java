@@ -30,7 +30,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<BaseTask> getHistory() {
-        return list.getTasks();
+        return list.getTasksRev();
     }
 
     class CustomLinkedList<T extends BaseTask> {
@@ -64,6 +64,20 @@ public class InMemoryHistoryManager implements HistoryManager {
                 while (current != null) {
                     list.add(current.getData());
                     current = current.getNext();
+                }
+            }
+            return list;
+        }
+
+        // возвращает задачи в виде ArrayList от
+        // последнего просмотра до первого
+        public List<T> getTasksRev() {
+            List<T> list = new ArrayList<>();
+            if (size > 0) {
+                Node<T> current = tail;
+                while (current != null) {
+                    list.add(current.getData());
+                    current = current.getPrev();
                 }
             }
             return list;
