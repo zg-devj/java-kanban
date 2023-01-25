@@ -66,7 +66,7 @@ public class EpicHandler implements HttpHandler {
         if (id >= 0) {
             Epic epic = manager.getEpic(id);
             if (epic != null) {
-                HelperServer.responseCode200(exchange, gson.toJson(manager.getEpic(id)));
+                HelperServer.responseCode200(exchange, gson.toJson(epic));
             } else {
                 HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
@@ -89,7 +89,7 @@ public class EpicHandler implements HttpHandler {
         InputStream inputStreamPut = exchange.getRequestBody();
         String bodyPut = new String(inputStreamPut.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Epic epicPut = gson.fromJson(bodyPut, Epic.class);
-        if (manager.getEpic(epicPut.getId()) != null) {
+        if (manager.containsEpic(epicPut.getId())) {
             manager.updateEpic(epicPut);
             HelperServer.responseCode204(exchange);
         } else {
@@ -101,8 +101,7 @@ public class EpicHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         int id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            Epic epicDelete = manager.getEpic(id);
-            if (epicDelete != null) {
+            if(manager.containsEpic(id)) {
                 manager.deleteEpic(id);
                 HelperServer.responseCode204(exchange);
             } else {

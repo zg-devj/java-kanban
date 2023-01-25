@@ -44,7 +44,7 @@ public class SubtaskEpicHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         Integer id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            if (manager.getEpic(id) != null) {
+            if (manager.containsEpic(id)) {
                 // ответ 200
                 String response = gson.toJson(manager.getSubtasksByEpicId(id));
                 HelperServer.responseCode200(exchange, response);

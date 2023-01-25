@@ -66,7 +66,7 @@ public class TaskHandler implements HttpHandler {
         if (id >= 0) {
             Task task = manager.getTask(id);
             if (task != null) {
-                HelperServer.responseCode200(exchange, gson.toJson(manager.getTask(id)));
+                HelperServer.responseCode200(exchange, gson.toJson(task));
             } else {
                 HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
@@ -93,7 +93,7 @@ public class TaskHandler implements HttpHandler {
         InputStream inputStreamPut = exchange.getRequestBody();
         String bodyPut = new String(inputStreamPut.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Task taskPut = gson.fromJson(bodyPut, Task.class);
-        if (manager.getTask(taskPut.getId()) != null) {
+        if (manager.containsTask(taskPut.getId())) {
             try {
                 manager.updateTask(taskPut);
             } catch (OutOfTimeIntervalException e) {
@@ -109,8 +109,7 @@ public class TaskHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         int id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            Task taskDelete = manager.getTask(id);
-            if (taskDelete != null) {
+            if (manager.containsTask(id)) {
                 manager.deleteTask(id);
                 HelperServer.responseCode204(exchange);
             } else {

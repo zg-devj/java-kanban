@@ -65,9 +65,9 @@ public class SubtaskHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         Integer id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            Subtask task = manager.getSubtask(id);
-            if (task != null) {
-                HelperServer.responseCode200(exchange, gson.toJson(manager.getSubtask(id)));
+            Subtask subtask = manager.getSubtask(id);
+            if (subtask != null) {
+                HelperServer.responseCode200(exchange, gson.toJson(subtask));
             } else {
                 HelperServer.responseCode404(exchange, gson, "Задачи с id " + id + " не найдено.");
             }
@@ -94,7 +94,7 @@ public class SubtaskHandler implements HttpHandler {
         InputStream inputStreamPut = exchange.getRequestBody();
         String bodyPut = new String(inputStreamPut.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Subtask subtaskPut = gson.fromJson(bodyPut, Subtask.class);
-        if (manager.getSubtask(subtaskPut.getId()) != null) {
+        if (manager.containsSubtask(subtaskPut.getId())) {
             try {
                 manager.updateSubtask(subtaskPut);
             } catch (OutOfTimeIntervalException e) {
@@ -110,8 +110,7 @@ public class SubtaskHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         int id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            Subtask subtaskDelete = manager.getSubtask(id);
-            if (subtaskDelete != null) {
+            if (manager.containsSubtask(id)) {
                 manager.deleteSubtask(id);
                 HelperServer.responseCode204(exchange);
             } else {
