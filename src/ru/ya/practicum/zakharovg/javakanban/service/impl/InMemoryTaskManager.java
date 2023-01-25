@@ -38,6 +38,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //region Task методы
+    @Override
+    public boolean containsTask(int id) {
+        if (tasks != null && tasks.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
+
     // Получение Task по идентификатору.
     public Task getTask(int id) {
         Task task = tasks.get(id);
@@ -107,6 +115,16 @@ public class InMemoryTaskManager implements TaskManager {
     //endregion
 
     //region Subtask методы
+
+
+    @Override
+    public boolean containsSubtask(int id) {
+        if (subtasks != null && subtasks.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
+
     // Получение Subtask по идентификатору.
     @Override
     public Subtask getSubtask(int id) {
@@ -204,6 +222,15 @@ public class InMemoryTaskManager implements TaskManager {
     //endregion
 
     //region Epic методы
+
+    @Override
+    public boolean containsEpic(int id) {
+        if (epics != null && epics.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
+
     // Получение Epic по идентификатору.
     @Override
     public Epic getEpic(int id) {

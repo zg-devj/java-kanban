@@ -10,6 +10,8 @@ import java.util.Set;
 
 public interface TaskManager {
     //region Task
+    boolean containsTask(int id);
+
     Task getTask(int id);
 
     List<Task> getAllTasks();
@@ -24,6 +26,8 @@ public interface TaskManager {
     //endregion
 
     //region Subtask
+    boolean containsSubtask(int id);
+
     Subtask getSubtask(int id);
 
     List<Subtask> getAllSubtasks();
@@ -40,6 +44,8 @@ public interface TaskManager {
     //endregion
 
     //region Epic
+    boolean containsEpic(int id);
+
     Epic getEpic(int id);
 
     List<Epic> getAllEpics();
