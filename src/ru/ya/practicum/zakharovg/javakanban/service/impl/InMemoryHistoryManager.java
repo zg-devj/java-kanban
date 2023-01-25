@@ -56,20 +56,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         // возвращает задачи в виде ArrayList от
-        // первого просмотра до последнего
-        public List<T> getTasks() {
-            List<T> list = new ArrayList<>();
-            if (size > 0) {
-                Node<T> current = head;
-                while (current != null) {
-                    list.add(current.getData());
-                    current = current.getNext();
-                }
-            }
-            return list;
-        }
-
-        // возвращает задачи в виде ArrayList от
         // последнего просмотра до первого
         public List<T> getTasksRev() {
             List<T> list = new ArrayList<>();

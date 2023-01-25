@@ -24,39 +24,51 @@ public class SortedBaseTask {
         return listSorted;
     }
 
-    // код оставил свой, на все возможных случаях проверил, работает
-    // Скриншот и комментарии в папке /feedback
+    /**
+     * Валидация задачи на пересечение с отсортированным списком
+     * @param task классы наследуемые от BaseTask
+     * @return true - не пересекается
+     */
     public boolean validate(BaseTask task) {
         if (task.getStartTime() == null || listSorted.size() < 1) {
             return true;
         }
-        Iterator<BaseTask> iter = listSorted.iterator();
+        // исключаем задачи с startTime = null
+        Iterator<BaseTask> iter = listSorted.stream().filter(x->x.getStartTime()!=null).iterator();
         BaseTask prevTask = null;
         while (iter.hasNext()) {
+            // текущий итерируемый объект
             BaseTask value = iter.next();
-            if (value.getStartTime() == null) {
-                return true;
-            }
             // проверка только при обновлении задачи
             // задача пропускает саму себя чтоб не пересекаться с собой
             if(value.getId() == task.getId()){
                 continue;
             }
+            // начало итерируемого объекта совпадает с началом проверяемого
             if (value.getStartTime().equals(task.getStartTime())) {
                 return false;
             }
+            // если итерируемый объект последний
             if (!iter.hasNext()) {
-                // последняя итерация
+                // начало добавляемого после конца итерируемого не пересекаются
                 if (task.getStartTime().isAfter(value.getEndTime())) {
                     return true;
                 }
             }
-            if (value.getStartTime() == null || task.getStartTime().isAfter(value.getStartTime())) {
+            // начало добавляемого после начала итерируемого
+            if (task.getStartTime().isAfter(value.getStartTime())) {
+                // устанавливаем итерируемый как текущий
                 prevTask = value;
+                // и если итерируемый не последний переходим к следующему
                 if (iter.hasNext()) {
                     continue;
                 }
             }
+            // A || B
+            // A - если есть предыдущий и конец предыдущего после начала добавляемого
+            //     то существует пересечение
+            // B - конец добавляемого после начала итерируемого
+            //     то существует пересечение
             if (prevTask != null && prevTask.getEndTime().isAfter(task.getStartTime())
                     || task.getEndTime().isAfter(value.getStartTime())) {
                 return false;
