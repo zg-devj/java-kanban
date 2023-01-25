@@ -28,7 +28,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskServerTest {
-    private BaseTaskDeserializer deserializer;
     private HttpTaskServer taskServer;
     private KVServer kvServer;
     private Gson gson;
@@ -42,7 +41,7 @@ public class HttpTaskServerTest {
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
         System.out.println();
-        deserializer = new BaseTaskDeserializer("type");
+        BaseTaskDeserializer deserializer = new BaseTaskDeserializer("type");
         deserializer.registerBarnType("Task", Task.class);
         deserializer.registerBarnType("Subtask", Subtask.class);
         deserializer.registerBarnType("Epic", Epic.class);
@@ -56,6 +55,7 @@ public class HttpTaskServerTest {
 
         taskManager = Managers.getDefault();
         taskServer = new HttpTaskServer(taskManager);
+
 
         task = new Task("Task", "Desc", "11.01.2023 11:00", 10);
         taskManager.addTask(task); // 1
@@ -1060,8 +1060,8 @@ public class HttpTaskServerTest {
 
         assertNotNull(actual, "Истории не возвращаются");
         assertEquals(3, actual.size(), "Не верное количество задач");
-        assertTrue(actual.get(0) instanceof Task);
-        assertTrue(actual.get(2) instanceof Subtask);
+        assertTrue(actual.get(0) instanceof Subtask);
+        assertTrue(actual.get(2) instanceof Task);
     }
 
     @Test

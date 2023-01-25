@@ -101,7 +101,7 @@ public class EpicHandler implements HttpHandler {
         String[] queries = queryString.split("&");
         int id = HelperServer.getIdFromQueries(queries);
         if (id >= 0) {
-            if(manager.containsEpic(id)) {
+            if (manager.containsEpic(id)) {
                 manager.deleteEpic(id);
                 HelperServer.responseCode204(exchange);
             } else {

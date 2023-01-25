@@ -24,6 +24,9 @@ public abstract class BaseTask {
     // зачем использовать null, если 0 - это отсутствие времени?
     protected Duration duration = null;
 
+    public BaseTask() {
+    }
+
     public BaseTask(String title, String descriptions) {
         this.title = title;
         this.descriptions = descriptions;
@@ -127,6 +130,14 @@ public abstract class BaseTask {
         } else {
             this.duration = null;
         }
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Instant getEndTime() {

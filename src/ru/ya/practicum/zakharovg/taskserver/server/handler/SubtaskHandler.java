@@ -80,7 +80,7 @@ public class SubtaskHandler implements HttpHandler {
         InputStream inputStreamPost = exchange.getRequestBody();
         String bodyPost = new String(inputStreamPost.readAllBytes(), HelperServer.DEFAULT_CHARSET);
         Subtask subtaskPost = gson.fromJson(bodyPost, Subtask.class);
-        if (subtaskPost != null && subtaskPost.getEpicId() > 0) {
+        if (subtaskPost != null) {
             try {
                 manager.addSubtask(subtaskPost.getEpicId(), subtaskPost);
             } catch (OutOfTimeIntervalException e) {

@@ -22,13 +22,14 @@ public class KVServer {
         server.createContext("/register", this::register);
         server.createContext("/save", this::save);
         server.createContext("/load", this::load);
+        server.createContext("/ping", this::pong);
     }
 
     private void load(HttpExchange h) throws IOException {
         try {
             System.out.println("\n/load");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
@@ -45,7 +46,7 @@ public class KVServer {
                     h.sendResponseHeaders(404, 0);
                     return;
                 }
-                sendText(h,value);
+                sendText(h, value);
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -59,7 +60,7 @@ public class KVServer {
         try {
             System.out.println("\n/save");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
@@ -110,9 +111,16 @@ public class KVServer {
         server.start();
     }
 
-    public void stop(){
+    public void stop() {
         System.out.println("Сервер остановлен");
         server.stop(0);
+    }
+
+    public void pong(HttpExchange h) throws IOException {
+        if (hasAuth(h)) {
+            h.sendResponseHeaders(200, 0);
+        }
+        h.close();
     }
 
     private String generateApiToken() {

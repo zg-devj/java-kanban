@@ -71,7 +71,7 @@ public class InMemoryHistoryManagerTest {
                 .map(BaseTask::getId)
                 .collect(Collectors.toList()).toArray(new Integer[0]);
 
-        assertArrayEquals(new Integer[]{2, 1, 3}, ids, "Результаты не совпадают");
+        assertArrayEquals(new Integer[]{3, 1, 2}, ids, "Результаты не совпадают");
     }
 
     @Test
@@ -97,21 +97,21 @@ public class InMemoryHistoryManagerTest {
                 .map(BaseTask::getId)
                 .collect(Collectors.toList()).toArray(new Integer[0]);
 
-        assertArrayEquals(new Integer[]{1, 2, 3, 4, 5}, ids, "Результаты не совпадают");
+        assertArrayEquals(new Integer[]{5, 4, 3, 2, 1}, ids, "Результаты не совпадают");
 
         // удаление с начала
         historyManager.remove(task1.getId());
         Integer[] idsBegin = historyManager.getHistory().stream()
                 .map(BaseTask::getId)
                 .collect(Collectors.toList()).toArray(new Integer[0]);
-        assertArrayEquals(new Integer[]{2, 3, 4, 5}, idsBegin, "не удален с начала");
+        assertArrayEquals(new Integer[]{5, 4, 3, 2}, idsBegin, "не удален с начала");
 
         // удаление с конца
         historyManager.remove(task5.getId());
         Integer[] idsEnd = historyManager.getHistory().stream()
                 .map(BaseTask::getId)
                 .collect(Collectors.toList()).toArray(new Integer[0]);
-        assertArrayEquals(new Integer[]{2, 3, 4}, idsEnd, "не удален с конца");
+        assertArrayEquals(new Integer[]{4, 3, 2}, idsEnd, "не удален с конца");
 
 
         // удаление с середины
@@ -119,7 +119,7 @@ public class InMemoryHistoryManagerTest {
         Integer[] idsMiddle = historyManager.getHistory().stream()
                 .map(BaseTask::getId)
                 .collect(Collectors.toList()).toArray(new Integer[0]);
-        assertArrayEquals(new Integer[]{2, 4}, idsMiddle, "не удален с середины");
+        assertArrayEquals(new Integer[]{4, 2}, idsMiddle, "не удален с середины");
     }
 
 }

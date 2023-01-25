@@ -1,5 +1,6 @@
 package ru.ya.practicum.zakharovg.kvclient;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,6 +17,18 @@ public class KVTaskClient {
         this.url = url;
         client = HttpClient.newHttpClient();
         initToken();
+    }
+
+    public boolean ping() throws IOException, InterruptedException {
+        URI uri = URI.create(url + "/ping/?API_TOKEN=" + token);
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("Accept", "application/json")
+                .GET().uri(uri).build();
+        HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            return true;
+        }
+        return false;
     }
 
     public void put(String key, String json) throws IOException, InterruptedException {
@@ -41,7 +54,7 @@ public class KVTaskClient {
         return "";
     }
 
-    private void initToken() throws IOException, InterruptedException {
+    public void initToken() throws IOException, InterruptedException {
         URI uri = URI.create(url + "/register");
         HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

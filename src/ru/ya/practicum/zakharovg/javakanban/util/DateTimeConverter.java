@@ -25,6 +25,6 @@ public class DateTimeConverter {
             ZonedDateTime zonedDateTime1 = ZonedDateTime.ofInstant(instant, ZONE_ID);
             return zonedDateTime1.format(DateTimeFormatter.ofPattern(OUTPUT_DATETIME_FORMAT));
         }
-        return "Не указано";
+        return null;
     }
 }

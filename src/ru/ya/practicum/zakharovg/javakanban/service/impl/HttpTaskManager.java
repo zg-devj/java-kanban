@@ -43,15 +43,15 @@ public class HttpTaskManager extends FileBackedTasksManager {
             StorageUnit storageUnit = gson.fromJson(json, StorageUnit.class);
 
             for (Task task : storageUnit.getTasks().values()) {
-                addItemToLists(this, task, TaskType.valueOf(task.type.toUpperCase()));
+                addItemToLists(this, task, TaskType.valueOf(task.getType().toUpperCase()));
             }
 
             for (Epic epic : storageUnit.getEpics().values()) {
-                addItemToLists(this, epic, TaskType.valueOf(epic.type.toUpperCase()));
+                addItemToLists(this, epic, TaskType.valueOf(epic.getType().toUpperCase()));
             }
 
             for (Subtask subtask : storageUnit.getSubtasks().values()) {
-                addItemToLists(this, subtask, TaskType.valueOf(subtask.type.toUpperCase()));
+                addItemToLists(this, subtask, TaskType.valueOf(subtask.getType().toUpperCase()));
             }
 
             if (storageUnit.getHistory().size() > 0) {
@@ -70,10 +70,23 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     protected void save() {
-        System.out.println("save to server");
+        // При перезапуске KVServer токен меняется.
+        // Т.к. KVServer не авторизует, а только аутентифицирует клиента
+        // и не хранит его токен,
+        // а данные на TaskManager сохраняются раньше, чем попадают на KVServer,
+        // в результате данные в TaskManager будут утеряны.
+        // Решение: обновляем токен.
+        if(!isSaveServerAccess()) {
+            try {
+                client.initToken();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println("Сохраняем данные на KVServer.");
 
         StorageUnit storageUnit = new StorageUnit(tasks, epics, subtasks, getHistory());
-
 
         String json = gson.toJson(storageUnit);
 
@@ -84,5 +97,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
     }
 
-
+    private boolean isSaveServerAccess() {
+        try {
+            return client.ping();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -6,15 +6,19 @@ import java.util.HashSet;
 // Эпик
 public class Epic extends BaseTask {
 
-    private HashSet<Integer> subtaskIds;
+    private HashSet<Integer> subtaskIds = new HashSet<>();
 
     private Instant endTime;
 
+    public Epic() {
+        setStatus(Status.NEW);
+        setType("Epic");
+    }
+
     public Epic(String title, String description) {
         super(title, description);
-        subtaskIds = new HashSet<>();
         setStatus(Status.NEW);
-        this.type = "Epic";
+        setType("Epic");
     }
 
     public HashSet<Integer> getSubtaskIds() {
