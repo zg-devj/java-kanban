@@ -131,7 +131,7 @@ public class TaskConverter {
             }
             return ret;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     // преобразуем в строку ссылки эпика на сабтаски

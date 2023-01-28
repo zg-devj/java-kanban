@@ -8,8 +8,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskConverterTest {
     // 1673427600000
@@ -153,7 +152,7 @@ public class TaskConverterTest {
         List<Integer> actual = TaskConverter.historyFromString(historyString);
         assertEquals(extend.size(), actual.size(), "Списки разного размера");
         assertEquals(extend.get(1), actual.get(1), "Значения не совпадают");
-        assertEquals(15,actual.get(2),"Полученное значение не 15");
+        assertEquals(15, actual.get(2), "Полученное значение не 15");
     }
 
     @Test
@@ -162,7 +161,8 @@ public class TaskConverterTest {
 
         List<Integer> actual = TaskConverter.historyFromString(historyString);
 
-        assertNull(actual,"Не null");
+        assertNotNull(actual, "Не должно быть null");
+        assertEquals(0, actual.size(), "Список не пуст");
     }
 
 }

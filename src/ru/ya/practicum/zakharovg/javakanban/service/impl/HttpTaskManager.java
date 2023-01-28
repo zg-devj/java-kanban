@@ -3,12 +3,14 @@ package ru.ya.practicum.zakharovg.javakanban.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.ya.practicum.zakharovg.javakanban.model.*;
+import ru.ya.practicum.zakharovg.javakanban.util.TaskConverter;
 import ru.ya.practicum.zakharovg.javakanban.util.TaskType;
 import ru.ya.practicum.zakharovg.kvclient.KVTaskClient;
 import ru.ya.practicum.zakharovg.taskserver.util.BaseTaskDeserializer;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
@@ -16,7 +18,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private final Gson gson;
     private final BaseTaskDeserializer deserializer;
 
-    public HttpTaskManager(URI uri) throws IOException, InterruptedException {
+    public HttpTaskManager(URI url) throws IOException, InterruptedException {
         super();
         deserializer = new BaseTaskDeserializer("type");
         deserializer.registerBarnType("Task", Task.class);
@@ -26,7 +28,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
                 .registerTypeAdapter(BaseTask.class, deserializer)
                 .create();
 
-        client = new KVTaskClient(uri);
+        client = new KVTaskClient(url);
 
         load();
     }
@@ -42,26 +44,27 @@ public class HttpTaskManager extends FileBackedTasksManager {
         if (!json.isBlank()) {
             StorageUnit storageUnit = gson.fromJson(json, StorageUnit.class);
 
-            for (Task task : storageUnit.getTasks().values()) {
+            for (Task task : storageUnit.getTasks()) {
                 addItemToLists(this, task, TaskType.valueOf(task.getType().toUpperCase()));
             }
 
-            for (Epic epic : storageUnit.getEpics().values()) {
+            for (Epic epic : storageUnit.getEpics()) {
                 addItemToLists(this, epic, TaskType.valueOf(epic.getType().toUpperCase()));
             }
 
-            for (Subtask subtask : storageUnit.getSubtasks().values()) {
+            for (Subtask subtask : storageUnit.getSubtasks()) {
                 addItemToLists(this, subtask, TaskType.valueOf(subtask.getType().toUpperCase()));
             }
 
-            if (storageUnit.getHistory().size() > 0) {
-                for (BaseTask bt : storageUnit.getHistory()) {
-                    if (tasks.containsKey(bt.getId())) {
-                        historyManager.add(tasks.get(bt.getId()));
-                    } else if (epics.containsKey(bt.getId())) {
-                        historyManager.add(epics.get(bt.getId()));
-                    } else if (subtasks.containsKey(bt.getId())) {
-                        historyManager.add(subtasks.get(bt.getId()));
+            List<Integer> history = TaskConverter.historyFromString(storageUnit.getHistory());
+            if (history.size() > 0) {
+                for (Integer id : history) {
+                    if (tasks.containsKey(id)) {
+                        historyManager.add(tasks.get(id));
+                    } else if (epics.containsKey(id)) {
+                        historyManager.add(epics.get(id));
+                    } else if (subtasks.containsKey(id)) {
+                        historyManager.add(subtasks.get(id));
                     }
                 }
             }
@@ -76,7 +79,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         // а данные на TaskManager сохраняются раньше, чем попадают на KVServer,
         // в результате данные в TaskManager будут утеряны.
         // Решение: обновляем токен.
-        if(!isSaveServerAccess()) {
+        if (!isSaveServerAccess()) {
             try {
                 client.initToken();
             } catch (IOException | InterruptedException e) {
@@ -86,7 +89,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
         System.out.println("Сохраняем данные на KVServer.");
 
-        StorageUnit storageUnit = new StorageUnit(tasks, epics, subtasks, getHistory());
+        StorageUnit storageUnit = new StorageUnit(tasks.values(),
+                epics.values(), subtasks.values(),
+                TaskConverter.historyToString(getHistory()));
 
         String json = gson.toJson(storageUnit);
 

@@ -20,7 +20,7 @@ public class KVTaskClient {
     }
 
     public boolean ping() throws IOException, InterruptedException {
-        URI uri = URI.create(url + "/ping/?API_TOKEN=" + token);
+        URI uri = URI.create(url + "/ping?API_TOKEN=" + token);
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Accept", "application/json")
                 .GET().uri(uri).build();

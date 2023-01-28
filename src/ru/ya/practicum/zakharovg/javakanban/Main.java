@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        TaskManager manager = Managers.getServerStorage();
+        TaskManager manager = Managers.getDefault();
 
         manager.addTask(new Task("Task", "Desc")); //1
         manager.addEpic(new Epic("Epic", "Desc"));  //2
